@@ -55,12 +55,15 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 
 ## Signing
 
-- Keystore `ALTOMEDIA.jks` (alias `kdsmedia`) and `keystore.properties` are **gitignored** — the repo
-  is public, so the private key and its password must never be committed.
+- Keystore `ALTOMEDIA.jks` (alias `kdsmedia`) and `keystore.properties` are committed to the repo
+  at the maintainer's request. The repository is public, so the signing key and password are public.
 - `app/build.gradle` reads the `release` signing config from `keystore.properties` at the repo root
   (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`). Without that file the release build
   produces an unsigned APK.
-- Build a signed release with `:app:assembleRelease`; output is `app/build/outputs/apk/release/app-release.apk`.
+- Build a signed release with `:app:assembleRelease` / `:app:bundleRelease`; outputs are
+  `app/build/outputs/apk/release/app-release.apk` and `app/build/outputs/bundle/release/app-release.aab`.
+- The APK (~240 MB) and AAB (~176 MB) exceed GitHub's 100 MB per-file git limit, so they are
+  published as assets on a GitHub Release rather than committed to the tree.
 
 ## Pushing
 
