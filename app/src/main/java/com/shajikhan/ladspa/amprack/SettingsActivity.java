@@ -22,10 +22,6 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -107,33 +103,6 @@ public class SettingsActivity extends AppCompatActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.header_preferences, rootKey);
-
-            Preference purchase = findPreference("purchase_pro");
-            purchase.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    startActivity(new Intent(getContext(), Purchase.class));
-                    return false;
-                }
-            });
-
-            if (! PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("pro", false)) {
-                purchase.setVisible(true);
-            }
-
-            Log.d("SETTINGS", String.format ("[pro version]: %b", PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("pro", false)));
-
-            Preference privacy = findPreference("privacy_policy") ;
-            privacy.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    String url = "https://amprack.acoustixaudio.org/privacy.php";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                    return false;
-                }
-            });
 
             findPreference("cool").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -243,17 +212,6 @@ public class SettingsActivity extends AppCompatActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.theme_settings, rootKey);
-            Preference moreThemes = findPreference("more_themes_online") ;
-            moreThemes.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    String url = "https://amprack.acoustixaudio.org/view.php?type=Themes";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                    return false;
-                }
-            });
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
             Set <String> customThemes = sharedPreferences.getStringSet("customThemes", null);
             if (customThemes != null) {
@@ -352,61 +310,6 @@ public class SettingsActivity extends AppCompatActivity implements
         }
     }
 
-    public static class ProfileFragment extends PreferenceFragmentCompat {
-
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.account_pref, rootKey);
-            FirebaseAuth auth = FirebaseAuth.getInstance() ;
-            Preference logOut = findPreference("log_out");
-            Preference details = findPreference("delete_account");
-            logOut.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestIdToken("983863263684-6ggjm8spjvvftm5noqtpl97v0le5laft.apps.googleusercontent.com")
-                            .requestEmail()
-                            .build();
-
-                    GoogleSignIn.getClient(getContext(), gso).signOut();
-                    auth.signOut();
-                    MainActivity.alert("Logged out", "You have been logged out");
-                    return false;
-                }
-            });
-            Preference deleteAccountButton = findPreference("delete_account");
-            if (auth == null || auth.getUid() == null) {
-                deleteAccountButton.setVisible(false);
-                logOut.setVisible(false);
-                details.setVisible(false);
-                return;
-            }
-
-            String email = auth.getCurrentUser().getEmail();
-            Preference preference = findPreference("email");
-            preference.setTitle(email);
-
-            deleteAccountButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    new AlertDialog.Builder(getContext())
-                            .setMessage("Are you sure you want to delete your account? This will delete your presets, favorites and all associated account data." +
-                                    "\n\nThis cannot be undone. Are you sure you want to proceed?")
-                            .setPositiveButton("Delete my account", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    Intent myIntent = new Intent(getContext(), DeleteData.class);
-                                    startActivity(myIntent);
-                                }
-                            })
-                            .setNegativeButton("Cancel", null)
-                            .show();
-
-                    return false;
-                }
-            });
-        }
-    }
-
     public static class VersionFragment extends PreferenceFragmentCompat {
 
         @Override
@@ -436,11 +339,7 @@ public class SettingsActivity extends AppCompatActivity implements
             int plugins = MainActivity.totalPlugins;
             findPreference("plugins").setSummary(String.valueOf(plugins));
 
-            if (MainActivity.proVersion == false) {
-                findPreference("encoders_supported").setSummary("WAV 16 Bit");
-            } else {
-                findPreference("name_info").setTitle("AmpRack Pro Version");
-            }
+            findPreference("name_info").setTitle("AmpRack Pro Version");
         }
     }
 

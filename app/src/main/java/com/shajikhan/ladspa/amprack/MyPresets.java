@@ -56,7 +56,7 @@ public class MyPresets extends Fragment {
     String TAG = getClass().getSimpleName();
     RecyclerView recyclerView;
     public MyPresetsAdapter myPresetsAdapter ;
-    FirestoreDB db ;
+    LocalPresetDB db ;
     ProgressBar progressBar = null;
     LinearLayout quickHeader = null ;
     PopupMenu sortMenu = null;
@@ -96,7 +96,7 @@ public class MyPresets extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (mainActivity == null)
             mainActivity = (MainActivity) getActivity();
-        db = new FirestoreDB (mainActivity);
+        db = new LocalPresetDB (mainActivity);
 
         recyclerView = (RecyclerView) ((LinearLayout) view).getChildAt(2);
         Button loadMore = view.findViewById(R.id.load_more);
@@ -240,7 +240,6 @@ public class MyPresets extends Fragment {
             }
 
             labels.add ("Load from file") ;
-            labels.add ("More presets online") ;
 
             Log.d(TAG, "onViewCreated: labels: " + labels);
 
@@ -250,12 +249,6 @@ public class MyPresets extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (position == parent.getAdapter().getCount() - 1) {
-                        String url = "https://amprack.acoustixaudio.org/view.php?type=Presets";
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setData(Uri.parse(url));
-                        startActivity(i);
-                        return;
-                    } else if (position == parent.getAdapter().getCount() - 2) {
                         Intent intent_upload = new Intent();
                         intent_upload.setType("*/*");
                         intent_upload.setAction(Intent.ACTION_OPEN_DOCUMENT);

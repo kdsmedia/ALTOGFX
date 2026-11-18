@@ -11,13 +11,26 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 
 ## Build notes
 
-- `app/google-services.json` is gitignored and required by the Google Services plugin. A dummy file
-  (valid JSON, matching `applicationId` `com.shajikhan.ladspa.amprack`) lets resource/Java tasks run
-  for validation; delete it before committing.
+- `app/google-services.json` was **removed** — the app is fully offline and no longer uses the
+  Google Services / Firebase plugins, so the file is no longer needed.
 - Resource tasks that work without native code: `:app:mergeDebugResources`, `:app:processDebugResources`.
-- `:app:assembleDebug` currently fails in the NDK step: `lilv/lilv.h` cannot find `lv2/core/lv2.h`
-  (pre-existing include-path issue in `app/src/main/cpp/CMakeLists.txt`, unrelated to app resources).
+- `:app:assembleDebug` builds successfully (Java + resources + NDK). The NDK step previously failed
+  with `lilv/lilv.h` not finding `lv2/core/lv2.h`; fixed by adding `${CMAKE_CURRENT_SOURCE_DIR}` to
+  `target_include_directories(amprack ...)` in `app/src/main/cpp/CMakeLists.txt`.
 - The `mybuild` script uses wrong task casing; the real task is `assembleRelease` (camelCase).
+
+## Offline-only build
+
+- The app is intentionally fully offline: no INTERNET/ACCESS_NETWORK_STATE permissions, no Firebase
+  Auth/Firestore/Crashlytics/Analytics, no AdMob, no Play Billing, no ExoPlayer-based remote URLs.
+- Presets/favourites are stored locally via `LocalPresetDB.java` (replaces the old Firestore
+  `FirestoreDB`). `MyPresets`/`MyPresetsAdapter`/`Presets` use `LocalPresetDB`.
+- `AndroidManifest.xml` uses `tools:node="remove"` to strip INTERNET and ACCESS_NETWORK_STATE that
+  ExoPlayer (`exoplayer-core`) pulls in transitively. Keep this if ExoPlayer stays a dependency.
+- Fonts `comfortaa.ttf` and `montserrat_alternates.ttf` are bundled locally (previously downloadable
+  Google Fonts requiring Play Services); `font_certs.xml` was deleted.
+- Verify a build is still offline with:
+  `aapt2 dump xmltree app/build/outputs/apk/debug/app-debug.apk --file AndroidManifest.xml | grep permission`
 
 ## Icons / branding
 

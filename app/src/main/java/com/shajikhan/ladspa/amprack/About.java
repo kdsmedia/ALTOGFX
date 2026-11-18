@@ -1,11 +1,7 @@
 package com.shajikhan.ladspa.amprack;
 
-import android.content.Intent;
-import android.media.browse.MediaBrowser;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
@@ -29,7 +25,6 @@ public class About extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_about);
         getSupportActionBar().hide();
-        Button music = findViewById(R.id.music);
 
         exoPlayer = new ExoPlayer.Builder(this).build();
         exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse("asset:///track.mp3")));
@@ -52,35 +47,6 @@ public class About extends AppCompatActivity {
         });
 
         exoPlayer.setRepeatMode (Player.REPEAT_MODE_ONE);
-
-        music.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://music.shaji.in"));
-                startActivity(i);
-            }
-        });
-
-        Button github = findViewById(R.id.github);
-        github.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://github.com/djshaji"));
-                startActivity(i);
-            }
-        });
-
-        Button download = findViewById(R.id.download);
-        download.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse("https://music.shaji.in/media/2024/rock%20and%20roll%20will%20never%20die_r4.mp3"));
-                startActivity(i);
-            }
-        });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

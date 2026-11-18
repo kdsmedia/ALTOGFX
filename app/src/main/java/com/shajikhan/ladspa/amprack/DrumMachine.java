@@ -111,7 +111,7 @@ public class DrumMachine extends LinearLayout {
                 button.setTextOn("#");
                 button.setTextOff(String.valueOf(j + 1));
                 button.setText(String.valueOf(j + 1));
-                button.setBackgroundColor(getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
+                button.setBackgroundColor(getResources().getColor(R.color.fui_transparent));
                 button.setTextColor(getResources().getColor(R.color.white));
                 linearLayout.addView(button);
                 linearLayout.setBackgroundResource(R.drawable.semi_trans);

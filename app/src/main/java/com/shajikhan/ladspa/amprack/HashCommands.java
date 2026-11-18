@@ -18,8 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -110,11 +108,6 @@ public class HashCommands extends AlertDialog {
                     }
                 }
                 break ;
-            case "gopro":
-                mainActivity.defaultSharedPreferences.edit().putBoolean("pro", true).apply();
-                MainActivity.proVersion = true ;
-                MainActivity.alert("Pro Version Activated", "You have been upgraded to the full version. Enjoy!");
-                break;
             case "ver":
             case "version":
                 String version = String.format(
@@ -126,10 +119,6 @@ public class HashCommands extends AlertDialog {
 
                 MainActivity.alert("Version", version);
                 break ;
-            case "logout":
-                FirebaseAuth.getInstance().signOut();
-                MainActivity.alert("Logged out", "You have been signed out");
-                break;
             case "lastrecordedaudio":
                 mainActivity.showMediaPlayerDialog();
                 break ;

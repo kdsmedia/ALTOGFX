@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -8,13 +9,14 @@
     <uses-feature android:name="android.software.midi" android:required="false"/>
     <uses-feature android:name="android.software.companion_device_setup"/>
 
+    <!-- Strip network permissions pulled in transitively by libraries (e.g. ExoPlayer). -->
+    <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="com.android.vending.BILLING" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -27,10 +29,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MySplash">
         <activity
-            android:theme="@style/Theme.AmpRack"
-            android:name=".NAMDownloader"
-            android:exported="false" />
-        <activity
             android:name=".About"
             android:exported="false"
             android:theme="@style/Theme.AmpRack" />
@@ -40,11 +38,6 @@
             android:label="Camera"
             android:theme="@style/Theme.AmpRack" />
         <activity
-            android:name=".FeaturedVideos"
-            android:exported="false"
-            android:label="@string/title_activity_featured_videos"
-            android:theme="@style/Theme.MySplash.NoActionBar" />
-        <activity
             android:name=".Onboard"
             android:exported="false"
             android:theme="@style/Theme.AmpRack" />
@@ -53,13 +46,6 @@
             android:exported="false"
             android:label="Drummer"
             android:theme="@style/Theme.AmpRack" />
-        <activity
-            android:name=".DeleteData"
-            android:exported="false" />
-        <activity
-            android:name=".DeleteAccount"
-            android:exported="false"
-            android:label="@string/title_activity_delete_account" />
         <activity
             android:name=".Files"
             android:exported="false"
@@ -72,15 +58,6 @@
             android:theme="@style/Theme.AmpRack" />
 
         <activity
-            android:name=".Purchase"
-            android:exported="false"
-            android:label="@string/title_activity_purchase"
-            android:theme="@style/Theme.AmpRack">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shajikhan.ladspa.amprack.MainActivity" />
-        </activity>
-        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
@@ -89,9 +66,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.shajikhan.ladspa.amprack.MainActivity" />
         </activity>
-        <activity
-            android:name=".FirebaseUI"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"

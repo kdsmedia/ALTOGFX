@@ -11,7 +11,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,8 +23,6 @@ import android.view.MotionEvent;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -46,18 +43,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.slider.Slider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,19 +57,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 public class Rack extends Fragment {
     MainActivity mainActivity ;
     LinearProgressIndicator quickPatchProgress ;
-    Dialog youtubePlayer ;
     String TAG = getClass().getSimpleName();
     PopupMenu optionsMenu ;
     ToggleButton toggleVideo, videoRecord ;
@@ -408,13 +392,6 @@ public class Rack extends Fragment {
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mainActivity.dataAdapter.plugins.size() > 1 && MainActivity.proVersion == false) {
-                    Log.w(TAG, "onClick: " + String.format("already %d plugins in queue", mainActivity.dataAdapter.plugins.size()));
-//                    Intent intent = new Intent(mainActivity, Purchase.class);
-//                    startActivity(intent);
-//                    return;
-                }
-
 //                linearLayout.setBackground();
                 MainActivity.applyWallpaper(mainActivity, mainActivity.pluginDialog.getWindow(), getResources(), mainActivity.pluginDialogWallpaper, mainActivity.deviceWidth, mainActivity.deviceHeight);
                 mainActivity.pluginDialog.show();
@@ -551,39 +528,14 @@ public class Rack extends Fragment {
         optionsMenu = new PopupMenu(mainActivity, optionsBtn);
         optionsMenu.getMenuInflater().inflate(R.menu.options_menu, optionsMenu.getMenu());
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser() ;
         MenuItem settings = optionsMenu.getMenu().findItem(R.id.settings_menu_item);
-        MenuItem logout = optionsMenu.getMenu().findItem(R.id.logout_menu_item);
         MenuItem debug = optionsMenu.getMenu().findItem(R.id.debug_menu_item);
-        MenuItem getPro = optionsMenu.getMenu().findItem(R.id.get_pro);
-        if (mainActivity.defaultSharedPreferences.getBoolean("pro", false)) {
-            getPro.setVisible(false);
-            TextView textView = view.findViewById(R.id.app_main_title);
-            textView.setText("Pro");
-            (view.findViewById(R.id.pro_label)).setVisibility(View.VISIBLE);
-        } else {
-            TextView proLabel = view.findViewById(R.id.pro_label);
-            proLabel.setVisibility(View.VISIBLE);
-            proLabel.setEnabled(true);
-            proLabel.setText("Get Pro");
-            proLabel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(mainActivity, Purchase.class));
-                }
-            });
-        }
 
-        getPro.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                Intent intent = new Intent(mainActivity, Purchase.class);
-                startActivity(intent);
-                return true;
-            }
-        });
+        TextView textView = view.findViewById(R.id.app_main_title);
+        textView.setText("Pro");
+        (view.findViewById(R.id.pro_label)).setVisibility(View.VISIBLE);
 
-        MenuItem connectGuitar = optionsMenu.getMenu().getItem(4);
+        MenuItem connectGuitar = optionsMenu.getMenu().findItem(R.id.connect_guitar_menu);
         connectGuitar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
@@ -594,54 +546,7 @@ public class Rack extends Fragment {
             }
         });
 
-        MenuItem bug_item = optionsMenu.getMenu().getItem(5);
-        MenuItem featureItem = optionsMenu.getMenu().getItem(6);
-        MenuItem.OnMenuItemClickListener menuItemClickListener = new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-                LayoutInflater inflater = getLayoutInflater();
-
-                ConstraintLayout linearLayout = (ConstraintLayout) inflater.inflate(R.layout.bug_report, null) ;
-                builder.setView(linearLayout) ;
-
-                EditText title = linearLayout.findViewById(R.id.bug_title);
-                EditText desc = linearLayout.findViewById(R.id.bug_description);
-                EditText email = linearLayout.findViewById(R.id.bug_email);
-                CheckBox notify = linearLayout.findViewById(R.id.bug_notify);
-
-                AlertDialog alertDialog = builder.create();
-                MaterialButton submit = linearLayout.findViewById(R.id.bug_submit);
-                submit.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        saveBugReport(alertDialog, title.getText().toString(), desc.getText().toString(),
-                                email.getText().toString(), notify.isChecked());
-                    }
-                });
-
-                alertDialog.show();
-                return true;
-            }
-        } ;
-
-        bug_item.setOnMenuItemClickListener(menuItemClickListener) ;
-        featureItem.setOnMenuItemClickListener(menuItemClickListener) ;
-
-        MenuItem howToUse = optionsMenu.getMenu().getItem(7);
-        howToUse.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                String url = "https://amprack.acoustixaudio.org";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-
-                return false;
-            }
-        });
-
-        MenuItem saveCollection = optionsMenu.getMenu().getItem(8);
+        MenuItem saveCollection = optionsMenu.getMenu().findItem(R.id.save_collection);
         saveCollection.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -650,12 +555,11 @@ public class Rack extends Fragment {
             }
         });
 
-        MenuItem loadCollection = optionsMenu.getMenu().getItem(9);
+        MenuItem loadCollection = optionsMenu.getMenu().findItem(R.id.load_collection);
         loadCollection.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent intent_upload = new Intent();
-//                intent_upload.setType("application/json");
                 intent_upload.setType("*/*");
                 intent_upload.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent_upload.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
@@ -665,41 +569,11 @@ public class Rack extends Fragment {
             }
         });
 
-        MenuItem tuneLatency = optionsMenu.getMenu().getItem(10);
+        MenuItem tuneLatency = optionsMenu.getMenu().findItem(R.id.menu_tune);
         tuneLatency.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-//                MainActivity.toast(AudioEngine.tuneLatency());
                 latencyDialog();
-                return false;
-            }
-        });
-
-        MenuItem sync_item = optionsMenu.getMenu().findItem(R.id.menu_sync);
-        sync_item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                syncDialog();
-                return false;
-            }
-        });
-
-        MenuItem nam = optionsMenu.getMenu().findItem(R.id.nam);
-        nam.setVisible(false);
-        nam.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                startActivity(new Intent(mainActivity, NAMDownloader.class));
-                return false;
-            }
-        });
-
-        MenuItem ytMenu = optionsMenu.getMenu().findItem(R.id.youtube);
-        ytMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem item) {
-                youtubePlayer.show();
-//                ((WebView) youtubePlayer.findViewById(R.id.webview)).loadUrl("https://youtube.com");
                 return false;
             }
         });
@@ -733,20 +607,6 @@ public class Rack extends Fragment {
             }
         });
 
-        MenuItem downloadPC = optionsMenu.getMenu().findItem(R.id.download_pc);
-        downloadPC.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                String url = "https://amprack.in";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-                return false;
-            }
-        });
-
-        downloadPC.setVisible(MainActivity.proVersion);
-
         MenuItem exit_item = optionsMenu.getMenu().findItem(R.id.menu_exit);
         exit_item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -759,7 +619,6 @@ public class Rack extends Fragment {
         debug.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
-//                mainActivity.printDebugLog();
                 AudioEngine.clearActiveQueue();
                 mainActivity.dataAdapter.reset();
                 mainActivity.lastPresetLoadedUID = null ;
@@ -779,54 +638,6 @@ public class Rack extends Fragment {
             }
         });
 
-        logout.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                builder.setMessage("You are logged in as " + firebaseAuth.getCurrentUser().getEmail())
-                        .setTitle("Are you sure you want to log out?");
-
-                builder.setPositiveButton("Log out", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                .requestIdToken("983863263684-6ggjm8spjvvftm5noqtpl97v0le5laft.apps.googleusercontent.com")
-                                .requestEmail()
-                                .build();
-
-                        GoogleSignIn.getClient(getContext(), gso).signOut();
-                        firebaseAuth.signOut();
-
-                        mainActivity.presets.loginNotice.setVisibility(View.VISIBLE);
-                        mainActivity.presets.tabLayout.setVisibility(View.INVISIBLE);
-                        if (mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter != null)
-                            mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.removeAll();
-                        logout.setVisible(false);
-                        mainActivity.presets.progressPreset.setVisibility(View.INVISIBLE);
-
-                        Toast.makeText(mainActivity.getApplicationContext(),
-                                "You have been logged out",
-                                Toast.LENGTH_LONG)
-                                .show();
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                    }
-                });
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
-                return false;
-            }
-        });
-
-        if (user == null) {
-            logout.setVisible(false);
-        }
 
         optionsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1317,94 +1128,6 @@ public class Rack extends Fragment {
 //            mixerLabel.setBackgroundColor(getResources().getColor(R.color.wheat));
         }
 
-        youtubePlayer = new Dialog(mainActivity);
-        youtubePlayer.setContentView(mainActivity.getLayoutInflater().inflate(R.layout.youtube, null));
-
-        WebView yt = youtubePlayer.findViewById(R.id.webview);
-        yt.getSettings().setJavaScriptEnabled(true);
-        yt.getSettings().setDomStorageEnabled(true);
-        yt.setWebViewClient(new WebViewClient());
-
-        ((Button)(youtubePlayer.findViewById(R.id.patch_up))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                patchUp.performClick();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.reload))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((WebView) youtubePlayer.findViewById(R.id.webview)).reload();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.prev))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((WebView) youtubePlayer.findViewById(R.id.webview)).goBack();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.next))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((WebView) youtubePlayer.findViewById(R.id.webview)).goForward();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.close))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                youtubePlayer.hide();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.power))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainActivity.onOff.performClick();
-            }
-        });
-
-        ((Button)(youtubePlayer.findViewById(R.id.patch_down))).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                patchDown.performClick();
-            }
-        });
-
-        yt.loadUrl("https://youtube.com");
-    }
-
-    public void saveBugReport (AlertDialog dialog, String title, String description, String email, boolean notify) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> data = new HashMap<>();
-
-        data.put("title", title);
-        data.put ("desc", description);
-        data.put ("email", email) ;
-        data.put ("notify", notify);
-        data.put ("timestamp",  FieldValue.serverTimestamp());
-        db.collection("bug_reports")
-                .add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                        dialog.dismiss();
-                        Toast.makeText(mainActivity,
-                                        "Bug report sent successfully",
-                                        Toast.LENGTH_LONG)
-                                .show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        MainActivity.toast(e.getMessage());
-                        Log.e(TAG, "onFailure: cannot save bug report", e);
-                    }
-                });
     }
 
     public void patchMove (boolean up) {
@@ -1528,154 +1251,5 @@ public class Rack extends Fragment {
 
         builder.show();
     }
-
-    void syncDialog () {
-        LinearLayout linearLayout = (LinearLayout) mainActivity.getLayoutInflater().inflate(R.layout.sync_dialog, null);
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-        builder.setTitle("Sync with PC / Smart Pedal")
-                .setView(linearLayout)
-                .setPositiveButton("Close", null);
-
-        Button download = linearLayout.findViewById(R.id.download);
-        download.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://amprack.in"));
-                startActivity(browserIntent);
-
-            }
-        });
-        Button btn = linearLayout.findViewById(R.id.sync);
-        EditText editText = linearLayout.findViewById(R.id.ip);
-        AlertDialog dialog = builder.create();
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mainActivity.presets.fragmentStateAdapter == null) {
-                    MainActivity.alert("Presets not loaded", "Load presets first by switching to the presets Tab.");
-                    return;
-                }
-
-                String text = editText.getText().toString();
-                if (text.isEmpty())
-                    return;
-
-//                String host = text.split(":")[0];
-//                int port = Integer.parseInt(text.split(":")[1]);
-
-                JSONObject collection = new JSONObject();
-                for (int i = 0 ; i < mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.allPresets.size() ; i ++) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.allPresets.get(i)) ;
-                        collection.put(String.valueOf(i), jsonObject);
-                    } catch (JSONException e) {
-                        Log.e(TAG, "[sync]: ", e);
-                    }
-                }
-
-                Log.d(TAG, "[sync]: got presets: " + collection.toString());
-                SyncTask syncTask = new SyncTask();
-                String  data [] = {
-                        text.split (":") [0],
-                        text.split (":") [1],
-                        collection.toString() + "}"
-                };
-
-                try {
-                    String result = syncTask.execute(data).get();
-                    Log.d(TAG, "[sync]: " + result);
-
-                    if (result == null || result.isEmpty()) {
-                        Log.w(TAG, "[sync]: no presets received from server");
-                        Toast.makeText(mainActivity, "No presets received from server", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        return;
-                    }
-
-                    JSONObject j = new JSONObject (result);
-//                    j.put("uid", FirebaseAuth.getInstance().getUid());
-                    Log.d(TAG, "[sync json]: " + j.toString());
-                    Iterator<String> keys = j.keys();
-
-//                    while(keys.hasNext()) {
-//                        String key = keys.next();
-//                        JSONObject jo = j.getJSONObject(key);
-//                        Log.d(TAG, "[preset]: " + jo.toString());
-//                    }
-
-                    if (mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.db == null) {
-//                        Toast.makeText(mainActivity, "Cannot upload: db is null", Toast.LENGTH_SHORT).show();
-//                        return;
-                        mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.db = new FirestoreDB(mainActivity);
-                    }
-
-                    mainActivity.presets.fragmentStateAdapter.myPresets.myPresetsAdapter.db.savePresets(j, false, dialog, mainActivity.presets.fragmentStateAdapter.myPresets);
-                    Log.d(TAG, "[sync]: end presets processing");
-                } catch (ExecutionException | InterruptedException | JSONException e) {
-//                    throw new RuntimeException(e);
-                    Log.e(TAG, "[sync]: ", e);
-                    Toast.makeText(mainActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        dialog.show();
-    }
-
-    public String syncData(String host, int port, String toSend){
-        Socket socket ;
-        PrintWriter out ;
-        BufferedReader in ;
-        String result = "";
-
-        try{
-            socket = new Socket(host, port);
-            out = new PrintWriter(socket.getOutputStream(),
-                    true);
-            in = new BufferedReader(new InputStreamReader(
-                    socket.getInputStream()));
-        } catch (UnknownHostException e) {
-            System.out.println("Unknown host: " + host);
-            return result;
-        } catch  (IOException e) {
-            System.out.println("No I/O");
-            return result;
-        }
-
-        out.println(toSend);
-
-        // Receive text from server
-        try{
-            String line = in.readLine();
-            Log.d(TAG, "syncData: Text received: " + line);
-            result = line ;
-        } catch (IOException e){
-            Log.d(TAG, "syncData: Read failed");
-            return result;
-        }
-
-        return result;
-    }
-
-    private class SyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... params)
-        {
-            String host = params[0];
-            int port = Integer.parseInt(params[1]);
-            String toSend = params [2];
-            return syncData(host, port, toSend);
-        }
-
-        @Override
-        protected void onPostExecute(String result)
-        {
-            super.onPostExecute(result);
-            // do something with the result
-        }
-    }
-
 
 }

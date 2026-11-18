@@ -294,8 +294,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 next.setLayoutParams(layoutParams);
                 prev.setLayoutParams(layoutParams);
 
-                prev.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-                next.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
+                prev.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+                next.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
 
                 layout.addView(prev);
                 layout.addView(spinner);
@@ -462,9 +462,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 prev.setLayoutParams(layoutParams);
                 manage.setLayoutParams(layoutParams);
 
-                prev.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-                manage.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-                next.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
+                prev.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+                manage.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+                next.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
 
                 LinearLayout.LayoutParams l3 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 hz.setLayoutParams(l3);
@@ -1085,9 +1085,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 prev.setLayoutParams(layoutParams);
                 manage.setLayoutParams(layoutParams);
 
-                prev.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-                manage.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-                next.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
+                prev.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+                manage.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+                next.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
 
                 LinearLayout.LayoutParams l3 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 hz.setLayoutParams(l3);
@@ -1152,9 +1152,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             mainActivity.skinEngine.drawableLeft(holder.moveUpButton, "icons", "up", SkinEngine.Resize.Width, .75f);
             mainActivity.skinEngine.drawableLeft(holder.deleteButton, "icons", "delete", SkinEngine.Resize.Width, .75f);
 
-            holder.deleteButton.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-            holder.moveDownButton.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
-            holder.moveUpButton.setBackgroundColor(mainActivity.getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent));
+            holder.deleteButton.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+            holder.moveDownButton.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
+            holder.moveUpButton.setBackgroundColor(mainActivity.getResources().getColor(R.color.fui_transparent));
             holder.root.post(new Runnable() {
                 @Override
                 public void run() {

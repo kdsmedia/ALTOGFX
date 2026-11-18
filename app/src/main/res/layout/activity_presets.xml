@@ -90,25 +90,6 @@
             android:layout_margin="5dp"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/login_notice"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
-        <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/login_btn"
-            android:text="Login to save presets"
-            android:textColor="@color/white"
-            android:drawableLeft="@drawable/ic_baseline_login_24"/>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

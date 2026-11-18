@@ -100,7 +100,6 @@
     <string-array name="hash_commands">
         <item>set: </item>
         <item>version</item>
-        <item>logout</item>
         <item>last recorded audio</item>
     </string-array>
     <string-array name="mstyles">

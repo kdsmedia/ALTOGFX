@@ -32,17 +32,6 @@ public class ConnectGuitar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_guitar);
-        Button b = findViewById(R.id.connect_guide);
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String url = "https://amprack.acoustixaudio.org/connect.php";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-
-            }
-        });
         context = this ;
         JSONObject jsonObject = loadJSONFromAsset() ;
         getSupportActionBar().hide();

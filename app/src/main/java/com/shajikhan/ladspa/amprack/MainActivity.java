@@ -124,23 +124,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesResponseListener;
-import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.shajikhan.ladspa.amprack.databinding.ActivityMainBinding;
 
 import org.json.JSONArray;
@@ -363,8 +351,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     SharedPreferences defaultSharedPreferences = null;
     Notification notification;
     JSONObject knobsLayout;
-    PurchasesResponseListener purchasesResponseListener;
-    public static boolean proVersion = false;
+    public static boolean proVersion = true;
     File dir;
     static File localThemeDir ;
     HashCommands hashCommands;
@@ -390,10 +377,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int PERMISSION_REQUEST_CODE_BLUETOOTH = 3;
     final static int APP_STORAGE_ACCESS_REQUEST_CODE = 501; // Any value
 
-    // Firebase
-    private FirebaseAuth mAuth;
-    FirebaseUser currentUser;
-    private FirebaseAnalytics mFirebaseAnalytics;
     public Rack rack;
     public Tracks tracks, drums;
     public Presets presets;
@@ -416,9 +399,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     MediaPlayer mediaPlayer;
     JSONObject availablePlugins, availablePluginsLV2;
     ArrayList<String> lv2Plugins = new ArrayList<String>();
-    private BillingClient billingClient;
-    private PurchasesUpdatedListener purchasesUpdatedListener;
-    AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener;
     Bundle savedState = null;
 
     @Override
@@ -520,13 +500,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         hashCommands.add (this, "cameraPreview");
         hashCommands.add(this, "saveActivePreset");
         hashCommands.add(this, "printActivePreset");
-        hashCommands.add(this, "proDialog");
         hashCommands.add(this, "testLV2");
         hashCommands.add(this, "printDebugLog");
         hashCommands.add(this, "printActiveChain");
         hashCommands.add(this, "printPluginsAll");
         hashCommands.add(this, "drummer");
-        hashCommands.add(this, "featured");
         hashCommands.add(this, "resetOnboard");
         hashCommands.add(this, "setAudioDevice");
         hashCommands.add (this, "cameraTest");
@@ -680,119 +658,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         notificationManager = NotificationManagerCompat.from(this);
         lazyLoad = defaultSharedPreferences.getBoolean("lazyLoad", true);
         Log.d(TAG, "onCreate: lazyLoad set to " + lazyLoad);
-        try {
-            proVersion = defaultSharedPreferences.getBoolean("pro", false);
-        } catch (ClassCastException e) {
-            Log.e(TAG, "onCreate: incorrect preference found!", e);
-            proVersion = false;
-            defaultSharedPreferences.edit().putBoolean("pro", false).apply();
-        }
-        Log.d(TAG, "onCreate: purchased proVersion: " + proVersion);
-
-        boolean forceAds = defaultSharedPreferences.getString("forceads", "off") != "off";
-//        Log.d(TAG, "onCreate: forceads is " + defaultSharedPreferences.getString("forceads", "off"));
-        if (!proVersion) {
-            acknowledgePurchaseResponseListener = new AcknowledgePurchaseResponseListener() {
-                @Override
-                public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
-                    Log.d(TAG, "onAcknowledgePurchaseResponse: " + billingResult.getDebugMessage());
-                }
-            };
-
-            purchasesResponseListener = new PurchasesResponseListener() {
-                @Override
-                public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
-                    Log.d(TAG, "onQueryPurchasesResponse: " + billingResult.getDebugMessage());
-                    if (list.isEmpty()) {
-                        Log.d(TAG, "onQueryPurchasesResponse: no purchases");
-                        Log.d(TAG, "onQueryPurchasesResponse: not PRO version");
-
-                        /*
-                        MobileAds.initialize(context, new OnInitializationCompleteListener() {
-                            @Override
-                            public void onInitializationComplete(InitializationStatus initializationStatus) {
-//                                AdView mAdView = findViewById(R.id.adViewBanner);
-//                                mAdView.setVisibility(View.VISIBLE);
-
-                            //RequestConfiguration.Builder requestConfigurationBuilder = new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList("BFB9B3B3E530352EEB4F664CA9D5E692"));
-                            //RequestConfiguration requestConfiguration = requestConfigurationBuilder.build() ;
-
-
-
-//                                AdRequest adRequest = new AdRequest.Builder().build();
-                                boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-                                if (!isDebuggable) {
-                                    Log.d(TAG, "onQueryPurchasesResponse: is not debuggable");
-//                                    mAdView.setAdUnitId("ca-app-pub-2182672984086800~2348124251");
-                                }
-
-//                                mAdView.loadAd(adRequest);
-                            }
-                        });
-
-                         */
-
-                        defaultSharedPreferences.edit().putBoolean("pro", false).apply();
-                        return;
-                    }
-
-                    Log.d(TAG, "onQueryPurchasesResponse: purchase list" + list);
-                    for (Purchase purchase : list) {
-                        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !forceAds) {
-                            Log.d(TAG, "onQueryPurchasesResponse: purchased");
-                            proVersion = true;
-                            defaultSharedPreferences.edit().putBoolean("pro", true).apply();
-                        } else {
-                            Log.d(TAG, "onQueryPurchasesResponse: not PRO version");
-                        /*
-                        MobileAds.initialize(context, new OnInitializationCompleteListener() {
-                            @Override
-                            public void onInitializationComplete(InitializationStatus initializationStatus) {
-                                AdView mAdView = findViewById(R.id.adViewBanner);
-                                mAdView.setVisibility(View.VISIBLE);
-                                AdRequest adRequest = new AdRequest.Builder().build();
-                                boolean isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-                                if (!isDebuggable) {
-                                    Log.d(TAG, "onQueryPurchasesResponse: is not debuggable");
-//                                    mAdView.setAdUnitId("ca-app-pub-2182672984086800~2348124251");
-                                }
-                                mAdView.loadAd(adRequest);
-                            }
-
-                        });
-                         */
-
-                            defaultSharedPreferences.edit().putBoolean("pro", false).apply();
-                        }
-                    }
-                }
-            };
-
-            purchasesUpdatedListener = new PurchasesUpdatedListener() {
-
-                @Override
-                public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
-                            && list != null) {
-                        for (Purchase purchase : list) {
-                            handlePurchase(purchase);
-                        }
-                    } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                        // Handle an error caused by a user cancelling the purchase flow.
-                        Log.d(TAG, "onPurchasesUpdated: user cancelled purchase");
-                    } else {
-                        // Handle any other error codes.
-                        Log.d(TAG, "onPurchasesUpdated: got purchase response " + billingResult.getDebugMessage());
-                    }
-
-                }
-            };
-
-            billingClient = BillingClient.newBuilder(context)
-                    .enablePendingPurchases()
-                    .setListener(purchasesUpdatedListener)
-                    .build();
-        }
+        proVersion = true;
+        Log.d(TAG, "onCreate: proVersion unlocked: " + proVersion);
 
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioAttributes(
@@ -848,31 +715,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 //        LoadFragment(presets);
 //        LoadFragment(rack);
 
-        FirebaseApp.initializeApp(this);
-        mAuth = FirebaseAuth.getInstance();
-        currentUser = mAuth.getCurrentUser();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         getSupportActionBar().hide();
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        /* we do this async after getting billing client result
-        if (! proVersion) {
-            MobileAds.initialize(this, new OnInitializationCompleteListener() {
-                @Override
-                public void onInitializationComplete(InitializationStatus initializationStatus) {
-                }
-            });
-
-            AdView mAdView = findViewById(R.id.adViewBanner);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-        }
-
-         */
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioDevicesInput = audioManager.getDevices(AudioManager.GET_DEVICES_INPUTS);
@@ -970,18 +817,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                 .hide(tracks)
                                 .commit();
                         return true;
-                        /*
-                        if (presets.loginNotice == null)
-                            return LoadFragment(fragment);
-
-                        getSupportFragmentManager()
-                                .beginTransaction()
-                                .hide (rack)
-                                .show (presets)
-                                .commit();
-                        return true ;
-
-                         */
 
                 }
 //                return LoadFragment(fragment);
@@ -1063,21 +898,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         applyWallpaper(context, getWindow(), getResources(), findViewById(R.id.wallpaper), getWindowManager().getDefaultDisplay().getWidth(), getWindowManager().getDefaultDisplay().getHeight()); //finally
-        if (!proVersion) {
-            billingClient.startConnection(new BillingClientStateListener() {
-                @Override
-                public void onBillingServiceDisconnected() {
-
-                }
-
-                @Override
-                public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
-                    Log.d(TAG, "onBillingSetupFinished: " + billingResult.getDebugMessage());
-                    billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, purchasesResponseListener);
-
-                }
-            });
-        }
 
         deviceWidth = getWindowManager().getDefaultDisplay().getWidth();
         deviceHeight = getWindowManager().getDefaultDisplay().getHeight();
@@ -1108,15 +928,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
         if (experimentalBuild)
-            alert("Experimental beta version", "For testing only. Please report issues on Github or via the app's feedback bug reporting system.");
+            alert("Experimental beta version", "For testing only. Please report issues on Github.");
 
         if (BuildConfig.BUILD_TYPE.equals("debug")) {
             proVersion = true ;
         }
 
         register_bt_callback();
-//        proVersion = false;
-//        defaultSharedPreferences.edit().putBoolean("pro", false).apply();
     }
 
     void showMediaPlayerDialog() {
@@ -1626,7 +1444,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 //        loadActivePreset();
         // when savedInstanceState is not null
         // the problem with this is that when we start at first,
-        // this will be empty since firestore returns data async
+        // this will be empty until presets finish loading
         /*
         if (quickPatch.myPresetsAdapter.allPresets.isEmpty() && savedState != null) {
             Log.d(TAG, "onViewCreated: loading quick patch manually: " + savedState);
@@ -1752,9 +1570,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             record.setChecked(false);
 
         nag ++ ;
-        if (nag == 3 && ! proVersion) {
-            startActivity(new Intent(this, com.shajikhan.ladspa.amprack.Purchase.class));
-        }
     }
 
     private boolean isRecordPermissionGranted() {
@@ -1884,7 +1699,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
 
                     labels.add ("Load from file") ;
-                    labels.add ("More presets online") ;
                 }
 
                 ArrayAdapter<String> categoriesDataAdapter = new ArrayAdapter<String>(mainActivity, android.R.layout.simple_spinner_item, labels);
@@ -2294,11 +2108,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             case AudioDeviceInfo.TYPE_UNKNOWN:
                 return "unknown";
         }
-    }
-
-    public void proDialog() {
-        Intent intent = new Intent(this, com.shajikhan.ladspa.amprack.Purchase.class);
-        startActivity(intent);
     }
 
     AlertDialog createPluginDialog() {
@@ -2815,7 +2624,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             jsonArray.put(_j);
                         }
 
-                        Log.i(TAG, "loadPreset: firestore midi controls for " + plugin + " " + jsonArray.toString());
+                        Log.i(TAG, "loadPreset: midi controls for " + plugin + " " + jsonArray.toString());
                     }
 
                     for (int d = 0 ; d < jsonArray.length(); d ++) {
@@ -2997,9 +2806,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Integer bitRate = Integer.valueOf(defaultSharedPreferences.getString("opus_bitrate", "64"));
         Log.d(TAG, "applyPreferencesExport: setting bitrate " + bitRate * 1000);
         AudioEngine.setOpusBitRate(bitRate * 1000);
-//        if (proVersion == false) {
-//            AudioEngine.setExportFormat(0);
-//        }
     }
 
     public static void printDebugLog() {
@@ -3025,32 +2831,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
-    }
-
-    private void handlePurchase(Purchase purchase) {
-        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
-            if (!purchase.isAcknowledged()) {
-                AcknowledgePurchaseParams acknowledgePurchaseParams =
-                        AcknowledgePurchaseParams.newBuilder()
-                                .setPurchaseToken(purchase.getPurchaseToken())
-                                .build();
-                billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage("Thank you for supporting the app!")
-                        .setTitle("Purchase Successful")
-                        .setIcon(R.drawable.logo)
-                        .setPositiveButton("You're Welcome!", null);
-
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else {
-                Log.d(TAG, "handlePurchase: purchase already acknowledged. Turning on pro features");
-                proVersion = true;
-            }
-        } else {
-            Log.d(TAG, "handlePurchase: not purchased (" + purchase.getPurchaseState() + ')');
-        }
-
     }
 
     public static Bitmap scaleBackground(Bitmap originalImage, int width, int height) {
@@ -3584,11 +3364,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
      public static void resetOnboard () {
         PreferenceManager.getDefaultSharedPreferences(context).edit().remove("currentVersion").apply();
-     }
-
-     public static void featured () {
-         Intent intent = new Intent(context, FeaturedVideos.class);
-         mainActivity.startActivity(intent);
      }
 
      /*
@@ -4851,16 +4626,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (Build.VERSION.SDK_INT < 33) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Bluetooth MIDI only supported on Android 13 and above.");
-            builder.setMessage("To use a Bluetooth MIDI Controller with Amp Rack, install MIDI BLE Connect from the Play store, connect to your BLE MIDI Controller and then restart Amp Rack");
-            builder.setPositiveButton("Install MIDI BLE Connect", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String url = "https://play.google.com/store/apps/details?id=com.mobileer.example.midibtlepairing";
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
-                }
-            });
+            builder.setMessage("To use a Bluetooth MIDI Controller with Amp Rack, install a BLE MIDI pairing app, connect to your BLE MIDI Controller and then restart Amp Rack");
+            builder.setPositiveButton(android.R.string.ok, null);
 
             builder.show();
             return;

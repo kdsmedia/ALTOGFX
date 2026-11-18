@@ -93,7 +93,7 @@ public class RotarySeekbar extends View {
     private int mSectorColor = 0xffdddddd;
     private int mValueSectorColor = 0xffaaaaaa;
     private int mTicksColor = 0xff006699;
-    public int mNeedleColor = getResources().getColor(com.firebase.ui.auth.R.color.colorPrimary);
+    public int mNeedleColor = getResources().getColor(R.color.colorPrimary);
 
     private int mOverlaySurfaceColor = 0xffffffff;
 
@@ -274,7 +274,7 @@ public class RotarySeekbar extends View {
 
 //        I commented below to hide overlay
 //        materialOverlay.setStroke(dpToPx(2), 0x66000000);
-        materialOverlay.setFillColor(ColorStateList.valueOf(getResources().getColor(com.firebase.ui.auth.R.color.fui_transparent)));
+        materialOverlay.setFillColor(ColorStateList.valueOf(getResources().getColor(R.color.fui_transparent)));
         mOverlay = new LayerDrawable(new Drawable[]{
                 materialOverlay,
                 mOverlaySeekbarProxy

@@ -38,14 +38,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/white"/>
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/comfortaa"
-                    android:id="@+id/connect_guide"
-                    android:drawableLeft="@drawable/ic_baseline_open_in_browser_24"
-                    android:background="@color/fui_transparent"
-                    android:text="Guide"/>
             </LinearLayout>
 
             <LinearLayout

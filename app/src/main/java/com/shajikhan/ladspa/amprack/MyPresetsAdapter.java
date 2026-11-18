@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +28,13 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
     Context context = null ;
     ArrayList<Map> presets = new ArrayList<>();
     MainActivity mainActivity = null;
-    FirestoreDB db ;
+    LocalPresetDB db ;
     ProgressBar progressBar , loadProgress;
     LinearProgressIndicator quickPatchProgress ;
     boolean quick = false ;
     MyPresetsAdapter myPresetsAdapter ;
     String sortBy = "timestamp";
-    String uid = null;
-    DocumentSnapshot last = null;
+    String uid = LocalPresetDB.LOCAL_UID;
     Map<String, Object> favoritePresets = null;
     ArrayList <Map> allPresets = new ArrayList<>() ;
 
@@ -88,17 +85,13 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
     @Override
     public MyPresetsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (context == null) context = parent.getContext();
-        db = new FirestoreDB(parent.getContext());
+        db = new LocalPresetDB(parent.getContext());
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_preset, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyPresetsAdapter.ViewHolder holder, int position) {
-        FirebaseAuth auth = FirebaseAuth.getInstance() ;
-        if (auth != null)
-            uid = auth.getUid();
-
         LinearLayout linearLayout = holder.getLinearLayout();
         myPresetsAdapter = this ;
         if (linearLayout == null) {

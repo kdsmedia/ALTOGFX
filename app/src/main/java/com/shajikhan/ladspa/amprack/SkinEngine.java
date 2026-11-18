@@ -32,7 +32,6 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.slider.Slider;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import org.checkerframework.checker.units.qual.K;
 import org.json.JSONException;
 import org.json.JSONObject;
 
