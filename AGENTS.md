@@ -29,6 +29,10 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
   ExoPlayer (`exoplayer-core`) pulls in transitively. Keep this if ExoPlayer stays a dependency.
 - Fonts `comfortaa.ttf` and `montserrat_alternates.ttf` are bundled locally (previously downloadable
   Google Fonts requiring Play Services); `font_certs.xml` was deleted.
+- Removing the Firebase deps also removed `androidx.legacy:legacy-support-core-ui`, which transitively
+  supplied `androidx.legacy.widget.Space`. Layouts still referencing that class (`rack.xml`,
+  `activity_onboard.xml`) then failed to inflate at launch with `InflateException` / `ClassNotFoundException`.
+  Use the framework `android.widget.Space` (`<Space>`), available since API 14, instead.
 - Verify a build is still offline with:
   `aapt2 dump xmltree app/build/outputs/apk/debug/app-debug.apk --file AndroidManifest.xml | grep permission`
 
