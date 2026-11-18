@@ -48,6 +48,7 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 
 ## Pushing
 
-- The preconfigured git credential helper authenticates as `kdsmedia` but is read-only (empty OAuth
-  scopes) and push returns 403. Use a `repo`-scoped token via
-  `git -c credential.helper= push "https://x-access-token:<token>@github.com/kdsmedia/ALTOGFX.git" HEAD:main`.
+- The preconfigured git credential helper (`GITHUB_TOKEN`, authenticates as `kdsmedia`) is read-only
+  (empty OAuth scopes) and push returns 403.
+- The `PUSH_TOKEN` environment variable holds a write-capable token. Push with:
+  `git -c credential.helper= push "https://x-access-token:${PUSH_TOKEN}@github.com/kdsmedia/ALTOGFX.git" HEAD:main`
