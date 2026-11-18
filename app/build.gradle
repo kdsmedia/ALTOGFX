@@ -7,8 +7,22 @@ plugins {
 android {
     compileSdk 35
 
+    signingConfigs {
+        release {
+            def keystorePropsFile = rootProject.file("keystore.properties")
+            if (keystorePropsFile.exists()) {
+                def keystoreProps = new Properties()
+                keystorePropsFile.withInputStream { keystoreProps.load(it) }
+                storeFile rootProject.file(keystoreProps['storeFile'])
+                storePassword keystoreProps['storePassword']
+                keyAlias keystoreProps['keyAlias']
+                keyPassword keystoreProps['keyPassword']
+            }
+        }
+    }
+
     defaultConfig {
-        applicationId "com.shajikhan.ladspa.amprack"
+        applicationId "com.altomedia.altogfx"
         minSdk 24
         targetSdk 35
         versionCode 121
@@ -32,6 +46,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
 
         debug {
@@ -75,7 +90,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
-    namespace 'com.shajikhan.ladspa.amprack'
+    namespace 'com.altomedia.altogfx'
     ndkVersion '26.1.10909125'
 }
 

@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Amp Rack"
+rootProject.name = "ALTOGFX"
 include ':app'
 

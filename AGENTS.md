@@ -46,6 +46,22 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
   purchase, bug-report layouts).
 - `app/src/main/assets/themes/*/logo.png` are per-theme amp artwork — **not** the app logo; do not replace.
 
+## App identity
+
+- App name: `ALTOGFX` (`app_name` string). Application ID / namespace: `com.altomedia.altogfx`.
+- Java/Kotlin sources live under `app/src/{main,androidTest,test}/java/com/altomedia/altogfx/`.
+- JNI symbol prefix is `Java_com_altomedia_altogfx_*`; `findClass` uses `com/altomedia/altogfx/...`.
+- FileProvider authority: `com.altomedia.altogfx.fileprovider`.
+
+## Signing
+
+- Keystore `ALTOMEDIA.jks` (alias `kdsmedia`) and `keystore.properties` are **gitignored** — the repo
+  is public, so the private key and its password must never be committed.
+- `app/build.gradle` reads the `release` signing config from `keystore.properties` at the repo root
+  (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`). Without that file the release build
+  produces an unsigned APK.
+- Build a signed release with `:app:assembleRelease`; output is `app/build/outputs/apk/release/app-release.apk`.
+
 ## Pushing
 
 - The preconfigured git credential helper (`GITHUB_TOKEN`, authenticates as `kdsmedia`) is read-only

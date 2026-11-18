@@ -2,37 +2,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$ThemeFragment"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$ThemeFragment"
         app:icon="@drawable/ic_baseline_color_lens_24"
         app:key="theme_header"
         app:title="Appearance" />
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$MessagesFragment"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$MessagesFragment"
         app:icon="@drawable/ic_baseline_volume_up_24"
         app:key="messages_header"
         app:title="Audio Devices" />
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$TracksFragment"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$TracksFragment"
         app:icon="@drawable/ic_baseline_audio_file_24"
         app:key="tracks_settings"
         app:title="Audio Playback" />
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$SyncFragment"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$SyncFragment"
         app:icon="@drawable/ic_baseline_save_alt_24"
         app:key="sync_header"
         app:title="Export Settings" />
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$CameraSettings"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$CameraSettings"
         app:icon="@drawable/baseline_ondemand_video_24"
         app:key="camera_header"
         app:title="Camera Settings" />
 
     <Preference
-        app:fragment="com.shajikhan.ladspa.amprack.SettingsActivity$VersionFragment"
+        app:fragment="com.altomedia.altogfx.SettingsActivity$VersionFragment"
         app:icon="@drawable/ic_baseline_info_24"
         app:key="version_header"
         app:title="Version Information" />

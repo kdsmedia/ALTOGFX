@@ -64,7 +64,7 @@
             android:theme="@style/Theme.AmpRack">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.shajikhan.ladspa.amprack.MainActivity" />
+                android:value="com.altomedia.altogfx.MainActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
@@ -85,7 +85,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.shajikhan.ladspa.amprack.fileprovider"
+            android:authorities="com.altomedia.altogfx.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
