@@ -126,7 +126,7 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
                 mainActivity.patchDesc.setText(presetDesc);
 
                 if (preset.containsKey("uid") && preset.containsKey("path")) {
-                    mainActivity.lastPresetLoadedPath = ((String) preset.get("path")).split("/")[1];
+                    mainActivity.lastPresetLoadedPath = preset.get("path").toString();
                     mainActivity.lastPresetLoadedUID = (String) preset.get("uid");
                 }
 
@@ -173,10 +173,10 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
                 }
             }
         });
-        if (!preset.get("uid").equals(uid))
-            deletePreset.setVisibility(View.GONE);
-        else
-            heart.setVisibility(View.GONE);
+        // Offline: every preset is local, so offer both delete and favourite.
+        // Favourites feed the Quick Patch list.
+        deletePreset.setVisibility(View.VISIBLE);
+        heart.setVisibility(View.VISIBLE);
 
         deletePreset.setOnClickListener(new View.OnClickListener() {
             @Override

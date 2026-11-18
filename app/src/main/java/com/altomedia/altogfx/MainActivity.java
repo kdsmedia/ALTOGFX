@@ -4238,16 +4238,24 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public void addFavoritePreset (Map preset) {
         JSONObject jsonObject = new JSONObject(preset);
-        File f = new File(new StringJoiner ("/").add(favPresetsDir).add (preset.get("name").toString()).toString());
+        File f = favoritePresetFile(preset);
         if (! f.exists())
             writeFile(f.getPath(), jsonObject.toString());
     }
 
     public void removeFavoritePreset (Map preset) {
-        File f = new File(new StringJoiner ("/").add(favPresetsDir).add (preset.get("name").toString()).toString());
-        if (! f.delete()) {
+        File f = favoritePresetFile(preset);
+        if (f.exists() && ! f.delete()) {
             Toast.makeText(context, "Cannot remove preset " + preset.get("name"), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private File favoritePresetFile (Map preset) {
+        Object path = preset.get("path");
+        String name = path != null && !path.toString().isEmpty()
+                ? path.toString()
+                : preset.get("name").toString() + ".json";
+        return new File(favPresetsDir, name);
     }
 
     public static Map JSONtoMap (JSONObject j) {

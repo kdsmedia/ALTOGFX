@@ -154,6 +154,8 @@ public class LocalPresetDB {
             for (File file : files) {
                 if (!file.isFile() || !file.getName().endsWith(".json"))
                     continue;
+                if (containsPath(presetsAdapter, file.getName()))
+                    continue;
                 Map<String, Object> preset = readPreset(file);
                 if (preset == null)
                     continue;
@@ -163,6 +165,14 @@ public class LocalPresetDB {
 
         if (presetsAdapter.progressBar != null)
             presetsAdapter.progressBar.setVisibility(View.GONE);
+    }
+
+    private boolean containsPath(MyPresetsAdapter presetsAdapter, String path) {
+        for (Map p : presetsAdapter.allPresets) {
+            if (path.equals(String.valueOf(p.get("path"))))
+                return true;
+        }
+        return false;
     }
 
     void deletePreset(Map preset, ArrayList<Map> presets, MyPresetsAdapter myPresetsAdapter, int position) {

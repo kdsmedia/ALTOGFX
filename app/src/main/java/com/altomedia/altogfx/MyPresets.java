@@ -173,6 +173,8 @@ public class MyPresets extends Fragment {
 
             File f = new File(mainActivity.favPresetsDir);
             File[] list = f.listFiles();
+            if (list == null)
+                list = new File[0];
             for (File file: list) {
                 JSONObject jsonObject = ConnectGuitar.loadJSONFromFile(mainActivity, Uri.fromFile(file));
                 if (jsonObject == null) {
