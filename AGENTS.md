@@ -69,6 +69,33 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 - The APK (~240 MB) and AAB (~176 MB) exceed GitHub's 100 MB per-file git limit, so they are
   published as assets on a GitHub Release rather than committed to the tree.
 
+## Build environment
+
+- A fresh sandbox has **no** JDK or Android SDK; the toolchain must be reinstalled (runtime may be
+  reset between sessions even mid-task).
+- Install JDK + Android SDK (Debian trixie ships `openjdk-21`, not 17):
+  ```
+  sudo apt-get update && sudo apt-get install -y openjdk-21-jdk-headless unzip
+  # Android cmdline-tools -> /opt/android-sdk/cmdline-tools/latest
+  sudo -E /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager \
+    "platform-tools" "platforms;android-35" "build-tools;35.0.0" \
+    "ndk;26.1.10909125" "cmake;3.18.1"
+  ```
+  `local.properties` already pins `sdk.dir=/opt/android-sdk`.
+- Build with `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ANDROID_HOME=/opt/android-sdk ./gradlew ...`.
+  Gradle deps are not cached after a reset, so the first build downloads them (needs network).
+- Long builds must run in the background (`nohup ... > /tmp/build.log 2>&1 &`) and be polled;
+  foreground commands are capped near 1080 s.
+
+## Offline preset store (`LocalPresetDB`)
+
+- Replaced the removed Firestore backend. Presets are JSON files under
+  `getExternalFilesDir(DOWNLOADS)/presets`; favourites under `.../favoritePresets`.
+- `path` is the **file name only** (e.g. `MyPreset.json`) — it no longer looks like a Firestore
+  document path (`presets/<id>`). Any code doing `path.split("/")[1]` is a leftover bug.
+- All local presets share `uid = "local"`; do not gate the delete/favourite buttons on the uid.
+- Favourite files must end in `.json` (the loader lists `*.json` only).
+
 ## Pushing
 
 - The preconfigured git credential helper (`GITHUB_TOKEN`, authenticates as `kdsmedia`) is read-only
