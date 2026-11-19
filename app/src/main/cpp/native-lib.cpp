@@ -834,13 +834,6 @@ Java_com_altomedia_altogfx_AudioEngine_tuneLatency(JNIEnv *env, jclass clazz) {
     return env->NewStringUTF (engine -> tuneLatency ().c_str());
 }
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_toggleVideoRecording(JNIEnv *env, jclass clazz,
-                                                                   jboolean toggle) {
-    if (engine == nullptr) return;
-    engine->meter->videoRecording = toggle;
-}
-extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_altomedia_altogfx_AudioEngine_getTimeStamp(JNIEnv *env, jclass clazz) {
     // TODO: implement getTimeStamp()

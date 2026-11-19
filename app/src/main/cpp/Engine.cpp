@@ -624,13 +624,6 @@ int Engine::setTuner (buffer_t * buffer) {
 }
 
 
-int Engine::pushToVideo (AudioBuffer * buffer) {
-    if (pushAudio == nullptr) {
-
-    }
-
-}
-
 long Engine::getTimeStamp () {
     const oboe::ResultWithValue<oboe::FrameTimestamp> &frameTimeStamp = mRecordingStream->getTimestamp(
             CLOCK_MONOTONIC);

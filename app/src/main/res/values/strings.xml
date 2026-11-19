@@ -559,7 +559,6 @@
         Default background photo by Giancarlo Duarte
         https://unsplash.com/photos/cTj8vbZeX44
     </string>
-    <string name="title_activity_drum_machine">DrumMachineActivity</string>
     <string name="low_latency_warning">
         The app is not running in low latency mode.
         If you experience very high latency please try the following:\n\n

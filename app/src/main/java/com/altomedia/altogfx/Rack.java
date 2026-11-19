@@ -7,11 +7,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -20,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -57,8 +53,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -68,13 +63,9 @@ public class Rack extends Fragment {
     LinearProgressIndicator quickPatchProgress ;
     String TAG = getClass().getSimpleName();
     PopupMenu optionsMenu ;
-    ToggleButton toggleVideo, videoRecord ;
-    LinearLayout videoPreview ;
-    TextureView videoTexture ;
     LinearLayout mixer ;
     Button patchUp, patchDown ;
     JSONObject jsonObject = new JSONObject();
-    ToggleButton swapCamera ;
     LinearLayout rackMaster, pane_2 ;
     boolean mixerInit = false ;
     boolean autoHideMixer = true ;
@@ -173,92 +164,6 @@ public class Rack extends Fragment {
                 }
             });
 
-        toggleVideo = mainActivity.findViewById(R.id.video_button);
-        if (mainActivity.useTheme) {
-            mainActivity.skinEngine.toggleWithKey(mainActivity.rack.toggleVideo, "icons", "camera", "camera", true);
-
-        }
-
-        videoRecord = mainActivity.findViewById(R.id.toggle_video);
-        videoRecord.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mainActivity.setMidiControl(v, -1, -1, MIDIControl.Type.TOGGLE, MIDIControl.Scope.GLOBAL);
-                return false;
-            }
-        });
-        videoPreview = mainActivity.findViewById(R.id.video_preview);
-        swapCamera = mainActivity.findViewById(R.id.flip_camera);
-        videoTexture = mainActivity.findViewById(R.id.video_texture);
-
-        swapCamera.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (videoRecord.isChecked()) {
-                    mainActivity.toast ("Cannot flip camera while recording") ;
-                    return;
-                }
-
-                toggleVideo.setChecked(false);
-                toggleVideo.setChecked(true);
-            }
-        });
-        if (mainActivity.useTheme) {
-            Bitmap b = mainActivity.skinEngine.bitmapDrawable("card", "bg").getBitmap();
-            if (b != null) {
-                Log.d(TAG, "onViewCreated: " + b.getHeight());
-                videoPreview.setBackground(new BitmapDrawable(Bitmap.createScaledBitmap(b, 90, (220 / 90) * b.getHeight(), true)));
-            }
-//            mainActivity.skinEngine.card(videoPreview);
-        }
-
-        videoRecord.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mainActivity.record.isChecked()) {
-                    buttonView.setChecked(false);
-                    MainActivity.toast("Cannot record audio and video at the same time");
-                    return;
-                }
-
-                if (isChecked)
-                    mainActivity.camera2.startRecording();
-                else
-                    if (toggleVideo.isChecked())
-                        toggleVideo.setChecked(false);
-            }
-        });
-
-        toggleVideo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (! mainActivity.running && isChecked) {
-                    MainActivity.toast("Start the audio engine to begin recording");
-                    buttonView.setChecked(false);
-                    return;
-                }
-
-                mainActivity.RequestCamera();
-                mainActivity.videoRecording = isChecked;
-                if (!isChecked) {
-                    videoPreview.setVisibility(GONE);
-                    boolean mStarted = mainActivity.camera2.mMuxerStarted ;
-                    mainActivity.camera2.closeCamera();
-                    mainActivity.rack.videoRecord.setChecked(false);
-                    if (mStarted)
-                        mainActivity.showMediaPlayerDialog();
-//                    mainActivity.avBuffer.clear();
-                }
-                else {
-                    videoPreview.setVisibility(View.VISIBLE);
-                    mainActivity.camera2.openCamera();
-
-                }
-
-                AudioEngine.toggleVideoRecording(isChecked);
-            }
-        });
-
         mainActivity.tuner = mainActivity.findViewById(R.id.patch_label);
         Switch tunerSwitch = mainActivity.findViewById(R.id.tuner_switch);
         tunerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -286,107 +191,6 @@ public class Rack extends Fragment {
         mainActivity.pluginDialogAdapter = new PluginDialogAdapter();
         mainActivity.pluginDialogAdapter.setMainActivity(getContext(), mainActivity);
         recyclerView1.setAdapter(mainActivity.pluginDialogAdapter);
-
-        mainActivity.triggerRecordToggle = view.findViewById(R.id.record_trigger);
-        mainActivity.record = view.findViewById(R.id.record_button);
-        mainActivity.record.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mainActivity.setMidiControl(v, -1, -1, MIDIControl.Type.TOGGLE, MIDIControl.Scope.GLOBAL);
-                return false;
-            }
-        });
-        mainActivity.triggerRecordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mainActivity.outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-                mainActivity.record.setEnabled(!isChecked);
-                if (isChecked)
-                    mainActivity.record.setText("Tri");
-                else
-                    mainActivity.record.setText("Rec");
-                mainActivity.triggerRecord = isChecked;
-                if (!isChecked && mainActivity.recording) {
-                    AudioEngine.toggleRecording(false);
-                    mainActivity.recording = false;
-                }
-            }
-        });
-
-        mainActivity.record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (videoRecord.isChecked()) {
-                    compoundButton.setChecked(false);
-                    MainActivity.toast("Cannot record audio and video at the same time");
-                    return;
-                }
-
-                if (!mainActivity.onOff.isChecked()) {
-//                        mainActivity.record.setChecked(!b);
-                    if (b) {
-                        compoundButton.setChecked(false);
-                        MainActivity.toast("Turn on the app to start recording");
-                    } else {
-                        AudioEngine.toggleRecording(b);
-                        mainActivity.recording = b ;
-                        mainActivity.showMediaPlayerDialog();
-                    }
-
-                    return;
-                }
-
-                if (b) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        if (!mainActivity.isStoragePermissionGranted()) {
-    //                        requestReadStoragePermission();
-                            mainActivity.requestWriteStoragePermission();
-
-                            /*
-                            if (!isStoragePermissionGranted()) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Permission denied. Recording features are disabled.",
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                                return ;
-                            }
-                            */
-                        } else {
-    //                        AudioEngine.setRecordingActive(b);
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
-                            Date date = new Date();
-                            mainActivity.lastRecordedFileName = formatter.format(date);
-                            mainActivity.lastRecordedFileName = mainActivity.dir.getAbsolutePath() + "/" + mainActivity.lastRecordedFileName ;
-                            AudioEngine.setFileName(mainActivity.lastRecordedFileName);
-                            switch (mainActivity.exportFormat) {
-                                case "0":
-                                default:
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".wav" ;
-                                    break ;
-                                case "1":
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".ogg" ;
-                                    break ;
-                                case "2":
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".mp3" ;
-                                    break ;
-                            }
-
-                            AudioEngine.toggleRecording(b);
-                            mainActivity.recording = b ;
-                        }
-                    } else {
-                        MainActivity.alert("Feature not supported", "Your device is too old to support this feature. Sorry.");
-                        return ;
-                    }
-                } else {
-//                    mainActivity.lastRecordedFileName = AudioEngine.getRecordingFileName();
-                    AudioEngine.toggleRecording(b);
-                    mainActivity.recording = b ;
-                    if (!mainActivity.triggerRecord)
-                        mainActivity.showMediaPlayerDialog();
-                }
-            }
-        });
 
         mainActivity.fab = view.findViewById(R.id.fab);
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
@@ -694,14 +498,9 @@ public class Rack extends Fragment {
             }
         });
 
-        ///| TODO: Remove this
         logoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mainActivity.drummer ();
-//                if (BuildConfig.DEBUG)
-//                    mainActivity.cameraPreview();
-//                else
                 MainActivity.setAudioDevice();
             }
         });
@@ -746,12 +545,10 @@ public class Rack extends Fragment {
                     });
                 }
                 mixer.setVisibility(View.VISIBLE);
-                ((TextView) mainActivity.findViewById(R.id.m_camera)).setVisibility(View.VISIBLE);
                 ((TextView) mainActivity.findViewById(R.id.m_on)).setVisibility(View.VISIBLE);
                 ((TextView) mainActivity.findViewById(R.id.m_mixer)).setVisibility(View.VISIBLE);
             } else {
                 mixer.setVisibility(GONE);
-                ((TextView) mainActivity.findViewById(R.id.m_camera)).setVisibility(GONE);
                 ((TextView) mainActivity.findViewById(R.id.m_on)).setVisibility(GONE);
                 ((TextView) mainActivity.findViewById(R.id.m_mixer)).setVisibility(GONE);
             }
@@ -942,7 +739,6 @@ public class Rack extends Fragment {
         if (mainActivity.useTheme) {
             mainActivity.skinEngine.cardText(mainActivity.patchDesc);
             mainActivity.skinEngine.cardText(mainActivity.hidePanel);
-            mainActivity.skinEngine.cardText(mainActivity.triggerRecordToggle);
             mainActivity.toggleMixer.setCompoundDrawables(null,null,null,null);
 
             mainActivity.skinEngine.cardText(mixerLabel);
@@ -1084,8 +880,6 @@ public class Rack extends Fragment {
             }
         }
 
-//        mainActivity.audioEncoder = new AudioEncoder(mainActivity);
-        mainActivity.camera2 = new Camera2 (mainActivity);
         mainActivity.sampleRateLabel = mainActivity.findViewById(R.id.sample_rate_display);
         mainActivity.srLayout = mainActivity.findViewById(R.id.sr_layout);
         mainActivity.latencyWarnLogo = mainActivity.findViewById(R.id.lowLatencyWarning);
@@ -1130,6 +924,15 @@ public class Rack extends Fragment {
 
     }
 
+    ArrayList<Map> loadedPresets () {
+        if (mainActivity.presets == null || mainActivity.presets.fragmentStateAdapter == null)
+            return null ;
+        MyPresets myPresets = mainActivity.presets.fragmentStateAdapter.myPresets ;
+        if (myPresets == null || myPresets.myPresetsAdapter == null)
+            return null ;
+        return myPresets.myPresetsAdapter.allPresets ;
+    }
+
     public void patchMove (boolean up) {
         String text = String.valueOf(mainActivity.patchNo.getText()) ;
         if (text == "-")
@@ -1140,18 +943,20 @@ public class Rack extends Fragment {
         else
             p -- ;
 
-        if (p >= mainActivity.quickPatch.myPresetsAdapter.allPresets.size() || p < 0)
-            return ;
+        ArrayList<Map> allPresets = loadedPresets();
 
-        if (mainActivity.quickPatch.myPresetsAdapter.allPresets.isEmpty()) {
+        if (allPresets == null || allPresets.isEmpty()) {
             MainActivity.alert("Restart the app to load patches", "Patches are not loaded. Restart the app to load patches.");
             return ;
         }
 
-        mainActivity.loadPreset(mainActivity.quickPatch.myPresetsAdapter.allPresets.get(p));
+        if (p >= allPresets.size() || p < 0)
+            return ;
+
+        mainActivity.loadPreset(allPresets.get(p));
         mainActivity.patchNo.setText(String.valueOf(p));
-        mainActivity.patchName.setText((CharSequence) mainActivity.quickPatch.myPresetsAdapter.allPresets.get(p).get("name"));
-        mainActivity.patchDesc.setText((CharSequence) mainActivity.quickPatch.myPresetsAdapter.allPresets.get(p).get("desc"));
+        mainActivity.patchName.setText((CharSequence) allPresets.get(p).get("name"));
+        mainActivity.patchDesc.setText((CharSequence) allPresets.get(p).get("desc"));
 
     }
 

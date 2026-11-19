@@ -215,11 +215,8 @@ public:
     static _jfloatArray *jfloatArray1;
     static int jfloatArray1_Size;
     static int jfloatArray1_index;
-    static jmethodID pushToVideo;
-    static bool videoRecording;
 
 public:
-    static unsigned char *audioToVideoBytes;
 
     static float rms(float *v, int n);
 

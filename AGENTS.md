@@ -36,6 +36,16 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 - Verify a build is still offline with:
   `aapt2 dump xmltree app/build/outputs/apk/debug/app-debug.apk --file AndroidManifest.xml | grep permission`
 
+## Removed features
+
+- **Camera / video recording** and **drum machine** are gone as of this branch. Do not reintroduce
+  `Camera`, `Camera2`, `AudioEncoder`, `MediaPlayerDialog`, `DrumMachine`, `DrumMachineActivity`,
+  `Tracks`, `TracksAdapter`, nor the `drums`/`drumkits` assets, `page_drums` nav item, `DRUMS_REQUEST_CODE`,
+  or `Audio Playback` settings screen (`tracks_settings.xml`). The bottom nav now has only
+  Effects and Presets.
+- Native code (`Meter.cpp`, `Engine.cpp`, `native-lib.cpp`) no longer has `videoRecording`/`pushToVideo`
+  hooks; the drum feature was always pure Java.
+
 ## Icons / branding
 
 - Source art: `Logo.png` at repo root (1254x1254) — a circular emblem on a black background.

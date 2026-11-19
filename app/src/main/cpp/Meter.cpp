@@ -7,7 +7,6 @@
 
 #define TUNER_ARRAY_SIZE 4096
 
-unsigned char * Meter::audioToVideoBytes = NULL ;
 jfloatArray Meter::jfloatArray1 ;
 std::string Meter::jMainActivityClassName = "";
 bool Meter::lowLatency = false;
@@ -22,7 +21,6 @@ bool Meter::engine_running = false ;
 //LockFreeQueue<Meter::buffer_t*, LOCK_FREE_SIZE> Meter::lockFreeQueue;
 int Meter::bufferUsed  = 0;
 bool Meter::tunerEnabled = false;
-bool Meter::videoRecording = false ;
 int Meter::bufferUsedOutput  = 0;
 float Meter::tunerBuffer [1024 * 4] ;
 int Meter::tunerIndex = 0;
@@ -35,7 +33,6 @@ jmethodID Meter::setMixerMeter ;
 jclass Meter::mainActivity ;
 jmethodID Meter::setMixerMeterOutput ;
 jmethodID Meter::setTuner ;
-jmethodID Meter::pushToVideo ;
 jmethodID Meter::setSampleRateDisplay = nullptr ;
 jclass Meter::mainActivityOutput ;
 JNIEnv * Meter::env = NULL;
@@ -48,8 +45,6 @@ static jmethodID gFindClassMethod;
 bool Meter::enabled = false ;
 float Meter::lastTotal = 0 ;
 bool Meter::isInput = true;
-
-jfloatArray pushVideoSamples = nullptr;
 
 JNIEnv* getEnv() {
     IN
@@ -155,8 +150,6 @@ int Meter::updateMeterOutput (AudioBuffer * buffer) {
                                                            "(FZ)V");
         setTuner = envOutput->GetStaticMethodID(mainActivityOutput, "setTuner",
                                                 "([FI)V");
-        pushToVideo = envOutput->GetStaticMethodID(mainActivityOutput, "pushToVideo",
-                                                "([FI)V");
         setSampleRateDisplay = envOutput->GetStaticMethodID(mainActivityOutput, "setSampleRateDisplay",
                                                 "(IZ)V");
         if (setMixerMeterOutput == nullptr) {
@@ -169,8 +162,6 @@ int Meter::updateMeterOutput (AudioBuffer * buffer) {
 
         // this should never be more than this
         jfloatArray1 = envOutput->NewFloatArray(TUNER_ARRAY_SIZE);
-        pushVideoSamples = envOutput->NewFloatArray(TUNER_ARRAY_SIZE);
-        audioToVideoBytes = (unsigned  char *) malloc(sizeof(unsigned  char) * TUNER_ARRAY_SIZE);
         jfloatArray1_index = 0 ;
         OUT
         return 0 ;
@@ -185,33 +176,6 @@ int Meter::updateMeterOutput (AudioBuffer * buffer) {
             jfloatArray1_index += samples;
         }
 
-        if (videoRecording) {
-            envOutput->SetFloatArrayRegion(pushVideoSamples, 0, samples+1,
-                                          data);
-            envOutput->CallStaticVoidMethod(mainActivityOutput, pushToVideo, pushVideoSamples,
-                                            samples);
-        }
-
-        // mp4 muxer test
-        /*
-        int bytesWritten = faacEncode(data, samples, audioToVideoBytes, TUNER_ARRAY_SIZE);
-        if (bytesWritten >= 0) {
-            mp4 -> write (audioToVideoBytes, bytesWritten);
-        }
-         */
-
-        // end mp4 muxer test
-        /*
-        if (videoRecording) {
-            int bytesWritten = faacEncode(data, samples, audioToVideoBytes, TUNER_ARRAY_SIZE);
-            if (bytesWritten >= 0) {
-                envOutput->SetCharArrayRegion(pushVideoSamples, 0, bytesWritten+1,
-                                              audioToVideoBytes);
-                envOutput->CallStaticVoidMethod(mainActivityOutput, pushToVideo, pushVideoSamples,
-                                                bytesWritten);
-            }
-        }
-         */
     }
 
 
@@ -265,15 +229,12 @@ int Meter::updateMeterOutput (AudioBuffer * buffer) {
 
 void Meter::start () {
     engine_running = true ;
-//    mp4 = new MP4 (lastRecordedFileName);
 }
 
 void Meter::stop () {
     IN
     sampleRateSet = false;
     engine_running = false ;
-//    mp4 ->aacToMP4();
-//    delete mp4 ;
 
     /* we never detach
     envOutput = nullptr ;

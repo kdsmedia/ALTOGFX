@@ -126,7 +126,6 @@ public class AudioEngine {
     }
 
     public static native int getSampleRate () ;
-    public static native void toggleVideoRecording (boolean toggle);
     public static native long getTimeStamp () ;
     public static native double getLatency (boolean input) ;
     public static native void setMainActivityClassName (String className);

@@ -115,7 +115,6 @@ private:
 
     int setTuner(buffer_t *buffer);
 
-    static int pushToVideo(AudioBuffer *buffer);
 
     void setSampleRateDisplay(int sampleRate, bool lowLatency);
 

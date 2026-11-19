@@ -25,18 +25,6 @@
         <item>AAUDIO_FORMAT_PCM_I24_PACKED</item>
         <item>AAUDIO_FORMAT_PCM_I32</item>
     </string-array>
-    <string-array name="camera_orientations">
-        <item>Portrait</item>
-        <item>Landscape</item>
-        <item>Reverse Portrait</item>
-        <item>Reverse Landscape</item>
-    </string-array>
-    <string-array name="c_o_values">
-        <item>0</item>
-        <item>90</item>
-        <item>180</item>
-        <item>360</item>
-    </string-array>
     <string-array name="channels">
         <item>Mono</item>
         <item>Stereo</item>
@@ -100,7 +88,6 @@
     <string-array name="hash_commands">
         <item>set: </item>
         <item>version</item>
-        <item>last recorded audio</item>
     </string-array>
     <string-array name="mstyles">
         <item>Theme.AmpRack</item>
