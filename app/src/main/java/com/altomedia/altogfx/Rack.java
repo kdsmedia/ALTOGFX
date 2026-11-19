@@ -195,101 +195,6 @@ public class Rack extends Fragment {
         mainActivity.pluginDialogAdapter.setMainActivity(getContext(), mainActivity);
         recyclerView1.setAdapter(mainActivity.pluginDialogAdapter);
 
-        mainActivity.triggerRecordToggle = view.findViewById(R.id.record_trigger);
-        mainActivity.record = view.findViewById(R.id.record_button);
-        mainActivity.record.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                mainActivity.setMidiControl(v, -1, -1, MIDIControl.Type.TOGGLE, MIDIControl.Scope.GLOBAL);
-                return false;
-            }
-        });
-        mainActivity.triggerRecordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mainActivity.outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
-                mainActivity.record.setEnabled(!isChecked);
-                if (isChecked)
-                    mainActivity.record.setText("Tri");
-                else
-                    mainActivity.record.setText("Rec");
-                mainActivity.triggerRecord = isChecked;
-                if (!isChecked && mainActivity.recording) {
-                    AudioEngine.toggleRecording(false);
-                    mainActivity.recording = false;
-                }
-            }
-        });
-
-        mainActivity.record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (!mainActivity.onOff.isChecked()) {
-//                        mainActivity.record.setChecked(!b);
-                    if (b) {
-                        compoundButton.setChecked(false);
-                        MainActivity.toast("Turn on the app to start recording");
-                    } else {
-                        AudioEngine.toggleRecording(b);
-                        mainActivity.recording = b ;
-                        mainActivity.showMediaPlayerDialog();
-                    }
-
-                    return;
-                }
-
-                if (b) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        if (!mainActivity.isStoragePermissionGranted()) {
-    //                        requestReadStoragePermission();
-                            mainActivity.requestWriteStoragePermission();
-
-                            /*
-                            if (!isStoragePermissionGranted()) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Permission denied. Recording features are disabled.",
-                                        Toast.LENGTH_LONG)
-                                        .show();
-                                return ;
-                            }
-                            */
-                        } else {
-    //                        AudioEngine.setRecordingActive(b);
-                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
-                            Date date = new Date();
-                            mainActivity.lastRecordedFileName = formatter.format(date);
-                            mainActivity.lastRecordedFileName = mainActivity.dir.getAbsolutePath() + "/" + mainActivity.lastRecordedFileName ;
-                            AudioEngine.setFileName(mainActivity.lastRecordedFileName);
-                            switch (mainActivity.exportFormat) {
-                                case "0":
-                                default:
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".wav" ;
-                                    break ;
-                                case "1":
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".ogg" ;
-                                    break ;
-                                case "2":
-                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".mp3" ;
-                                    break ;
-                            }
-
-                            AudioEngine.toggleRecording(b);
-                            mainActivity.recording = b ;
-                        }
-                    } else {
-                        MainActivity.alert("Feature not supported", "Your device is too old to support this feature. Sorry.");
-                        return ;
-                    }
-                } else {
-//                    mainActivity.lastRecordedFileName = AudioEngine.getRecordingFileName();
-                    AudioEngine.toggleRecording(b);
-                    mainActivity.recording = b ;
-                    if (!mainActivity.triggerRecord)
-                        mainActivity.showMediaPlayerDialog();
-                }
-            }
-        });
-
         mainActivity.fab = view.findViewById(R.id.fab);
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -318,20 +223,6 @@ public class Rack extends Fragment {
         mainActivity.dataAdapter.mainActivity = mainActivity ;
         mainActivity.recyclerView.setAdapter(mainActivity.dataAdapter);
 
-        File dir = Environment.getExternalStorageDirectory();
-        String path = dir.getAbsolutePath();
-
-        AudioEngine.setExternalStoragePath(path);
-        File defaultDir = new File (path + "/AmpRack/") ;
-        if (!defaultDir.exists()) {
-            Log.d(TAG, "making directory " + path + "/AmpRack/");
-            try {
-                if (!defaultDir.mkdir())
-                    Log.wtf (TAG, "Unable to create directory!");
-            }  catch (Exception e) {
-                Log.w(TAG, "UNable to create directory: " + e.getMessage());
-            }
-        }
         AudioEngine.setDefaultStreamValues(getContext());
         if (mainActivity.lazyLoad == false)
             mainActivity.loadPlugins();
@@ -837,7 +728,6 @@ public class Rack extends Fragment {
         if (mainActivity.useTheme) {
             mainActivity.skinEngine.cardText(mainActivity.patchDesc);
             mainActivity.skinEngine.cardText(mainActivity.hidePanel);
-            mainActivity.skinEngine.cardText(mainActivity.triggerRecordToggle);
             mainActivity.toggleMixer.setCompoundDrawables(null,null,null,null);
 
             mainActivity.skinEngine.cardText(mixerLabel);
@@ -1024,12 +914,14 @@ public class Rack extends Fragment {
     }
 
     ArrayList<Map> loadedPresets () {
-        if (mainActivity.presets == null || mainActivity.presets.fragmentStateAdapter == null)
-            return null ;
-        MyPresets myPresets = mainActivity.presets.fragmentStateAdapter.myPresets ;
-        if (myPresets == null || myPresets.myPresetsAdapter == null)
-            return null ;
-        return myPresets.myPresetsAdapter.allPresets ;
+        if (mainActivity.presets != null && mainActivity.presets.fragmentStateAdapter != null) {
+            MyPresets myPresets = mainActivity.presets.fragmentStateAdapter.myPresets;
+            if (myPresets != null && myPresets.myPresetsAdapter != null
+                    && !myPresets.myPresetsAdapter.allPresets.isEmpty())
+                return myPresets.myPresetsAdapter.allPresets;
+        }
+        // The presets fragment has not been created yet when the rack is first shown.
+        return new LocalPresetDB(mainActivity).listPresets();
     }
 
     public void patchMove (boolean up) {
@@ -1045,12 +937,14 @@ public class Rack extends Fragment {
         ArrayList<Map> allPresets = loadedPresets();
 
         if (allPresets == null || allPresets.isEmpty()) {
-            MainActivity.alert("Restart the app to load patches", "Patches are not loaded. Restart the app to load patches.");
+            MainActivity.alert("No presets", "There are no saved presets yet. Create one in the Presets tab.");
             return ;
         }
 
-        if (p >= allPresets.size() || p < 0)
-            return ;
+        if (p >= allPresets.size())
+            p = 0 ;
+        else if (p < 0)
+            p = allPresets.size() - 1 ;
 
         mainActivity.loadPreset(allPresets.get(p));
         mainActivity.patchNo.setText(String.valueOf(p));

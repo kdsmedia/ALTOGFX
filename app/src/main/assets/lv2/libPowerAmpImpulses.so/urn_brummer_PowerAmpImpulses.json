@@ -2,7 +2,6 @@
   "-1": {
     "http://lv2plug.in/ns/extensions/ui#X11UI": true,
     "http://lv2plug.in/ns/ext/options#supportedOption": "http://lv2plug.in/ns/extensions/ui#scaleFactor",
-    "http://lv2plug.in/ns/extensions/ui#binary": "file:///home/djshaji/projects/ModularAmpToolKit.lv2-android/PowerAmpImpulses/PowerAmpImpulses_ui.so",
     "extensionData": "http://lv2plug.in/ns/extensions/ui#idleInterface",
     "optionalFeature": "http://lv2plug.in/ns/ext/options#options",
     "requiredFeature": "http://lv2plug.in/ns/extensions/ui#idleInterface",

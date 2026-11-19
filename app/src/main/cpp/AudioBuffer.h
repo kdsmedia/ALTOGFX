@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 3/9/24.
 //
 
 #ifndef AMP_RACK_AUDIOBUFFER_H

@@ -59,28 +59,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
-                <ToggleButton
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/ic_baseline_pause_24"
-                    android:textOn=""
-                    android:id="@+id/btn"
-                    android:textOff=""/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Official Amp Rack 4 Track"/>
-            </LinearLayout>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/dev"/>
-
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
@@ -97,7 +75,7 @@
                 android:textStyle="bold"
                 android:fontFamily="@font/comfortaa"
                 android:textSize="20dp"
-                android:text="Shaji"/>
+                android:text="ALTOMEDIA"/>
 
             <ScrollView
                 android:layout_width="match_parent"

@@ -163,16 +163,6 @@
                 android:drawableLeft="@drawable/ic_baseline_settings_24"
                 android:visibility="gone" />
 
-            <ToggleButton
-                android:id="@+id/record_button"
-                android:layout_width="70dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_baseline_fiber_manual_record_24"
-                android:textOff="Rec"
-                android:textOn="Off" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/menu_button"
                 android:layout_gravity="right"
@@ -589,13 +579,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <ToggleButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textOff="Trigger Rec"
-                    android:textOn="Trigger Off"
-                    android:background="@color/fui_transparent"
-                    android:id="@+id/record_trigger"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"

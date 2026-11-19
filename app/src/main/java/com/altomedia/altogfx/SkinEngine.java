@@ -52,7 +52,7 @@ public class SkinEngine {
     MainActivity mainActivity ;
     String TAG = getClass().getSimpleName() ;
     String theme = "Adwaita" ;
-    int nativeTheme = R.style.Theme_AmpRack;
+    int nativeTheme = R.style.Theme_ALTOGFX;
     String themeDir = "themes/Adwaita/";
     HashMap <String, HashMap <String, String>> config = new HashMap<>();
     JSONObject jsonConfig ;
@@ -1246,7 +1246,7 @@ public class SkinEngine {
                 mainActivity.setTheme (R.style.BlueGray_Brown);
                 break;
             default:
-                mainActivity.setTheme (R.style.Theme_AmpRack);
+                mainActivity.setTheme (R.style.Theme_ALTOGFX);
         }
     }
 
@@ -1366,9 +1366,6 @@ public class SkinEngine {
         String textColor = config.get("button").get("text-color");
         TextView appTitle = mainActivity.findViewById(R.id.app_main_title);
         appTitle.setTextColor(Color.parseColor(textColor));
-
-        ToggleButton record = mainActivity.findViewById(R.id.record_button);
-        record.setTextColor(Color.parseColor(textColor));
 
         Bitmap headerBg = skinner.getBitmapFromAssets(skinner.displayMetrics.widthPixels, -1, themeDir + hBg);
         layout.setBackground(new Drawable() {
@@ -1657,7 +1654,7 @@ public class SkinEngine {
 
     void setNativeTheme () {
 //        mainActivity.setTheme(nativeTheme);
-        String mTheme = mainActivity.defaultSharedPreferences.getString("color_scheme", "Theme.AmpRack") ;
+        String mTheme = mainActivity.defaultSharedPreferences.getString("color_scheme", "Theme.ALTOGFX") ;
         Log.d(TAG, "setNativeTheme: " + mTheme);
         setColorScheme(mainActivity, mTheme);
     }

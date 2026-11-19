@@ -29,23 +29,6 @@
         <item>Mono</item>
         <item>Stereo</item>
     </string-array>
-    <string-array name="export_formats">
-        <item>OPUS (Recommended)</item>
-        <item>MP3</item>
-        <item>WAV Uncompressed (Huge file size)</item>
-    </string-array>
-    <string-array name="export_format_values">
-        <item>1</item>
-        <item>2</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="lame_presets">
-        <item>Medium</item>
-        <item>Standard (Recommended)</item>
-        <item>Extreme</item>
-        <item>Insane</item>
-        <item>Are you nuts?</item>
-    </string-array>
     <string-array name="backgrounds">
         <item>Sky</item>
         <item>Earth</item>
@@ -91,7 +74,7 @@
         <item>last recorded audio</item>
     </string-array>
     <string-array name="mstyles">
-        <item>Theme.AmpRack</item>
+        <item>Theme.ALTOGFX</item>
         <item>Red.Pink</item>
         <item>Red.Purple</item>
         <item>Red.DeepPurple</item>

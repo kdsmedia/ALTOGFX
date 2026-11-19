@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK).
+ALTOGFX — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK).
 
 ## Toolchain
 
@@ -16,7 +16,7 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 - Resource tasks that work without native code: `:app:mergeDebugResources`, `:app:processDebugResources`.
 - `:app:assembleDebug` builds successfully (Java + resources + NDK). The NDK step previously failed
   with `lilv/lilv.h` not finding `lv2/core/lv2.h`; fixed by adding `${CMAKE_CURRENT_SOURCE_DIR}` to
-  `target_include_directories(amprack ...)` in `app/src/main/cpp/CMakeLists.txt`.
+  `target_include_directories(altogfx ...)` in `app/src/main/cpp/CMakeLists.txt`.
 - The `mybuild` script uses wrong task casing; the real task is `assembleRelease` (camelCase).
 - `:app:lintDebug` currently fails on pre-existing issues only: `RecyclerView` (DataAdapter:93),
   `NewApi` scanBLE (Rack:498/570), and `WrongConstant` on `getOpacity()` returns (SkinEngine).
@@ -43,14 +43,18 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 
 - **Camera / video recording** and **drum machine** are gone as of this branch. Do not reintroduce
   `Camera`, `Camera2`, `DrumMachine`, `DrumMachineActivity`, the `drums`/`drumkits` assets,
-  `page_drums` nav item, or the Camera Settings screen (`camera_settings.xml`). Bottom nav is
-  Quick / Effects / Presets / Recordings.
+  `page_drums` nav item, or the Camera Settings screen (`camera_settings.xml`). Bottom nav has
+  only Effects (`page_rack`) and Presets (`page_preset`).
 - Native code (`Meter.cpp`, `Engine.cpp`, `native-lib.cpp`) no longer has `videoRecording`/`pushToVideo`
   hooks; the drum feature was always pure Java.
-- **Audio recording is core functionality and must stay**: `record_button` / `record_trigger` in
-  `rack.xml`, `AudioEngine.toggleRecording`, `AudioEncoder`, `MediaPlayerDialog`, `Tracks`,
-  `TracksAdapter`, the Recordings tab, and the `Audio Playback` settings screen (`tracks_settings.xml`).
-  When stripping camera/video code, do not delete these.
+- **Audio recording and file export are gone and must not be reintroduced**: no `FileWriter`,
+  `Export`, `AudioEncoder`, `record_button` / `record_trigger`, no `toggleRecording` /
+  `setFileName` / `setExportFormat` JNI hooks, and no `libopus`, `libopusenc` or `libmp3lame`
+  in `jniLibs` or `CMakeLists.txt`.
+- `RECORD_AUDIO` permission **stays**: it is needed for audio *input* into the engine, not for
+  saving files. Do not remove it.
+- `libsndfile` **stays**: the IR / convolution plugins (`libImpulseLoader.so`, `libconvolve*`,
+  `libRatatouille.so`, `libtamgamp.so`, `libzconvo.so`) depend on it.
 
 
 ## Icons / branding

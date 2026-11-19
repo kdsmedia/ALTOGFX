@@ -420,35 +420,6 @@ Java_com_altomedia_altogfx_AudioEngine_movePluginUp(JNIEnv *env, jclass clazz, j
     engine -> mFullDuplexPass.bypass = false ;
     return res ;
 }
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setExternalStoragePath(JNIEnv *env, jclass clazz,
-                                                                     jstring path) {
-    // TODO: implement setExternalStoragePath()
-    IN ;
-    if (engine == NULL) {
-        HERE LOGF ("engine is NULL"); OUT
-        return ;
-    }
-
-    const char *nativeString = env->GetStringUTFChars(path, 0);
-    engine->externalStoragePath = std::string (nativeString);
-    env->ReleaseStringUTFChars(path, nativeString);
-    LOGD("Output file path set to %s", engine->externalStoragePath.c_str());
-    OUT
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setRecordingActive(JNIEnv *env, jclass clazz,
-                                                                 jboolean active) {
-    // TODO: implement setRecordingActive()
-    if (engine == NULL) {
-        HERE LOGF ("engine is NULL");
-        return ;
-    }
-
-    engine->mFullDuplexPass.recordingActive = active ;
-}
 
 extern "C"
 JNIEXPORT jint JNICALL
@@ -496,18 +467,6 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginPresetValue(JNIEnv *env, jclass 
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setExportFormat(JNIEnv *env, jclass clazz,
-                                                              jint format) {
-    // TODO: implement setExportFormat()
-        if (engine == NULL) {
-        LOGF ("engine is NULL");
-            return;
-    }
-
-    engine->fileWriter->setFileType(format);
-}
-extern "C"
-JNIEXPORT void JNICALL
 Java_com_altomedia_altogfx_AudioEngine_clearActiveQueue(JNIEnv *env, jclass clazz) {
     // TODO: implement clearActiveQueue()
     if (engine == NULL) {
@@ -517,13 +476,6 @@ Java_com_altomedia_altogfx_AudioEngine_clearActiveQueue(JNIEnv *env, jclass claz
 
     engine->activePlugins.clear();
     engine-> buildPluginChain();
-}
-extern "C"
-JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getRecordingFileName(JNIEnv *env, jclass clazz) {
-    // TODO: implement getRecordingFileName()
-    LOGD("%s", engine->fileWriter->filename.c_str());
-    return env ->NewStringUTF(engine->fileWriter->filename.c_str());
 }
 extern "C"
 JNIEXPORT void JNICALL
@@ -551,18 +503,6 @@ Java_com_altomedia_altogfx_AudioEngine_setSampleRate(JNIEnv *env, jclass clazz,
     }
 
     engine->mSampleRate = sample_rate;
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setOpusBitRate(JNIEnv *env, jclass clazz,
-                                                             jint bitrate) {
-    // TODO: implement setOpusBitRate()
-    if (engine == NULL) {
-        LOGF ("engine is NULL");
-        return;
-    }
-
-    engine->fileWriter->bitRate = bitrate;
 }
 extern "C"
 JNIEXPORT jint JNICALL
@@ -751,29 +691,6 @@ Java_com_altomedia_altogfx_AudioEngine_bypass(JNIEnv *env, jclass clazz, jboolea
     engine == NULL ?  LOGE("[%s] engine is null !", __PRETTY_FUNCTION__ ) :   engine -> mFullDuplexPass.bypass = state ;
 }
 extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_toggleRecording(JNIEnv *env, jclass clazz,
-                                                              jboolean state) {
-    // TODO: implement toggleRecording()
-    engine == NULL ?  LOGE("[%s] engine is null !", __PRETTY_FUNCTION__ ) : engine -> mFullDuplexPass.recordingActive = state ;
-//    engine == NULL ?  LOGE("[%s] engine is null !", __PRETTY_FUNCTION__ ) : HERE ;
-    if (state) {
-        engine->fileWriter->startRecording();
-    }
-    else
-        engine->fileWriter->stopRecording();
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setFileName(JNIEnv *env, jclass clazz,
-                                                          jstring file_name) {
-    // TODO: implement setFileName()
-    const char *nativeString = env->GetStringUTFChars(file_name, 0);
-    engine->fileWriter->setFileName(std::string (nativeString));
-    LOGD("file name set to %s", nativeString);
-    env->ReleaseStringUTFChars(file_name, nativeString);
-}
-extern "C"
 JNIEXPORT jint JNICALL
 Java_com_altomedia_altogfx_AudioEngine_getSampleRate(JNIEnv *env, jclass clazz) {
     // TODO: implement getSampleRate()
@@ -931,21 +848,6 @@ Java_com_altomedia_altogfx_AudioEngine_pushToLockFreeBeforeOutputVolumeAaaaaargh
         return;
 
     engine->mFullDuplexPass.pushToLockFreeBeforeOutputVolume = setting;
-    OUT
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setLamePreset(JNIEnv *env, jclass clazz,
-                                                            jint preset) {
-    IN
-    if (engine == nullptr) {
-        LOGE("engine is null!");
-        OUT
-        return;
-    }
-
-    LOGD("[lame preset] %d", preset);
-    engine ->fileWriter->setLamePreset(preset);
     OUT
 }
 extern "C"

@@ -19,8 +19,6 @@ static jmethodID gFindClassMethod;
 Engine::Engine () {
     assert(mOutputChannelCount == mInputChannelCount);
 //    queueManager = new LockFreeQueueManager ();
-    fileWriter = new FileWriter ();
-    queueManager.add_function (fileWriter->disk_write);
     queueManager.add_function (resetAtomPorts);
     queueManager.add_function (meter->updateMeterOutput);
 //    discoverPlugins();
@@ -62,23 +60,6 @@ bool Engine::setEffectOn(bool isOn) {
                 mFullDuplexPass.lockFreeQueueManager = &queueManager ;
                 mFullDuplexPass.start();
 
-                fileWriter->setSampleRate (mSampleRate);
-
-//                char buffer [80];
-//
-//                time_t rawtime;
-//                struct tm * timeinfo;
-//                time (&rawtime);
-//                timeinfo = localtime (&rawtime);
-//
-//                strftime (buffer,80,"%d-%m-%y__%I.%M%p",timeinfo);
-
-//                fileWriter->setFileName(externalStoragePath + std::string ("/AmpRack/") + std::string (buffer)) ;
-//                fileWriter->setFileName(externalStoragePath + "/" + std::string (buffer)) ;
-//                fileWriter->setBufferSize(mFullDuplexPass.mBufferSize);
-                int bufferSizeInFrames = mRecordingStream->getBufferSizeInFrames() ;
-                fileWriter->setBufferSize (mPlayStream->getBufferSizeInFrames()/mPlayStream->getChannelCount());
-
                 queueManager.init (mPlayStream->getBufferSizeInFrames()/mPlayStream->getChannelCount());
 
                 if (mFullDuplexPass.inSamples != NULL)
@@ -92,14 +73,6 @@ bool Engine::setEffectOn(bool isOn) {
                 mFullDuplexPass.raw = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize));
 //                for (int i = 0 ; i < mFullDuplexPass.mBufferSize; i ++)
 //                    mFullDuplexPass.raw [i] = 0.0f ;
-                fileWriter->setChannels(mOutputChannelCount);
-                /*
-                if (mFullDuplexPass.recordingActive) {
-                    fileWriter->startRecording();
-                }
-                 */
-
-                meter->lastRecordedFileName = fileWriter->filename;
                 meter->jack_samplerate = mSampleRate ;
                 meter->lowLatency = lowLatencyMode ;
                 meter->enable();
@@ -108,11 +81,6 @@ bool Engine::setEffectOn(bool isOn) {
                 mIsEffectOn = isOn;
             }
         } else {
-            if (mFullDuplexPass.recordingActive) {
-                fileWriter->stopRecording() ;
-                mFullDuplexPass.recordingActive = false;
-            }
-
 //            LOGD("stopping meter");
             meter->stop();
 
@@ -421,16 +389,8 @@ void Engine::discoverPlugins () {
         return ;
     }
 
-    SharedLibrary * sharedLibrary = new SharedLibrary ("libamp.so");
+    SharedLibrary * sharedLibrary = new SharedLibrary ("libtap_eq.so");
     libraries.push_back(sharedLibrary);
-    SharedLibrary * sharedLibrary1 = new SharedLibrary ("libdistortionx.so");
-    libraries.push_back(sharedLibrary1);
-    SharedLibrary * sharedLibrary2 = new SharedLibrary ("libcrybabyx.so");
-    libraries.push_back(sharedLibrary2);
-    SharedLibrary * sharedLibrary3 = new SharedLibrary ("/data/data/com.altomedia.altogfx/lib/libtubex.so");
-    libraries.push_back(sharedLibrary3);
-    SharedLibrary * sharedLibrary4 = new SharedLibrary ("/data/data/com.shajikhan.ladspa.plugins.tap/lib/libtap_eq.so");
-    libraries.push_back(sharedLibrary4);
     OUT
 }
 
@@ -617,10 +577,6 @@ void Engine::test () {
         result = mPlayStream->read(&sampleData, 192, 0) ;
         LOGD("read %d result", result);
     }
-}
-
-int Engine::setTuner (buffer_t * buffer) {
-    return 0;
 }
 
 

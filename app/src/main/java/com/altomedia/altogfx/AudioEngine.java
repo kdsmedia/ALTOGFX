@@ -25,7 +25,6 @@ public class AudioEngine {
     public static native int getPluginControls (int plugin) ;
     public static native boolean getFilePort (int plugin);
     public static native void setFilePortValue (int plugin, String filename);
-    public static native void setFileName (String fileName);
     public static native void setAtomPort (int plugin, int control, String text);
     public static native float [] getPluginControlValues (int plugin, int control) ;
     public static native float getPluginPresetValue (int plugin, int control) ;
@@ -34,7 +33,6 @@ public class AudioEngine {
     public static native int getControlType (int plugin, int control);
     public static native String getActivePluginName (int plugin);
 
-    public static native String getRecordingFileName ();
     public static native void setLowLatency (boolean lowLatency) ;
     public static native void setSampleRate (int sampleRate);
 
@@ -45,7 +43,6 @@ public class AudioEngine {
     public static native int addPluginByName (String name);
     public static native boolean deletePlugin (int plugin) ;
     public static native void clearActiveQueue ();
-    public static native void toggleRecording (boolean state) ;
 
     public static native void setPluginControl (int plugin, int control, float value);
     public static native void setPluginControlByIndex (int plugin, int control, float value);
@@ -59,14 +56,10 @@ public class AudioEngine {
     public static native void bypass (boolean state) ;
     public static native void pause (boolean state) ;
 
-    public static native void setExportFormat (int format);
 
     public static native void debugInfo ();
     public static native boolean getTunerEnabled () ;
     public static native void setTunerEnabled (boolean enabled) ;
-    public static native void setExternalStoragePath (String path) ;
-    public static native void setRecordingActive (boolean active) ;
-    public static native void setOpusBitRate (int bitrate);
 
     public static native boolean create() ;
     public static native boolean wasLowLatency ();
@@ -130,7 +123,6 @@ public class AudioEngine {
     public static native double getLatency (boolean input) ;
     public static native void setMainActivityClassName (String className);
     public static native void pushToLockFreeBeforeOutputVolumeAaaaaargh (boolean setting) ;
-    public static native void setLamePreset (int preset);
     public static native int getActiveEnabledPlugins ();
     public static native int getBufferSizeInFrames (boolean input) ;
     public static native void fixGlitches ();

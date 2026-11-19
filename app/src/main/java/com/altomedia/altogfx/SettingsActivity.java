@@ -190,23 +190,6 @@ public class SettingsActivity extends AppCompatActivity implements
         }
     }
 
-    public static class SyncFragment extends PreferenceFragmentCompat {
-
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.sync_preferences, rootKey);
-            /*
-            if (MainActivity.proVersion == false) {
-                ListPreference export = findPreference("export_format");
-                export.setSummary("More export formats are available in the Pro Version");
-                export.setShouldDisableView(true);
-                export.setEnabled(false);
-            }
-
-             */
-        }
-    }
-
     public static class ThemeFragment extends PreferenceFragmentCompat {
 
         @Override
@@ -339,15 +322,7 @@ public class SettingsActivity extends AppCompatActivity implements
             int plugins = MainActivity.totalPlugins;
             findPreference("plugins").setSummary(String.valueOf(plugins));
 
-            findPreference("name_info").setTitle("AmpRack Pro Version");
-        }
-    }
-
-    public static class TracksFragment extends PreferenceFragmentCompat {
-
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-            setPreferencesFromResource(R.xml.tracks_settings, rootKey);
+            findPreference("name_info").setTitle(getString(R.string.app_name) + " — ALTOMEDIA");
         }
     }
 

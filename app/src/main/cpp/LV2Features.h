@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 1/5/23.
 //
 
 #ifndef AMP_RACK_LV2FEATURES_H
