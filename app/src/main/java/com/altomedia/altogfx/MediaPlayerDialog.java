@@ -182,7 +182,9 @@ public class MediaPlayerDialog {
 
             @Override
             public void onStopTrackingTouch(SeekBar _seekBar) {
-                mediaPlayer.seekTo(mediaPlayer.getDuration() * (_seekBar.getProgress() / 100));
+                int duration = mediaPlayer.getDuration();
+                if (duration > 0)
+                    mediaPlayer.seekTo((int) ((long) duration * _seekBar.getProgress() / 100));
 
             }
         });

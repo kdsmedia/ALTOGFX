@@ -152,12 +152,12 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.ViewHolder
 
     public void add (String filename) {
         filenames.add(filename);
-        notifyItemInserted(filenames.size());
+        notifyItemInserted(filenames.size() - 1);
     }
 
     void delete(int index) {
-        if (index > filenames.size()) {
-            Log.w(TAG, "delete: index greater than items in list!", null);
+        if (index < 0 || index >= filenames.size()) {
+            Log.w(TAG, "delete: index out of range!", null);
             return ;
         }
 

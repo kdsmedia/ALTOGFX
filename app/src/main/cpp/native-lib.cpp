@@ -346,6 +346,8 @@ Java_com_altomedia_altogfx_AudioEngine_getControlName(JNIEnv *env, jclass clazz,
     else if (engine->activePlugins.at(plugin)->type == SharedLibrary::LV2) {
         return env ->NewStringUTF(engine->activePlugins.at(plugin)->pluginControls [control]->lv2_name.c_str());
     }
+    LOGE ("unknown plugin type for plugin [%d]", plugin);
+    return NULL;
 }
 extern "C"
 JNIEXPORT void JNICALL

@@ -344,6 +344,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int READ_STORAGE_REQUEST = 1;
     private static final int WRITE_STORAGE_REQUEST = 2;
     private static final int PERMISSION_REQUEST_CODE_BLUETOOTH = 3;
+    private static final int NOTIFICATION_REQUEST = 4;
     final static int APP_STORAGE_ACCESS_REQUEST_CODE = 501; // Any value
 
     public Rack rack;
@@ -648,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         loadPlugins();
 
         if (savedInstanceState == null) {
-            Log.d(TAG, "onCreate: savedInstanceState is not null");
+            Log.d(TAG, "onCreate: savedInstanceState is null");
 
             rack = new Rack();
             tracks = new Tracks(this);
@@ -804,15 +805,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 Environment.DIRECTORY_MUSIC);
         localThemeDir = context.getExternalFilesDir(
                 Environment.DIRECTORY_DOWNLOADS);
-        if (dir == null || !dir.mkdirs()) {
-            Log.e(TAG, "Directory not created: " + dir.toString());
+        if (dir == null) {
+            Log.e(TAG, "onResume: cannot resolve music directory");
         } else {
-            Log.d(TAG, "onResume: default directory set as " + dir.toString());
+            if (!dir.exists() && !dir.mkdirs())
+                Log.e(TAG, "Directory not created: " + dir);
+            if (tracks != null)
+                tracks.load(dir);
         }
-
-        tracks.load(dir);
         Set<String> _tracksCustom = defaultSharedPreferences.getStringSet("tracks", null) ;
-        if (_tracksCustom != null) {
+        if (_tracksCustom != null && tracks != null) {
             for (String _d: _tracksCustom) {
                 tracks.load(Uri.parse(_d));
             }
@@ -1025,7 +1027,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             @Override
             public void onStopTrackingTouch(SeekBar _seekBar) {
-                mediaPlayer.seekTo(mediaPlayer.getDuration() * (_seekBar.getProgress() / 100));
+                int duration = mediaPlayer.getDuration();
+                if (duration > 0)
+                    mediaPlayer.seekTo((int) ((long) duration * _seekBar.getProgress() / 100));
 
             }
         });
@@ -1333,11 +1337,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         dir = context.getExternalFilesDir(
                 Environment.DIRECTORY_MUSIC);
 
-        if (dir == null || !dir.mkdirs()) {
-            Log.e(TAG, "Directory not created: " + dir.toString());
-        } else {
-            Log.d(TAG, "onResume: default directory set as " + dir.toString());
+        if (dir == null) {
+            Log.e(TAG, "onResume: cannot resolve music directory");
+            return;
         }
+        if (!dir.exists() && !dir.mkdirs())
+            Log.e(TAG, "Directory not created: " + dir);
+        else
+            Log.d(TAG, "onResume: default directory set as " + dir.toString());
 
         String path = dir.getAbsolutePath();
 
@@ -1452,6 +1459,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             return;
         }
 
+        requestNotificationPermissionIfNeeded();
         running = AudioEngine.setEffectOn(true);
     }
 
@@ -1476,6 +1484,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (record.isChecked())
             record.setChecked(false);
         nag ++ ;
+    }
+
+    private void requestNotificationPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+            return;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                == PackageManager.PERMISSION_GRANTED)
+            return;
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                NOTIFICATION_REQUEST);
     }
 
     private boolean isRecordPermissionGranted() {
@@ -1600,15 +1620,24 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
         if (resultCode == RESULT_OK && requestCode == 1001) {
-            Uri selectedImage = data.getData();
+            Uri selectedImage = data == null ? null : data.getData();
+            if (selectedImage == null) {
+                Log.e(TAG, "onActivityResult: no track selected");
+                return;
+            }
             Log.d(TAG, "onActivityResult: trying to add " + selectedImage.toString());
-            getContentResolver().takePersistableUriPermission(selectedImage, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            try {
+                getContentResolver().takePersistableUriPermission(selectedImage, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } catch (SecurityException e) {
+                Log.w(TAG, "onActivityResult: cannot take persistable permission", e);
+            }
 
             Set<String> _vals = sharedPreferences.getStringSet("tracks", null);
             Set<String> vals = _vals == null ? new ArraySet<>() : new ArraySet<>(_vals);
             vals.add(selectedImage.toString());
             Log.d(TAG, "onActivityResult: adding track to list: " + vals.toString());
-            tracks.load(selectedImage);
+            if (tracks != null)
+                tracks.load(selectedImage);
             sharedPreferences.edit().putStringSet("tracks", vals).commit();
         }
 
@@ -1622,12 +1651,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
              */
 
             int plugin = requestCode - 5000 ;
-            Uri returnUri = data.getData();
+            Uri returnUri = data == null ? null : data.getData();
 
             if (returnUri != null) {
                 String mimeType = getContentResolver().getType(returnUri);
                 Log.d(TAG, String.format ("[mimetype]: %s", mimeType));
-                if (!mimeType.startsWith("audio")) {
+                if (mimeType != null && !mimeType.startsWith("audio")) {
                     DocumentFile file = DocumentFile.fromSingleUri(mainActivity, returnUri);
                     Log.d(TAG, String.format ("ayyo filename: %s", file.getName()));
                     String path = file.getName();
@@ -1639,6 +1668,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     String dir = context.getExternalFilesDir(
                             Environment.DIRECTORY_DOWNLOADS) + "/" + AudioEngine.getActivePluginName(plugin);
                     DataAdapter.ViewHolder holder = (DataAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(plugin);
+                    if (holder == null) {
+                        Log.w(TAG, "onActivityResult: no view holder for plugin " + plugin, null);
+                        return;
+                    }
                     switch (ext.toLowerCase()) {
                         case "nam":
                         default: // aye
@@ -1858,7 +1891,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
 
-        if (AUDIO_EFFECT_REQUEST != requestCode && requestCode != READ_STORAGE_REQUEST && requestCode != WRITE_STORAGE_REQUEST) {
+        if (AUDIO_EFFECT_REQUEST != requestCode && requestCode != READ_STORAGE_REQUEST
+                && requestCode != WRITE_STORAGE_REQUEST) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             return;
         }
@@ -1871,9 +1905,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                                 Toast.LENGTH_LONG)
                         .show();
             } else {
-                if (dir == null || !dir.mkdirs()) {
-                    Log.e(TAG, "Directory not created: " + dir.toString());
-                }
+                if (dir != null && !dir.exists() && !dir.mkdirs())
+                    Log.e(TAG, "Directory not created: " + dir);
 
             }
         }

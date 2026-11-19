@@ -393,6 +393,7 @@ int Meter::updateInput (float *data, size_t frames) {
 //    LOGD("setting input values [%f]", avg);
 //    env->CallStaticVoidMethod(mainActivity, setMixerMeter, avg, true);
 //    OUT
+    return 0;
 }
 
 int Meter::updateOutput (float *data, size_t frames) {
@@ -404,6 +405,7 @@ int Meter::updateOutput (float *data, size_t frames) {
     avg = avg / frames ;
     LOGD("setting output values [%f]", avg);
     env->CallStaticVoidMethod(mainActivity, setMixerMeter, avg, false);
+    return 0;
 }
 
 void Meter::process (int nframes, const float * data, bool isInput) {

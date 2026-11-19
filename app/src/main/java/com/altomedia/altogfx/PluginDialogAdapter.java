@@ -132,8 +132,11 @@ public class PluginDialogAdapter extends RecyclerView.Adapter <PluginDialogAdapt
         plugins.add(pluginID);
         pluginNames.add(pluginName);
         pluginsAll.add(pluginID);
+        pluginsIDs.add(-1);
+        descriptions.add("");
+        descriptionsAll.add("");
         pluginNamesAll.add(pluginName);
-        notifyItemInserted(plugins.size());
+        notifyItemInserted(plugins.size() - 1);
     }
 
     void addItem(int pluginID, String pluginName, int uniqueID, String desc) {
@@ -147,12 +150,18 @@ public class PluginDialogAdapter extends RecyclerView.Adapter <PluginDialogAdapt
         descriptionsAll.add(desc);
         descriptions.add(desc);
         pluginNamesAll.add(pluginName);
-        notifyItemInserted(plugins.size());
+        notifyItemInserted(plugins.size() - 1);
     }
 
     void deleteItem(int index) {
+        if (index < 0 || index >= plugins.size())
+            return;
+
         plugins.remove(index);
-        notifyItemInserted(plugins.size());
+        if (index < pluginNames.size()) pluginNames.remove(index);
+        if (index < pluginsIDs.size()) pluginsIDs.remove(index);
+        if (index < descriptions.size()) descriptions.remove(index);
+        notifyItemRemoved(index);
     }
 
     void setMainActivity (Context _context, MainActivity _mainActivity) {

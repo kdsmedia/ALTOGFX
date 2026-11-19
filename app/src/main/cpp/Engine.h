@@ -18,6 +18,7 @@ public:
             std::shared_ptr<oboe::AudioStream> inputStream,
             const void *inputData,
             int   numOutputFrames) {
+        return oboe::DataCallbackResult::Continue;
     }
 
     std::string LIBRARY_PATH ;

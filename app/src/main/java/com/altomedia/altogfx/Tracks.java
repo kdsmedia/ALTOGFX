@@ -52,7 +52,7 @@ public class Tracks extends Fragment {
     String filesDir ;
     ConstraintLayout constraintLayout ;
     ExoPlayer player ;
-    static int requestCode = 1001 ;
+    static final int requestCode = 1001 ;
     LinearLayout playerWindow ;
     BitmapDrawable play, pause, reset ;
 
@@ -350,15 +350,19 @@ public class Tracks extends Fragment {
                 intent_upload.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 intent_upload.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 getActivity().startActivityForResult(intent_upload,requestCode);
-                requestCode ++ ;
             }
         });
     }
 
     public void load (File dir) {
+        if (dir == null) return;
         Log.d(TAG, "load: loading folder " + dir.getAbsolutePath());
         filesDir = dir.getPath() ;
         File [] files = dir.listFiles();
+        if (files == null) {
+            Log.w(TAG, "load: cannot list files in " + dir.getAbsolutePath(), null);
+            return;
+        }
         Log.d(TAG, "load: " + files.length + " files found");
         for (int i = 0 ; i < files.length; i ++) {
             Log.d(TAG, "load: adding file " + files[i].getAbsolutePath());

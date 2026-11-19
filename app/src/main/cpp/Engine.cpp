@@ -620,7 +620,7 @@ void Engine::test () {
 }
 
 int Engine::setTuner (buffer_t * buffer) {
-
+    return 0;
 }
 
 
