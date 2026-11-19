@@ -61,7 +61,10 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.ViewHolder
         holder.fileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MediaItem mediaItem = MediaItem.fromUri(filenames.get(holder.getAdapterPosition()));
+                int position = holder.getAdapterPosition();
+                if (position == RecyclerView.NO_POSITION)
+                    return;
+                MediaItem mediaItem = MediaItem.fromUri(filenames.get(position));
                 Log.d(TAG, "onClick: playing " + name);
                 player.setMediaItem(mediaItem);
                 player.prepare();
@@ -90,11 +93,14 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.ViewHolder
                             .setPositiveButton("Delete file", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     Log.d(TAG, "onClick: deleting file " + name);
+                                    int position = holder.getAdapterPosition();
+                                    if (position == RecyclerView.NO_POSITION)
+                                        return;
                                     File file = new File(name);
                                     if (name.startsWith("content://")) {
-                                        delete(holder.getAdapterPosition());
+                                        delete(position);
                                     } else if (file.delete())
-                                        delete(holder.getAdapterPosition());
+                                        delete(position);
                                     else {
                                         MainActivity.toast("Unable to delete file");
                                         Log.e(TAG, "onClick: delete track: " + name, null);

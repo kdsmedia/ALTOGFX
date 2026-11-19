@@ -55,22 +55,36 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
     }
 
     void removePreset (Map preset) {
-        int i = 0 ;
-        for (Map p:
-             presets) {
-            if (p.get("name").toString().equals(preset.get("name").toString())) {
-                break ;
-            } else {
-                i++ ;
-            }
-        }
-
-        if (i >= presets.size())
+        int allIndex = indexOfInAll(preset);
+        if (allIndex < 0)
             return;
 
-        presets.remove(i);
-        allPresets.remove(i);
-        notifyItemRemoved(i);
+        Map stored = allPresets.remove(allIndex);
+        int visibleIndex = indexOfInVisible(stored);
+        if (visibleIndex >= 0) {
+            presets.remove(visibleIndex);
+            notifyItemRemoved(visibleIndex);
+        }
+    }
+
+    int indexOfInAll (Map preset) {
+        Object name = preset.get("name");
+        Object uid = preset.get("uid");
+        for (int i = 0; i < allPresets.size(); i++) {
+            Map p = allPresets.get(i);
+            if (name != null && name.equals(p.get("name"))
+                    && (uid == null || uid.equals(p.get("uid"))))
+                return i;
+        }
+        return -1;
+    }
+
+    int indexOfInVisible (Map preset) {
+        for (int i = 0; i < presets.size(); i++) {
+            if (presets.get(i) == preset)
+                return i;
+        }
+        return -1;
     }
 
     void setMainActivity (MainActivity _mainActivity) {
@@ -167,7 +181,8 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
                     mainActivity.addFavoritePreset(preset);
                 } else {
                     compoundButton.setButtonDrawable(R.drawable.ic_baseline_favorite_border_24);
-                    favoritePresets.remove(preset.get("path"));
+                    if (favoritePresets != null && preset.get("path") != null)
+                        favoritePresets.remove(preset.get("path").toString());
                     db.removeAndUnlike(preset);
                     mainActivity.removeFavoritePreset(preset);
                 }
@@ -249,7 +264,8 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
     }
 
     public void resetList () {
-        presets = allPresets ;
+        presets.clear();
+        presets.addAll(allPresets);
         notifyDataSetChanged();
     }
 
@@ -262,7 +278,7 @@ public class MyPresetsAdapter extends RecyclerView.Adapter<MyPresetsAdapter.View
                 presets.add(m);
         } else {
             for (Map m : allPresets) {
-                if (favoritePresets != null) {
+                if (favoritePresets != null && m.get("path") != null) {
                     if (favoritePresets.containsKey(m.get("path").toString())) {
                         Log.d(TAG, "showOnlyFavorites: adding preset " + m.get("name"));
                         presets.add(m);

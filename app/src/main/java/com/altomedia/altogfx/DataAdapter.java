@@ -91,21 +91,26 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holders.add(holder);
+        while (holders.size() <= position)
+            holders.add(null);
+        holders.set(position, holder);
         LinearLayout linearLayout = holder.getLinearLayout();
+        if (linearLayout == null) {
+            Log.wtf(TAG, "linear layout for plugin!");
+            return;
+        }
         linearLayout.removeAllViews();
         holder.sliders = new ArrayList<>();
-        if (linearLayout == null) {
-            Log.wtf(TAG, "linear layout for plugin!") ;
-            return ;
-        }
 
         holder.switchMaterial.setUseMaterialThemeColors(true);
         holder.switchMaterial.setChecked(true);
         holder.switchMaterial.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                AudioEngine.togglePlugin(holder.getAdapterPosition(), b);
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition == RecyclerView.NO_POSITION)
+                    return;
+                AudioEngine.togglePlugin(adapterPosition, b);
             }
         });
 
@@ -493,7 +498,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                                 String p = ri.getPath() ;
                                 Log.d(TAG, "onItemSelected: loading file " + ri.toString());
                                 float [] samples = audioDecoder.decode(ri, null, samplerate);
-                                AudioEngine.setPluginBuffer(samples, holder.getAdapterPosition());
+                                int adapterPosition = holder.getAdapterPosition();
+                                if (adapterPosition == RecyclerView.NO_POSITION)
+                                    return;
+                                AudioEngine.setPluginBuffer(samples, adapterPosition);
 //                                Log.d(TAG, String.format ("[decoder]: %d", samples.length));
                             } catch (IOException e) {
                                 MainActivity.toast(e.getMessage());
@@ -507,7 +515,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 //                            Log.d(TAG, String.format("[content]: %s", s));
 //                            AudioEngine.setPluginFilename(s, holder.getAdapterPosition());
                             Log.d(TAG, String.format ("sending filename: %s", ri.getPath()));
-                            AudioEngine.setAtomPort(holder.getAdapterPosition(), finalI2, ri.getPath());
+                            int adapterPosition = holder.getAdapterPosition();
+                            if (adapterPosition == RecyclerView.NO_POSITION)
+                                return;
+                            AudioEngine.setAtomPort(adapterPosition, finalI2, ri.getPath());
                         }
                     }
 
@@ -716,7 +727,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 @Override
                 public void onTextChanged(CharSequence charSequence, int __i, int i1, int i2) {
                     float value = Float.parseFloat (charSequence.toString()) ;
-                    final int _position = holder.getAdapterPosition(); ;
+                    final int _position = holder.getAdapterPosition();
+                    if (_position == RecyclerView.NO_POSITION)
+                        return;
                     final int _i = finalI;
 //                    Log.d(TAG, "Changing plugin control " + string + " [" + _position + " : " + _i + "] to " + value) ;
                     AudioEngine.setPluginControl(_position, _i, value);
@@ -1124,7 +1137,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                                 String p = ri.getPath() ;
                                 Log.d(TAG, "onItemSelected: loading file " + ri.toString());
                                 float [] samples = audioDecoder.decode(ri, null, samplerate);
-                                AudioEngine.setPluginBuffer(samples, holder.getAdapterPosition());
+                                int adapterPosition = holder.getAdapterPosition();
+                                if (adapterPosition == RecyclerView.NO_POSITION)
+                                    return;
+                                AudioEngine.setPluginBuffer(samples, adapterPosition);
 //                                Log.d(TAG, String.format ("[decoder]: %d", samples.length));
                             } catch (IOException e) {
                                 MainActivity.toast(e.getMessage());
@@ -1136,7 +1152,10 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                         {
                             String s = mainActivity.getFileContent(ri);
 //                            Log.d(TAG, String.format("[content]: %s", s));
-                            AudioEngine.setPluginFilename(s, holder.getAdapterPosition());
+                            int adapterPosition = holder.getAdapterPosition();
+                            if (adapterPosition == RecyclerView.NO_POSITION)
+                                return;
+                            AudioEngine.setPluginFilename(s, adapterPosition);
                         }
                     }
 
@@ -1245,6 +1264,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
 
     void addItem(int pluginID, int index) {
         plugins.add(pluginID);
+        if (index >= 0 && index <= holders.size())
+            holders.add(index, null);
         notifyItemInserted(index);
     }
 
@@ -1269,6 +1290,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         }
 
         plugins.remove(index);
+        if (index < holders.size())
+            holders.remove(index);
         notifyItemRemoved(index);
     }
 
@@ -1282,6 +1305,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             return ;
         }
 
+        if (index < holders.size())
+            java.util.Collections.swap(holders, index, index - 1);
         notifyItemMoved(index, index - 1);
         AudioEngine.movePluginUp(index);
 
@@ -1299,6 +1324,8 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             return ;
         }
 
+        if (index + 1 < holders.size())
+            java.util.Collections.swap(holders, index, index + 1);
         notifyItemMoved(index, index + 1);
         AudioEngine.movePluginDown(index);
     }

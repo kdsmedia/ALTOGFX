@@ -190,8 +190,10 @@ public class LocalPresetDB {
 
         MainActivity.toast("Preset successfully deleted");
         if (position >= 0 && position < presets.size()) {
+            Map deleted = presets.get(position);
             presets.remove(position);
             myPresetsAdapter.notifyItemRemoved(position);
+            myPresetsAdapter.allPresets.remove(deleted);
         }
     }
 

@@ -1776,11 +1776,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 Log.d(TAG, String.format ("extension: %s", ext));
                 if (ext.equalsIgnoreCase("zip")) {
                     unzipNAMModel(dir, returnUri);
-                    Spinner spinner = dataAdapter.holders.get(plugin).atomSpinners.get(control) ;
+                    Spinner spinner = holder == null ? null : holder.atomSpinners.get(control);
                     if (spinner == null) {
                         Log.d(TAG, "onActivityResult: spinner is null! why???");
                     } else
-                        setSpinnerFromDir(dataAdapter.holders.get(plugin).atomSpinners.get(control), dir, null);
+                        setSpinnerFromDir(spinner, dir, null);
                     return;
                 }
 
@@ -1795,8 +1795,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                 Log.d(TAG, String.format ("[copy file]: %s -> %s", returnUri.getPath(), dest));
                 Log.d(TAG, String.format ("[load atom]: got filename %s", dest));
-                int selection = setSpinnerFromDir(dataAdapter.holders.get(plugin).atomSpinners.get(control), dir, file.getName());
-                dataAdapter.holders.get(plugin).atomSpinners.get(control).setSelection(selection);
+                Spinner controlSpinner = holder == null ? null : holder.atomSpinners.get(control);
+                if (controlSpinner != null) {
+                    int selection = setSpinnerFromDir(controlSpinner, dir, file.getName());
+                    controlSpinner.setSelection(selection);
+                }
                 AudioEngine.setAtomPort(plugin, control, dest);
             }
 
@@ -2549,10 +2552,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
             DataAdapter.ViewHolder holder = null;
-            if (dataAdapter.holders.size() == 0)
-                Log.e(TAG, "loadPreset: data adapter holders is zero", null);
-            else
-                dataAdapter.holders.get(plugin);
+            if (plugin < dataAdapter.holders.size())
+                holder = dataAdapter.holders.get(plugin);
             if (holder == null) {
                 Log.e(TAG, "loadPreset: cannot find holder for " + (ret - 1), null);
             }
