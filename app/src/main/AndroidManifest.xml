@@ -27,11 +27,11 @@
         <activity
             android:name=".About"
             android:exported="false"
-            android:theme="@style/Theme.AmpRack" />
+            android:theme="@style/Theme.ALTOGFX" />
         <activity
             android:name=".Onboard"
             android:exported="false"
-            android:theme="@style/Theme.AmpRack" />
+            android:theme="@style/Theme.ALTOGFX" />
         <activity
             android:name=".Files"
             android:exported="false"
@@ -41,13 +41,13 @@
             android:name=".ConnectGuitar"
             android:exported="false"
             android:label="@string/title_activity_connect_guitar"
-            android:theme="@style/Theme.AmpRack" />
+            android:theme="@style/Theme.ALTOGFX" />
 
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
-            android:theme="@style/Theme.AmpRack">
+            android:theme="@style/Theme.ALTOGFX">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.altomedia.altogfx.MainActivity" />
