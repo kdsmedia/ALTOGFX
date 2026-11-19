@@ -2,7 +2,6 @@
   "-1": {
     "http://lv2plug.in/ns/ext/presets#Preset": true,
     "appliesTo": "http://rakarrack.sourceforge.net/effects.html#Arpie",
-    "http://www.w3.org/2000/01/rdf-schema#seeAlso": "file:///home/djshaji/Downloads/rkrlv2-master/lv2/ttl/arpie_presets.ttl",
     "pluginName": "rkr Arpie"
   },
   "0": {
