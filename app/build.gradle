@@ -132,6 +132,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
 
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.19.1'
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 }

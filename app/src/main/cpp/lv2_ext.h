@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 5/3/24.
 //
 
 #ifndef AMP_RACK_LV2_EXT_H

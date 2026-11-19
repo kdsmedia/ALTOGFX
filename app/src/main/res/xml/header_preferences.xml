@@ -14,18 +14,6 @@
         app:title="Audio Devices" />
 
     <Preference
-        app:fragment="com.altomedia.altogfx.SettingsActivity$TracksFragment"
-        app:icon="@drawable/ic_baseline_audio_file_24"
-        app:key="tracks_settings"
-        app:title="Audio Playback" />
-
-    <Preference
-        app:fragment="com.altomedia.altogfx.SettingsActivity$SyncFragment"
-        app:icon="@drawable/ic_baseline_save_alt_24"
-        app:key="sync_header"
-        app:title="Export Settings" />
-
-    <Preference
         app:fragment="com.altomedia.altogfx.SettingsActivity$VersionFragment"
         app:icon="@drawable/ic_baseline_info_24"
         app:key="version_header"

@@ -40,8 +40,8 @@
         app:key="color_scheme"
         android:summary="Choose a color scheme for Material Theme"
         android:entries="@array/mstyles"
-        app:defaultValue="Theme.AmpRack"
-        android:defaultValue="Theme.AmpRack"
+        app:defaultValue="Theme.ALTOGFX"
+        android:defaultValue="Theme.ALTOGFX"
         android:entryValues="@array/mstyles"/>
 
 </PreferenceScreen>

@@ -7,7 +7,6 @@
 #include "FullDuplexPass.h"
 #include "SharedLibrary.h"
 #include "Plugin.h"
-#include "FileWriter.h"
 #include "Meter.h"
 #include "LockFreeQueue.h"
 
@@ -64,9 +63,7 @@ public:
     bool lowLatencyMode = false ;
     bool lazyLoad = false ;
 
-    FileWriter * fileWriter ;
     Meter * meter ;
-    std::string externalStoragePath ;
 
     std::vector <SharedLibrary *> libraries ;
     static std::vector<Plugin *> activePlugins ;
@@ -113,8 +110,6 @@ private:
 
     void discoverPlugins();
 
-
-    int setTuner(buffer_t *buffer);
 
 
     void setSampleRateDisplay(int sampleRate, bool lowLatency);

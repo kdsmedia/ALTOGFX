@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 1/29/25.
 //
 
 #ifndef AMP_RACK_ATOM_H

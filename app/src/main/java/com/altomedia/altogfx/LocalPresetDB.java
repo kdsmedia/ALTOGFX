@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -141,6 +142,22 @@ public class LocalPresetDB {
         Toast.makeText(context, "Presets saved", Toast.LENGTH_LONG).show();
     }
 
+    ArrayList<Map> listPresets() {
+        ArrayList<Map> list = new ArrayList<>();
+        File[] files = dir().listFiles();
+        if (files == null)
+            return list;
+        Arrays.sort(files, (a, b) -> a.getName().compareTo(b.getName()));
+        for (File file : files) {
+            if (!file.isFile() || !file.getName().endsWith(".json"))
+                continue;
+            Map<String, Object> preset = readPreset(file);
+            if (preset != null)
+                list.add(preset);
+        }
+        return list;
+    }
+
     public void loadUserPresets(MyPresetsAdapter presetsAdapter, boolean shared, boolean quick) {
         if (presetsAdapter.progressBar != null)
             presetsAdapter.progressBar.setVisibility(View.VISIBLE);
@@ -151,6 +168,7 @@ public class LocalPresetDB {
 
         File[] files = quick ? favoritesDir.listFiles() : dir().listFiles();
         if (files != null) {
+            Arrays.sort(files, (a, b) -> a.getName().compareTo(b.getName()));
             for (File file : files) {
                 if (!file.isFile() || !file.getName().endsWith(".json"))
                     continue;

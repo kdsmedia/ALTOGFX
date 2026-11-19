@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 3/20/24.
 //
 
 #ifndef AMP_RACK_UTILS_H

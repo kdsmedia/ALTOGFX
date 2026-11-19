@@ -15,6 +15,6 @@
         <item name="windowSplashScreenBackground">@color/white</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
         <item name="android:windowSplashScreenIconBackgroundColor">@color/fui_transparent</item>
-        <item name="postSplashScreenTheme">@style/Theme.AmpRack</item>
+        <item name="postSplashScreenTheme">@style/Theme.ALTOGFX</item>
     </style>
 </resources>

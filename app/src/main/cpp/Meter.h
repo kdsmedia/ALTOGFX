@@ -1,5 +1,4 @@
 //
-// Created by djshaji on 1/22/23.
 //
 
 #ifndef AMP_RACK_METER_H
@@ -21,7 +20,6 @@ extern "C" {
 #endif
 #include "LockFreeQueue.h"
 
-//#include "FileWriter.h"
 JNIEnv* getEnv() ;
 #define LOCK_FREE_SIZE 4096
 
@@ -59,7 +57,6 @@ class Meter {
 
 public:
     Meter(JavaVM *pVm);
-    std::string lastRecordedFileName ;
     static int jack_samplerate ;
     static bool tunerEnabled ;
     static jmethodID setMixerMeter ;

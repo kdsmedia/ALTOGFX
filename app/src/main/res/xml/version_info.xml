@@ -28,9 +28,8 @@
             android:key="plugins_supported"
             android:summary="LADSPA, LV2"/>
         <Preference
-            android:title="Audio Encoders Supported"
-            android:key="encoders_supported"
-            android:summary="OPUS\nMP3\nPCM WAV 16 bit"/>
-
+            android:title="Publisher"
+            android:key="publisher"
+            android:summary="ALTOMEDIA"/>
     </PreferenceCategory>
 </PreferenceScreen>
