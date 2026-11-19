@@ -107,13 +107,6 @@ Play a recorded file and turn on the loop option.
 
 ![loop](https://user-images.githubusercontent.com/17184025/179395833-85421b37-02ca-408f-9abc-cfabbcca794d.jpg)
 
-### How do I use the Drum Machine?
-Tap the Drum Machine icon on the navigation bar to switch to the drum machine tab.
-
-![drums](https://user-images.githubusercontent.com/17184025/179395899-48b8185e-4c43-40a3-a7da-02370e21ab56.jpg)
-
-As with the recordings tab, click on any drum track to play it, and turn on looping to play it on a loop.
-
 ### How do I modify app Settings?
 From the overflow menu, click on Settings.
 
