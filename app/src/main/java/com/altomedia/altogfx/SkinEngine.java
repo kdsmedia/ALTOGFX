@@ -1367,6 +1367,9 @@ public class SkinEngine {
         TextView appTitle = mainActivity.findViewById(R.id.app_main_title);
         appTitle.setTextColor(Color.parseColor(textColor));
 
+        ToggleButton record = mainActivity.findViewById(R.id.record_button);
+        record.setTextColor(Color.parseColor(textColor));
+
         Bitmap headerBg = skinner.getBitmapFromAssets(skinner.displayMetrics.widthPixels, -1, themeDir + hBg);
         layout.setBackground(new Drawable() {
             @Override

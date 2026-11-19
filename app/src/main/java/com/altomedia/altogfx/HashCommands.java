@@ -119,6 +119,9 @@ public class HashCommands extends AlertDialog {
 
                 MainActivity.alert("Version", version);
                 break ;
+            case "lastrecordedaudio":
+                mainActivity.showMediaPlayerDialog();
+                break ;
             case "alert":
                 MainActivity.alert("Alert", args);
                 break;

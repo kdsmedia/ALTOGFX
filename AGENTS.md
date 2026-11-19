@@ -5,7 +5,7 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 ## Toolchain
 
 - JDK 17 is unavailable on Debian 13; **OpenJDK 21** works with AGP 8.13 / Gradle 8.13.
-- Android SDK at `/opt/android-sdk` (cmdline-tools, platform 35, build-tools 35.0.0, NDK 26.1.10909125, CMake 3.18.1).
+- Android SDK at `/opt/android-sdk` (cmdline-tools, platform 35, build-tools 35.0.0, NDK 26.1.10909125, CMake 3.22.1).
 - Set `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64`, `ANDROID_HOME`/`ANDROID_SDK_ROOT=/opt/android-sdk`.
 - `local.properties` must contain `sdk.dir=/opt/android-sdk`.
 
@@ -18,6 +18,9 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
   with `lilv/lilv.h` not finding `lv2/core/lv2.h`; fixed by adding `${CMAKE_CURRENT_SOURCE_DIR}` to
   `target_include_directories(amprack ...)` in `app/src/main/cpp/CMakeLists.txt`.
 - The `mybuild` script uses wrong task casing; the real task is `assembleRelease` (camelCase).
+- `:app:lintDebug` currently fails on pre-existing issues only: `RecyclerView` (DataAdapter:93),
+  `NewApi` scanBLE (Rack:498/570), and `WrongConstant` on `getOpacity()` returns (SkinEngine).
+  These predate the camera removal; do not treat them as regressions.
 
 ## Offline-only build
 
@@ -39,12 +42,16 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 ## Removed features
 
 - **Camera / video recording** and **drum machine** are gone as of this branch. Do not reintroduce
-  `Camera`, `Camera2`, `AudioEncoder`, `MediaPlayerDialog`, `DrumMachine`, `DrumMachineActivity`,
-  `Tracks`, `TracksAdapter`, nor the `drums`/`drumkits` assets, `page_drums` nav item, `DRUMS_REQUEST_CODE`,
-  or `Audio Playback` settings screen (`tracks_settings.xml`). The bottom nav now has only
-  Effects and Presets.
+  `Camera`, `Camera2`, `DrumMachine`, `DrumMachineActivity`, the `drums`/`drumkits` assets,
+  `page_drums` nav item, or the Camera Settings screen (`camera_settings.xml`). Bottom nav is
+  Quick / Effects / Presets / Recordings.
 - Native code (`Meter.cpp`, `Engine.cpp`, `native-lib.cpp`) no longer has `videoRecording`/`pushToVideo`
   hooks; the drum feature was always pure Java.
+- **Audio recording is core functionality and must stay**: `record_button` / `record_trigger` in
+  `rack.xml`, `AudioEngine.toggleRecording`, `AudioEncoder`, `MediaPlayerDialog`, `Tracks`,
+  `TracksAdapter`, the Recordings tab, and the `Audio Playback` settings screen (`tracks_settings.xml`).
+  When stripping camera/video code, do not delete these.
+
 
 ## Icons / branding
 
@@ -89,7 +96,7 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
   # Android cmdline-tools -> /opt/android-sdk/cmdline-tools/latest
   sudo -E /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager \
     "platform-tools" "platforms;android-35" "build-tools;35.0.0" \
-    "ndk;26.1.10909125" "cmake;3.18.1"
+    "ndk;26.1.10909125" "cmake;3.22.1"
   ```
   `local.properties` already pins `sdk.dir=/opt/android-sdk`.
 - Build with `JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64 ANDROID_HOME=/opt/android-sdk ./gradlew ...`.

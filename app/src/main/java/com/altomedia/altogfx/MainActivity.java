@@ -69,6 +69,8 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.midi.MidiDevice;
 import android.media.midi.MidiDeviceInfo;
@@ -92,6 +94,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.OrientationEventListener;
 import android.view.SubMenu;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -129,6 +133,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -341,7 +347,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     final static int APP_STORAGE_ACCESS_REQUEST_CODE = 501; // Any value
 
     public Rack rack;
+    public QuickPatch quickPatch;
+    public Tracks tracks;
     public Presets presets;
+    MediaPlayerDialog mediaPlayerDialog = null;
+    MediaPlayer mediaPlayer;
+    AudioEncoder audioEncoder ;
+    ToggleButton record;
+    ToggleButton triggerRecordToggle ;
+    boolean triggerRecord = false ;
+    boolean triggerRecordedSomething = false ;
+    boolean recording = false ;
+    String lastRecordedFileName;
     int nag = 0 ;
     PopupMenu optionsMenu;
     NotificationManagerCompat notificationManager;
@@ -416,11 +433,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     }
 
                     switch (frag.getTag()) {
+                        case "qp":
+                            quickPatch = (QuickPatch) frag;
+                            break;
                         case "rack":
                             rack = (Rack) frag;
                             break;
                         case "presets":
                             presets = (Presets) frag;
+                            break;
+                        case "tracks":
+                            tracks = (Tracks) frag;
+                            if (tracks.mainActivity == null)
+                                tracks.setMainActivity(this);
                             break;
                         default:
                     }
@@ -607,6 +632,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 //        AudioEngine.showProgress(null);
 //        AudioEngine.showProgress(context);
 
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setAudioAttributes(
+                new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+        );
+
         AudioEngine.create();
 
         AudioEngine.setLibraryPath(getApplicationInfo().nativeLibraryDir);
@@ -618,7 +651,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             Log.d(TAG, "onCreate: savedInstanceState is not null");
 
             rack = new Rack();
+            tracks = new Tracks(this);
             presets = new Presets();
+            quickPatch = new QuickPatch();
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, quickPatch, "qp")
+                    .commit();
 
             getSupportFragmentManager()
                     .beginTransaction()
@@ -627,6 +667,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, presets, "presets")
+                    .commit();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, tracks, "tracks")
                     .commit();
         }
 
@@ -668,12 +712,25 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 Fragment fragment = null;
                 Class<Rack> fragmentClass = null;
                 switch (item.getItemId()) {
+                    case R.id.page_quick:
+                        fragment = quickPatch;
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .show(quickPatch)
+                                .hide(rack)
+                                .hide(presets)
+                                .hide(tracks)
+                                .commit();
+                        return true;
+
                     case R.id.page_rack:
                         fragment = rack;
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .show(rack)
+                                .hide(quickPatch)
                                 .hide(presets)
+                                .hide(tracks)
                                 .commit();
                         return true;
 
@@ -682,7 +739,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .show(presets)
+                                .hide(quickPatch)
                                 .hide(rack)
+                                .hide(tracks)
+                                .commit();
+                        return true;
+
+                    case R.id.page_tracks:
+                        fragment = tracks;
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .show(tracks)
+                                .hide(quickPatch)
+                                .hide(rack)
+                                .hide(presets)
                                 .commit();
                         return true;
 
@@ -697,7 +767,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         getSupportFragmentManager()
                 .beginTransaction()
                 .show(rack)
+                .hide(quickPatch)
                 .hide(presets)
+                .hide(tracks)
                 .commit();
 
         bottomNavigationView.setSelectedItemId(R.id.page_rack);
@@ -736,6 +808,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             Log.e(TAG, "Directory not created: " + dir.toString());
         } else {
             Log.d(TAG, "onResume: default directory set as " + dir.toString());
+        }
+
+        tracks.load(dir);
+        Set<String> _tracksCustom = defaultSharedPreferences.getStringSet("tracks", null) ;
+        if (_tracksCustom != null) {
+            for (String _d: _tracksCustom) {
+                tracks.load(Uri.parse(_d));
+            }
         }
 
         applyWallpaper(context, getWindow(), getResources(), findViewById(R.id.wallpaper), getWindowManager().getDefaultDisplay().getWidth(), getWindowManager().getDefaultDisplay().getHeight()); //finally
@@ -778,6 +858,240 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         register_bt_callback();
     }
 
+    void showMediaPlayerDialog() {
+        if (lastRecordedFileName == null) {
+            Log.e(TAG, "showMediaPlayerDialog: no last recorded audio");
+            return;
+        }
+
+        if (mediaPlayerDialog == null)
+            mediaPlayerDialog = new MediaPlayerDialog(this, mediaPlayer);
+        mediaPlayerDialog.dialog.show();
+        if (mediaPlayerDialog.dialog != null)
+            return;
+        Log.d(TAG, "showMediaPlayerDialog: " + lastRecordedFileName);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = getLayoutInflater();
+
+        ConstraintLayout constraintLayout = (ConstraintLayout) inflater.inflate(R.layout.media_player_dialog, null);
+        SurfaceView surface = constraintLayout.findViewById(R.id.video_player_dialog);
+
+        LinearLayout surfaceLayout = constraintLayout.findViewById(R.id.surface_ll);
+
+        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                if (lastRecordedFileName.endsWith(".mp4")) {
+                    int w = mp.getVideoWidth(), h = mp.getVideoHeight();
+                    surfaceLayout.setVisibility(VISIBLE);
+                    surface.getHolder().setFixedSize(w, h);
+                    Log.d(TAG, "onPrepared: ends with mp4");
+                } else {
+                    surfaceLayout.setVisibility(GONE);
+                }
+            }
+        });
+
+        surface.getHolder().addCallback(new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                mediaPlayer.setDisplay(holder);
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                                       int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                mediaPlayer.setDisplay(null);
+                mediaPlayer.stop();
+            }
+        });
+
+        ToggleButton toggleButton = constraintLayout.findViewById(R.id.media_play);
+        surface.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleButton.setChecked(false);
+            }
+        });
+        Button openFolder = constraintLayout.findViewById(R.id.open_folder);
+        openFolder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse(dir.toString());
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setDataAndType(uri, "*/*");
+                startActivity(intent);
+
+            }
+        });
+        TextView textView = constraintLayout.findViewById(R.id.media_filename);
+        File file = new File(lastRecordedFileName);
+        tracks.tracksAdapter.add(lastRecordedFileName);
+        textView.setText(file.getName());
+        toggleButton.setButtonDrawable(R.drawable.ic_baseline_play_arrow_24);
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    Uri uri = Uri.parse(lastRecordedFileName);
+                    try {
+                        if (lastRecordedFileName.endsWith(".mp4")) {
+                            surfaceLayout.setVisibility(VISIBLE);
+                            Log.d(TAG, "onCheckedChanged: ends with mp4");
+                        } else {
+                            surfaceLayout.setVisibility(GONE);
+                            Log.d(TAG, "onCheckedChanged: no end");
+                        }
+
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                        mediaPlayer.setDataSource(getApplicationContext(), uri);
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        toast("Cannot load media file: " + e.getMessage());
+                        return;
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        MainActivity.toast(e.getMessage());
+                        return;
+                    }
+
+                    toggleButton.setButtonDrawable(R.drawable.ic_baseline_pause_24);
+                    mediaPlayer.start();
+                } else {
+                    mediaPlayer.pause();
+                    toggleButton.setButtonDrawable(R.drawable.ic_baseline_play_arrow_24);
+                    surface.setVisibility(GONE);
+                }
+            }
+        });
+
+        SeekBar seekBar = constraintLayout.findViewById(R.id.media_seekbar);
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                toggleButton.setButtonDrawable(R.drawable.ic_baseline_play_arrow_24);
+                seekBar.setProgress(0);
+                surface.setVisibility(GONE);
+            }
+        });
+
+        Button share = constraintLayout.findViewById(R.id.share_file);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shareFile(file);
+                // this is pretty awesome!
+                // update 24-6-2022 doesnt work :(
+                /*
+                MediaScannerConnection.scanFile(context,
+                        new String[] { file.toString() }, null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                Log.i("ExternalStorage", "Scanned " + path + ":");
+                                Log.i("ExternalStorage", "-> uri=" + uri);
+                                intentShareFile.setType("audio/*");
+                                intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+
+                                intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                                        "Sharing Audio File...");
+                                intentShareFile.putExtra(Intent.EXTRA_TEXT, "Sharing Audio File...");
+
+                                intentShareFile.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                startActivity(Intent.createChooser(intentShareFile, "Share Audio File"));
+                            }
+                        });
+
+                 */
+            }
+        });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar _seekBar) {
+                mediaPlayer.seekTo(mediaPlayer.getDuration() * (_seekBar.getProgress() / 100));
+
+            }
+        });
+
+        // Disabling this because this caused a crash when stopping recording ... I think
+        // very hard to debug ... VERY !!!
+        /*
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (mediaPlayer.isPlaying()) {
+                    seekBar.setProgress(100 * mediaPlayer.getCurrentPosition() / mediaPlayer.getDuration());
+                    Log.d(TAG, "run: " + mediaPlayer.getCurrentPosition() / mediaPlayer.getDuration());
+                }
+            }
+        }, 0, 1000);
+
+         */
+
+        builder.setView(constraintLayout)
+                .setPositiveButton("Close", null);
+
+        AlertDialog dialog = builder.create();
+
+        Button deleteFile = constraintLayout.findViewById(R.id.delete_file);
+        deleteFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage("Are you sure you want to delete this file?")
+                        .setTitle("Delete " + lastRecordedFileName)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface _dialog, int id) {
+                                file.delete();
+                                if (file.exists()) {
+                                    toast("File could not be deleted");
+                                } else {
+                                    toast("File deleted");
+                                    dialog.dismiss();
+                                }
+                            }
+                        })
+                        .setNegativeButton("Cancel", null);
+                // Create the AlertDialog object and return it
+                builder.create().show();
+            }
+        });
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                mediaPlayer.stop();
+//                timer.cancel();
+            }
+        });
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                mediaPlayer.stop();
+//                timer.cancel();
+            }
+        });
+        dialog.show();
+
+    }
+
     /**
      * A native method that is implemented by the 'amprack' native library,
      * which is packaged with this application.
@@ -805,6 +1119,29 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         ExtendedFloatingActionButton fab = findViewById(R.id.fab);
         addPluginMenu = new PopupMenu(context, fab);
+
+        record = findViewById(R.id.record_button);
+        record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Log.d(TAG, "onCheckedChanged: record pressed");
+                if (onOff.isChecked()) {
+                    Log.d(TAG, "onCheckedChanged: onOff is checked");
+                    toast("Cannot start or stop recording while playing");
+                    record.setChecked(!b);
+                    return;
+                }
+
+                if (b) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+                            && !isStoragePermissionGranted()) {
+                        requestWriteStoragePermission();
+                    } else {
+                        AudioEngine.setRecordingActive(b);
+                    }
+                }
+            }
+        });
 
         JSONObject blacklist = ConnectGuitar.loadJSONFromAssetFile(this, "assets/blacklist.json");
         Log.d(TAG, String.format ("blacklist: %s", blacklist.toString()));
@@ -1053,6 +1390,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public void toggleEffect(boolean isPlaying) {
         if (isPlaying) {
+            if (record.isChecked())
+                record.setChecked(false);
             stopEffect();
             notificationManager.cancelAll();
             running = false ;
@@ -1092,7 +1431,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             applyPreferencesDevices();
             applyPreferencesExport();
             startEffect();
-            notificationManager.notify(0, notification);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == PackageManager.PERMISSION_GRANTED) {
+                try {
+                    notificationManager.notify(0, notification);
+                } catch (SecurityException e) {
+                    Log.w(TAG, "notify: notification permission not granted", e);
+                }
+            }
         }
     }
 
@@ -1120,6 +1467,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         inputMeter.setProgress(0);
         outputMeter.setProgress(0);
+        if (triggerRecordedSomething) {
+            showMediaPlayerDialog();
+            triggerRecordToggle.setChecked(false);
+            triggerRecordedSomething = false;
+        }
+
+        if (record.isChecked())
+            record.setChecked(false);
         nag ++ ;
     }
 
@@ -1227,10 +1582,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Log.e(TAG, "onActivityResult: ", e);
                 }
                 Set<String> _vals = sharedPreferences.getStringSet("collections", null) ;
-                Set<String> vals = new ArraySet<>(_vals);
-                if (vals == null) {
-                    vals = new ArraySet<>();
-                }
+                Set<String> vals = _vals == null ? new ArraySet<>() : new ArraySet<>(_vals);
                 vals.add(name);
                 Log.d(TAG, "onActivityResult: adding collection to list: " + vals.toString());
                 sharedPreferences.edit().putStringSet("collections", vals).commit();
@@ -1245,6 +1597,19 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
 
             Log.d(TAG, "onActivityResult: setting wallpaper: " + selectedImage.toString());
+        }
+
+        if (resultCode == RESULT_OK && requestCode == 1001) {
+            Uri selectedImage = data.getData();
+            Log.d(TAG, "onActivityResult: trying to add " + selectedImage.toString());
+            getContentResolver().takePersistableUriPermission(selectedImage, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            Set<String> _vals = sharedPreferences.getStringSet("tracks", null);
+            Set<String> vals = _vals == null ? new ArraySet<>() : new ArraySet<>(_vals);
+            vals.add(selectedImage.toString());
+            Log.d(TAG, "onActivityResult: adding track to list: " + vals.toString());
+            tracks.load(selectedImage);
+            sharedPreferences.edit().putStringSet("tracks", vals).commit();
         }
 
         if (resultCode == RESULT_OK && requestCode > 4999 && requestCode < 5020) {
@@ -2769,10 +3134,47 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             mainActivity.handler.post(() -> {
                 outputMeter.setProgress((int) (inputValue * 100));
 //            Log.d(TAG, "setMixerMeterSwitch: " + inputValue);
-                if (inputValue > 1f)
-                    outputMeter.setProgressTintList(ColorStateList.valueOf(Color.RED));
-                else
-                    outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+                if (mainActivity.triggerRecord) {
+                    if (mainActivity.recording) {
+                        if (inputValue < 0.1) {
+                            AudioEngine.toggleRecording(false);
+                            mainActivity.recording = false;
+                            mainActivity.triggerRecord = false;
+                            outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+                        }
+                    } else {
+                        if (inputValue > 0.3) {
+                            outputMeter.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
+                            Date date = new Date();
+                            mainActivity.lastRecordedFileName = formatter.format(date);
+                            mainActivity.lastRecordedFileName = mainActivity.dir.getAbsolutePath() + "/" + mainActivity.lastRecordedFileName;
+                            AudioEngine.setFileName(mainActivity.lastRecordedFileName);
+                            switch (mainActivity.exportFormat) {
+                                case "0":
+                                default:
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".wav";
+                                    break;
+                                case "1":
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".ogg";
+                                    break;
+                                case "2":
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".mp3";
+                                    break;
+                            }
+
+                            mainActivity.triggerRecordedSomething = true;
+                            mainActivity.recording = true;
+                            Log.d(TAG, "setMixerMeterSwitch: triggering recording");
+                            AudioEngine.toggleRecording(true);
+                        }
+                    }
+                } else {
+                    if (inputValue > 1f)
+                        outputMeter.setProgressTintList(ColorStateList.valueOf(Color.RED));
+                    else
+                        outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+                }
             });
 
         }
@@ -2957,11 +3359,22 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public void AudioRecordTest () {
         Log.d(TAG, "AudioRecordTest: ");
+        if (!isRecordPermissionGranted()) {
+            requestRecordPermission();
+            return;
+        }
+
         int min = AudioRecord.getMinBufferSize(8000, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT);
         AudioRecord aRecord = null;
 
-        aRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 48000,
-                AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, 1024*4);
+        try {
+            aRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, 48000,
+                    AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_FLOAT, 1024*4);
+        } catch (SecurityException e) {
+            Log.e(TAG, "AudioRecordTest: recording permission denied", e);
+            MainActivity.toast("Recording permission is required");
+            return;
+        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Audio Record Test");

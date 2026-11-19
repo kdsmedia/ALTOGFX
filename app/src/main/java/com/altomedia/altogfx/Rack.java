@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -191,6 +194,101 @@ public class Rack extends Fragment {
         mainActivity.pluginDialogAdapter = new PluginDialogAdapter();
         mainActivity.pluginDialogAdapter.setMainActivity(getContext(), mainActivity);
         recyclerView1.setAdapter(mainActivity.pluginDialogAdapter);
+
+        mainActivity.triggerRecordToggle = view.findViewById(R.id.record_trigger);
+        mainActivity.record = view.findViewById(R.id.record_button);
+        mainActivity.record.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mainActivity.setMidiControl(v, -1, -1, MIDIControl.Type.TOGGLE, MIDIControl.Scope.GLOBAL);
+                return false;
+            }
+        });
+        mainActivity.triggerRecordToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mainActivity.outputMeter.setProgressTintList(ColorStateList.valueOf(Color.GREEN));
+                mainActivity.record.setEnabled(!isChecked);
+                if (isChecked)
+                    mainActivity.record.setText("Tri");
+                else
+                    mainActivity.record.setText("Rec");
+                mainActivity.triggerRecord = isChecked;
+                if (!isChecked && mainActivity.recording) {
+                    AudioEngine.toggleRecording(false);
+                    mainActivity.recording = false;
+                }
+            }
+        });
+
+        mainActivity.record.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!mainActivity.onOff.isChecked()) {
+//                        mainActivity.record.setChecked(!b);
+                    if (b) {
+                        compoundButton.setChecked(false);
+                        MainActivity.toast("Turn on the app to start recording");
+                    } else {
+                        AudioEngine.toggleRecording(b);
+                        mainActivity.recording = b ;
+                        mainActivity.showMediaPlayerDialog();
+                    }
+
+                    return;
+                }
+
+                if (b) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        if (!mainActivity.isStoragePermissionGranted()) {
+    //                        requestReadStoragePermission();
+                            mainActivity.requestWriteStoragePermission();
+
+                            /*
+                            if (!isStoragePermissionGranted()) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Permission denied. Recording features are disabled.",
+                                        Toast.LENGTH_LONG)
+                                        .show();
+                                return ;
+                            }
+                            */
+                        } else {
+    //                        AudioEngine.setRecordingActive(b);
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_HH.mm.ss");
+                            Date date = new Date();
+                            mainActivity.lastRecordedFileName = formatter.format(date);
+                            mainActivity.lastRecordedFileName = mainActivity.dir.getAbsolutePath() + "/" + mainActivity.lastRecordedFileName ;
+                            AudioEngine.setFileName(mainActivity.lastRecordedFileName);
+                            switch (mainActivity.exportFormat) {
+                                case "0":
+                                default:
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".wav" ;
+                                    break ;
+                                case "1":
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".ogg" ;
+                                    break ;
+                                case "2":
+                                    mainActivity.lastRecordedFileName = mainActivity.lastRecordedFileName + ".mp3" ;
+                                    break ;
+                            }
+
+                            AudioEngine.toggleRecording(b);
+                            mainActivity.recording = b ;
+                        }
+                    } else {
+                        MainActivity.alert("Feature not supported", "Your device is too old to support this feature. Sorry.");
+                        return ;
+                    }
+                } else {
+//                    mainActivity.lastRecordedFileName = AudioEngine.getRecordingFileName();
+                    AudioEngine.toggleRecording(b);
+                    mainActivity.recording = b ;
+                    if (!mainActivity.triggerRecord)
+                        mainActivity.showMediaPlayerDialog();
+                }
+            }
+        });
 
         mainActivity.fab = view.findViewById(R.id.fab);
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
@@ -739,6 +837,7 @@ public class Rack extends Fragment {
         if (mainActivity.useTheme) {
             mainActivity.skinEngine.cardText(mainActivity.patchDesc);
             mainActivity.skinEngine.cardText(mainActivity.hidePanel);
+            mainActivity.skinEngine.cardText(mainActivity.triggerRecordToggle);
             mainActivity.toggleMixer.setCompoundDrawables(null,null,null,null);
 
             mainActivity.skinEngine.cardText(mixerLabel);

@@ -88,6 +88,7 @@
     <string-array name="hash_commands">
         <item>set: </item>
         <item>version</item>
+        <item>last recorded audio</item>
     </string-array>
     <string-array name="mstyles">
         <item>Theme.AmpRack</item>
