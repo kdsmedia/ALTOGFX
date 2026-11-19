@@ -671,6 +671,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
                 @Override
                 public void onClick(View view) {
                     int _pos = holder.getAdapterPosition();
+                    if (_pos == RecyclerView.NO_POSITION) {
+                        return;
+                    }
                     Log.d (TAG, "Deleting plugin at position: " + _pos);
                     AudioEngine.deletePlugin(_pos);
                     linearLayout.removeAllViews();
@@ -681,14 +684,22 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
             holder.moveUpButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    moveItemUp(holder.getAdapterPosition());
+                    int _pos = holder.getAdapterPosition();
+                    if (_pos == RecyclerView.NO_POSITION) {
+                        return;
+                    }
+                    moveItemUp(_pos);
                 }
             });
 
             holder.moveDownButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    moveItemDown(holder.getAdapterPosition());
+                    int _pos = holder.getAdapterPosition();
+                    if (_pos == RecyclerView.NO_POSITION) {
+                        return;
+                    }
+                    moveItemDown(_pos);
                 }
             });
 
@@ -1246,28 +1257,28 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     void deleteAll () {
-        for (int i = 0 ;i  < plugins.size();i++) {
+        for (int i = plugins.size() - 1; i >= 0; i--) {
             deleteItem(i);
         }
     }
 
     void deleteItem(int index) {
-        if (index > plugins.size()) {
-            Log.w(TAG, "deleteItem: index > plugins size", null);
+        if (index < 0 || index >= plugins.size()) {
+            Log.w(TAG, "deleteItem: index " + index + " out of range", null);
             return ;
         }
 
         plugins.remove(index);
         notifyItemRemoved(index);
-//        notifyItemRangeChanged(0, getItemCount());
     }
 
     void moveItemUp (int index) {
-        if (index == 0) {
-            Toast.makeText(context,
-                    "Plugin is already at the top",
-                    Toast.LENGTH_LONG)
-                    .show();
+        if (index <= 0 || index >= plugins.size()) {
+            if (index == 0)
+                Toast.makeText(context,
+                        "Plugin is already at the top",
+                        Toast.LENGTH_LONG)
+                        .show();
             return ;
         }
 
@@ -1277,6 +1288,9 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
     }
 
     void moveItemDown (int index) {
+        if (index < 0 || index >= plugins.size()) {
+            return ;
+        }
         if (index >= getItemCount() - 1) {
             Toast.makeText(context,
                     "Plugin is already at the end",

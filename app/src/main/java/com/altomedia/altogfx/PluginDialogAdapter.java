@@ -58,7 +58,11 @@ public class PluginDialogAdapter extends RecyclerView.Adapter <PluginDialogAdapt
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final int pluginID = plugins.get(holder.getAdapterPosition());
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition == RecyclerView.NO_POSITION) {
+                    return;
+                }
+                final int pluginID = plugins.get(adapterPosition);
                 Log.d(TAG, "Adding plugin ID: " + pluginID) ;
                 mainActivity.addPluginToRack(pluginID);
                 if (! mainActivity.defaultSharedPreferences.getBoolean("keep_plugindialog_open", false))
@@ -157,10 +161,19 @@ public class PluginDialogAdapter extends RecyclerView.Adapter <PluginDialogAdapt
         if (index < 0 || index >= plugins.size())
             return;
 
+        String pluginName = pluginNames.get(index);
         plugins.remove(index);
-        if (index < pluginNames.size()) pluginNames.remove(index);
-        if (index < pluginsIDs.size()) pluginsIDs.remove(index);
-        if (index < descriptions.size()) descriptions.remove(index);
+        pluginNames.remove(index);
+        descriptions.remove(index);
+
+        int allIndex = pluginNamesAll.indexOf(pluginName);
+        if (allIndex >= 0) {
+            pluginNamesAll.remove(allIndex);
+            pluginsAll.remove(allIndex);
+            descriptionsAll.remove(allIndex);
+            pluginsIDs.remove(allIndex);
+        }
+
         notifyItemRemoved(index);
     }
 
