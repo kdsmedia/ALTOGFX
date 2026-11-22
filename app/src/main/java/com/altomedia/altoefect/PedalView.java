@@ -154,9 +154,9 @@ public class PedalView extends View {
 
         int count = Math.max(1, state.controls.size());
         int columns;
-        if (count <= 3) {
+        if (count <= 2) {
             columns = count;
-        } else if (count == 4) {
+        } else if (count <= 4) {
             columns = 2;
         } else {
             columns = 3;
@@ -171,7 +171,9 @@ public class PedalView extends View {
         for (int i = 0; i < count; i++) {
             int row = i / columns;
             int col = i % columns;
-            float cx = left + cellW * (col + 0.5f);
+            float cx = (row == rows - 1 && count % columns == 1)
+                    ? (left + right) / 2f
+                    : left + cellW * (col + 0.5f);
             float cy = top + cellH * (row + 0.42f);
             knobs.add(new KnobHit(state.controls.get(i), cx, cy, knob / 2f));
         }

@@ -245,8 +245,14 @@ public final class PedalEngine {
         }
         AudioEngine.setEffectOn(false);
         applyAudioSettings();
-        AudioEngine.setEffectOn(true);
-        AudioEngine.toggleMixer(true);
+        boolean ok = AudioEngine.setEffectOn(true);
+        started = ok;
+        if (ok) {
+            AudioEngine.toggleMixer(true);
+        }
+        if (listener != null) {
+            listener.onAudioStateChanged(ok);
+        }
     }
 
     public void saveCurrentAsPreset(String name, String tag, String description) {
