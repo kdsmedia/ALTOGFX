@@ -47,7 +47,8 @@ public class MeterView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (System.currentTimeMillis() - lastUpdate > 120) {
+        if ((input > 0.001f || output > 0.001f)
+                && System.currentTimeMillis() - lastUpdate > 120) {
             input *= 0.88f;
             output *= 0.88f;
             postInvalidateOnAnimation();

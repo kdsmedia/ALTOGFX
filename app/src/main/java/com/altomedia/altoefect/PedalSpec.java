@@ -101,8 +101,8 @@ public final class PedalSpec {
                 "libgx_delay.lv2.so", 0,
                 0xFF14525C, 0xFF62E0E8,
                 new ControlSpec[]{
-                        new ControlSpec("L Time", "TIME", "ms", 0.35f, true),
-                        new ControlSpec("L Level", "LEVEL", "dB", 0.55f),
+                        new ControlSpec("L Time", "TIME", "ms", 0.65f, true),
+                        new ControlSpec("L Level", "LEVEL", "dB", 0.35f),
                         new ControlSpec("LFO", "MOD", "Hz", 0.30f, true),
                         new ControlSpec("Mode", "MODE", "", 0.00f, false,
                                 new String[]{"LINEAR", "PINGPONG"})

@@ -309,8 +309,9 @@ public class PedalView extends View {
         // Tick ring on the enclosure.
         for (int i = 0; i <= 10; i++) {
             double angle = Math.toRadians(-135 + i * 27);
-            float inner = r * 1.18f;
-            float outer = r * (i % 5 == 0 ? 1.36f : 1.28f);
+            float inner = r * (large ? 1.18f : 1.06f);
+            float outer = r * (large ? (i % 5 == 0 ? 1.36f : 1.28f)
+                    : (i % 5 == 0 ? 1.22f : 1.15f));
             strokePaint.setStyle(Paint.Style.STROKE);
             strokePaint.setStrokeWidth(dp(i % 5 == 0 ? 1.3f : 0.8f));
             strokePaint.setColor(withAlpha(0xFFF6EFE4, (live ? 0.55f : 0.2f)));

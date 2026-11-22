@@ -193,8 +193,13 @@ public class PedalboardActivity extends AppCompatActivity
 
         buildLoadingScreen();
         new Thread(() -> {
-            engine.initialize();
-            runOnUiThread(this::onEngineReady);
+            try {
+                engine.initialize();
+                runOnUiThread(this::onEngineReady);
+            } catch (Throwable throwable) {
+                android.util.Log.e("PedalboardActivity", "Engine initialization failed", throwable);
+                runOnUiThread(() -> showInitError(throwable));
+            }
         }, "altoefect-init").start();
     }
 
@@ -235,6 +240,42 @@ public class PedalboardActivity extends AppCompatActivity
 
         content.removeAllViews();
         content.addView(loading, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void showInitError(Throwable throwable) {
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+        LinearLayout error = new LinearLayout(this);
+        error.setOrientation(LinearLayout.VERTICAL);
+        error.setGravity(Gravity.CENTER);
+        error.setPadding(dp(28), dp(28), dp(28), dp(28));
+        error.setBackgroundColor(BG);
+
+        TextView title = new TextView(this);
+        title.setText("ENGINE COULD NOT START");
+        title.setTextColor(CREAM);
+        title.setTextSize(14);
+        title.setTypeface(displayTypeface);
+        title.setLetterSpacing(0.12f);
+        title.setGravity(Gravity.CENTER);
+        error.addView(title);
+
+        TextView detail = new TextView(this);
+        detail.setText(throwable.getClass().getSimpleName() + ": " + throwable.getMessage()
+                + "\n\nReopen the app to try again.");
+        detail.setTextColor(MUTED);
+        detail.setTextSize(10);
+        detail.setTypeface(bodyTypeface);
+        detail.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams detailParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        detailParams.topMargin = dp(10);
+        error.addView(detail, detailParams);
+
+        content.removeAllViews();
+        content.addView(error, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
