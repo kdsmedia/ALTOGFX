@@ -691,9 +691,9 @@ Java_com_altomedia_altoefect_AudioEngine_addPluginLazyLV2(JNIEnv *env, jclass cl
     if (engine == NULL) return -1 ;
     const char *nativeString = env->GetStringUTFChars(library, 0);
     LOGD("Loading lazy plugin [%s : %d]", nativeString, plugin);
-    engine ->addPluginToRackLazy(const_cast<char *>(nativeString), plugin, SharedLibrary::LV2);
+    int index = engine->addPluginToRackLazy(const_cast<char *>(nativeString), plugin, SharedLibrary::LV2);
     env->ReleaseStringUTFChars(library, nativeString);
-    return engine -> activePlugins.size();
+    return index;
 }
 extern "C"
 JNIEXPORT void JNICALL

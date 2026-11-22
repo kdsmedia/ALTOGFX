@@ -379,7 +379,7 @@ void Engine::onErrorAfterClose(oboe::AudioStream *oboeStream,
          oboe::convertToText(error));
 }
 
-void Engine::addPluginToRackLazy(char* library, int pluginIndex, SharedLibrary::PluginType _type) {
+int Engine::addPluginToRackLazy(char* library, int pluginIndex, SharedLibrary::PluginType _type) {
     SharedLibrary * sharedLibrary = new SharedLibrary (library, _type);
     sharedLibrary -> vm = vm ;
     if (mainActivityClassName != "")
@@ -390,7 +390,14 @@ void Engine::addPluginToRackLazy(char* library, int pluginIndex, SharedLibrary::
 
     if (sharedLibrary->descriptors.size() == 0) {
         LOGE("Unable to load shared library!") ;
-        return;
+        delete sharedLibrary;
+        return -1;
+    }
+    if (pluginIndex < 0 || pluginIndex >= sharedLibrary->descriptors.size()) {
+        LOGE("Plugin index %d out of range (%d descriptors)", pluginIndex,
+             (int) sharedLibrary->descriptors.size());
+        delete sharedLibrary;
+        return -1;
     }
 
     LOGD("loaded shared library [ok] ... now trying to load plugin");
@@ -401,6 +408,7 @@ void Engine::addPluginToRackLazy(char* library, int pluginIndex, SharedLibrary::
     }
     activePlugins .push_back(plugin);
     buildPluginChain();
+    return activePlugins.size() - 1;
 }
 
 void Engine::loadPlugin(char * filename, SharedLibrary::PluginType type) {
