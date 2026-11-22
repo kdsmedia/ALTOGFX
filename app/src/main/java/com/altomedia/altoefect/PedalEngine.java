@@ -80,6 +80,10 @@ public final class PedalEngine {
         presets.addAll(PresetStore.loadAll(context));
         if (!presets.isEmpty()) {
             applyPreset(presets.get(0), false);
+        } else {
+            for (PedalState pedal : pedals) {
+                pedal.setEnabled(false);
+            }
         }
         initialized = true;
     }
@@ -117,6 +121,7 @@ public final class PedalEngine {
         for (PedalState pedal : pedals) {
             Preset.PedalPreset entry = preset.pedals.get(pedal.spec.id);
             if (entry == null) {
+                pedal.setEnabled(false);
                 continue;
             }
             pedal.apply(entry.controls);

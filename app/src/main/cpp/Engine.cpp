@@ -436,6 +436,7 @@ void Engine::discoverPlugins () {
 
 void Engine::buildPluginChain () {
     IN
+    std::lock_guard<std::mutex> lock(mFullDuplexPass.chainMutex);
     LOGD("building chain for %d plugins", activePlugins.size());
     mFullDuplexPass.activePlugins = 0;
     for (Plugin *p: activePlugins) {

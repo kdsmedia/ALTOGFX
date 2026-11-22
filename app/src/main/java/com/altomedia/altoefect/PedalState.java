@@ -108,8 +108,12 @@ public final class PedalState {
     }
 
     public void setEnabled(boolean on) {
-        enabled = on && available;
-        if (available) {
+        boolean target = on && available;
+        if (enabled == target) {
+            return;
+        }
+        enabled = target;
+        if (available && pluginIndex >= 0) {
             AudioEngine.togglePlugin(pluginIndex, enabled);
         }
     }

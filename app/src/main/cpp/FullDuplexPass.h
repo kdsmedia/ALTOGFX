@@ -18,6 +18,7 @@
 #define SAMPLES_FULLDUPLEXPASS_H
 
 #include <dlfcn.h>
+#include <mutex>
 #include "ladspa.h"
 #include "FullDuplexStream.h"
 #include "FileWriter.h"
@@ -56,6 +57,7 @@ public:
     int outputPorts2 [MAX_PLUGINS] ;
     bool pushToLockFreeBeforeOutputVolume = false ;
     int activePlugins =  0 ;
+    std::mutex chainMutex ;
     float * raw = NULL; // this will never be greater than this(TM)
     bool recordingActive = false ;
     bool triggerRecord = false ;
@@ -130,6 +132,10 @@ public:
     }
 
     void process (const float * data, int samplesToProcess) {
+        std::unique_lock<std::mutex> lock(chainMutex, std::try_to_lock);
+        if (!lock.owns_lock()) {
+            return;
+        }
 #define PROFILE_PLUGINS1
 #ifdef PROFILE_PLUGINS
         auto start = std::chrono::system_clock::now();
