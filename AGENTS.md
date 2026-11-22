@@ -119,3 +119,24 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
   (empty OAuth scopes) and push returns 403.
 - The `PUSH_TOKEN` environment variable holds a write-capable token. Push with:
   `git -c credential.helper= push "https://x-access-token:${PUSH_TOKEN}@github.com/kdsmedia/ALTOGFX.git" HEAD:main`
+
+## ALTO EFECT pedalboard (current app)
+
+- App name `ALTO EFECT`; application ID / namespace `com.altomedia.altoefect`.
+- Launcher is `PedalboardActivity` (Java + custom-drawn views), three bottom tabs:
+  PEDALBOARD, PRESETS, SETUP. The old `MainActivity`/AmpRack screens are unreachable.
+- Nine real LV2 pedals are loaded in this order: compressor, wah, overdrive, distortion,
+  chorus, phaser, delay, reverb, cabinet. Specs live in `PedalSpec.java`; the native chain is
+  built by `Engine.buildPluginChain()` and toggled by `AudioEngine.togglePlugin()`.
+- Factory presets: `app/src/main/assets/altoefect_presets.json`. User presets are JSON in
+  `SharedPreferences` (`PresetStore`). Both store normalized 0..1 control positions.
+- `PedalView` is a canvas-drawn pedal (enclosure, knobs, LED, footswitch, jacks); the PRESETS
+  tab shows one large pedal with the same knob visuals. `PowerButtonView`, `BottomNavView`,
+  `LogoView`, `StageBackgroundView`, and `MeterView` are also custom views.
+- Audio is full-duplex Oboe through `AudioEngine`; input/output device IDs come from
+  `AudioManager` (`PedalEngine.findHeadsetInput/Output`). Only `RECORD_AUDIO` is declared —
+  no INTERNET/ACCESS_NETWORK_STATE.
+- The native chain rebuild is guarded by `FullDuplexPass::chainMutex`; the audio callback uses
+  `try_to_lock` and emits a dry buffer if a rebuild is in progress.
+- Build/sign exactly as above; release APK is `app/build/outputs/apk/release/app-release.apk`
+  and is signed with `ALTOMEDIA.jks` (DN `CN=ALTOMEDIA, ...`).
