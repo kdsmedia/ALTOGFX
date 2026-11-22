@@ -50,7 +50,7 @@
             android:theme="@style/Theme.AmpRack">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.altomedia.altogfx.MainActivity" />
+                android:value="com.altomedia.altoefect.MainActivity" />
         </activity>
         <activity
             android:name=".MainActivity"
@@ -71,7 +71,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.altomedia.altogfx.fileprovider"
+            android:authorities="com.altomedia.altoefect.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

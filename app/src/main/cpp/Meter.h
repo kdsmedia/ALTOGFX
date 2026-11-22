@@ -99,7 +99,7 @@ public:
             envOutput = getEnv();
             if (envOutput == nullptr)
                 LOGF("envOutput is null");
-            mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altogfx/MainActivity");
+            mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altoefect/MainActivity");
             if (mainActivityOutput == nullptr) {
                 HERE
                 LOGF("cannot find class mainactivityOutput!");
@@ -150,7 +150,7 @@ public:
             env = getEnv();
             if (env == nullptr)
                 LOGF("env is null");
-            mainActivity = findClassWithEnv(env, "com/altomedia/altogfx/MainActivity");
+            mainActivity = findClassWithEnv(env, "com/altomedia/altoefect/MainActivity");
             if (mainActivity == nullptr) {
                 HERE
                 LOGF("cannot find class mainactivity!");

@@ -78,7 +78,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *_pjvm, void *reserved) {
     gJvm = _pjvm;  // cache the JavaVM pointer
     auto env = getEnv();
     //replace with one of your classes in the line below
-//    auto randomClass = env->FindClass("com/altomedia/altogfx/MainActivity");
+//    auto randomClass = env->FindClass("com/altomedia/altoefect/MainActivity");
 //    jclass classClass = env->GetObjectClass(randomClass);
 //    auto classLoaderClass = env->FindClass("java/lang/ClassLoader");
 //    auto getClassLoaderMethod = env->GetMethodID(classClass, "getClassLoader",
@@ -140,7 +140,7 @@ int Meter::updateMeterOutput (AudioBuffer * buffer) {
         if (envOutput == nullptr)
             LOGF("envOutput is null");
         mainActivityOutput = findClassWithEnv(envOutput, jMainActivityClassName.c_str ());
-//        mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altogfx/MainActivity");
+//        mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altoefect/MainActivity");
         if (mainActivityOutput == nullptr) {
             HERE
             LOGF("cannot find class mainactivityOutput!");
@@ -288,7 +288,7 @@ Meter::Meter(JavaVM *pVm) {
     envOutput = getEnv();
     if (envOutput == nullptr)
         LOGF("envOutput is null");
-    mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altogfx/MainActivity");
+    mainActivityOutput = findClassWithEnv(envOutput, "com/altomedia/altoefect/MainActivity");
     if (mainActivityOutput == nullptr) {
         HERE
         LOGF("cannot find class mainactivityOutput!");
@@ -329,7 +329,7 @@ void Meter::enable () {
     }
 //    vm-> GetEnv((void**)&env, JNI_VERSION_1_6);
     /*
-    mainActivity = env->FindClass("com/altomedia/altogfx/MainActivity");
+    mainActivity = env->FindClass("com/altomedia/altoefect/MainActivity");
     if (mainActivity == nullptr) {
         HERE LOGF("cannot find class mainactivity!");
     }
@@ -481,7 +481,7 @@ void Meter::setActivityClassName (std::string name) {
     jMainActivityClassName = name ;
     env = getEnv();
     auto randomClass = env->FindClass(name.c_str());
-//    auto randomClass = env->FindClass("com/altomedia/altogfx/MainActivity");
+//    auto randomClass = env->FindClass("com/altomedia/altoefect/MainActivity");
     jclass classClass = env->GetObjectClass(randomClass);
     auto classLoaderClass = env->FindClass("java/lang/ClassLoader");
     auto getClassLoaderMethod = env->GetMethodID(classClass, "getClassLoader",

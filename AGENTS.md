@@ -69,10 +69,10 @@ Amp Rack — Android LADSPA/LV2 audio effects processor (Java + Kotlin + C++ NDK
 
 ## App identity
 
-- App name: `ALTOGFX` (`app_name` string). Application ID / namespace: `com.altomedia.altogfx`.
-- Java/Kotlin sources live under `app/src/{main,androidTest,test}/java/com/altomedia/altogfx/`.
-- JNI symbol prefix is `Java_com_altomedia_altogfx_*`; `findClass` uses `com/altomedia/altogfx/...`.
-- FileProvider authority: `com.altomedia.altogfx.fileprovider`.
+- App name: `ALTOGFX` (`app_name` string). Application ID / namespace: `com.altomedia.altoefect`.
+- Java/Kotlin sources live under `app/src/{main,androidTest,test}/java/com/altomedia/altoefect/`.
+- JNI symbol prefix is `Java_com_altomedia_altoefect_*`; `findClass` uses `com/altomedia/altoefect/...`.
+- FileProvider authority: `com.altomedia.altoefect.fileprovider`.
 
 ## Signing
 

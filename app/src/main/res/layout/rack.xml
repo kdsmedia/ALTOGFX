@@ -429,7 +429,7 @@
                         android:textSize="10dp"
                         android:textStyle="bold"/>
 
-                    <com.altomedia.altogfx.RotarySeekbar
+                    <com.altomedia.altoefect.RotarySeekbar
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         app:valueMin="0"
@@ -505,7 +505,7 @@
                         android:textSize="10dp"
                         android:textStyle="bold"/>
 
-                    <com.altomedia.altogfx.RotarySeekbar
+                    <com.altomedia.altoefect.RotarySeekbar
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         app:valueMin="0"

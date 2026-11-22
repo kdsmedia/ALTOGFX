@@ -12,6 +12,6 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "ALTOGFX"
+rootProject.name = "ALTOEFECT"
 include ':app'
 

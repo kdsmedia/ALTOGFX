@@ -14,7 +14,7 @@ static Engine * engine = nullptr;
 
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_MainActivity_stringFromJNI(
+Java_com_altomedia_altoefect_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::string hello = "Hello from C++";
@@ -23,7 +23,7 @@ Java_com_altomedia_altogfx_MainActivity_stringFromJNI(
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_create(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_create(JNIEnv *env, jclass clazz) {
     IN ;
     if (engine == nullptr) {
         engine = new Engine () ;
@@ -37,7 +37,7 @@ Java_com_altomedia_altogfx_AudioEngine_create(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_isAAudioRecommended(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_isAAudioRecommended(JNIEnv *env, jclass clazz) {
     if (engine == nullptr) {
         LOGE(
                 "Engine is null, you must call createEngine "
@@ -49,7 +49,7 @@ Java_com_altomedia_altogfx_AudioEngine_isAAudioRecommended(JNIEnv *env, jclass c
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setAPI(JNIEnv *env, jclass clazz, jint api_type) {
+Java_com_altomedia_altoefect_AudioEngine_setAPI(JNIEnv *env, jclass clazz, jint api_type) {
     if (engine == nullptr) {
         LOGE(
                 "Engine is null, you must call createEngine "
@@ -74,7 +74,7 @@ Java_com_altomedia_altogfx_AudioEngine_setAPI(JNIEnv *env, jclass clazz, jint ap
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setEffectOn(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setEffectOn(JNIEnv *env, jclass clazz,
                                                         jboolean is_effect_on) {
     if (engine == nullptr) {
         LOGE(
@@ -94,7 +94,7 @@ Java_com_altomedia_altogfx_AudioEngine_setEffectOn(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setRecordingDeviceId(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setRecordingDeviceId(JNIEnv *env, jclass clazz,
                                                                  jint device_id) {
     if (engine == nullptr) {
         LOGE(
@@ -110,7 +110,7 @@ Java_com_altomedia_altogfx_AudioEngine_setRecordingDeviceId(JNIEnv *env, jclass 
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPlaybackDeviceId(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setPlaybackDeviceId(JNIEnv *env, jclass clazz,
                                                                 jint device_id) {
     if (engine == nullptr) {
         LOGE(
@@ -126,7 +126,7 @@ Java_com_altomedia_altogfx_AudioEngine_setPlaybackDeviceId(JNIEnv *env, jclass c
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_delete(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_delete(JNIEnv *env, jclass clazz) {
     if (engine) {
         engine->setEffectOn(false);
         delete engine;
@@ -136,7 +136,7 @@ Java_com_altomedia_altogfx_AudioEngine_delete(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_native_1setDefaultStreamValues(JNIEnv *env,
+Java_com_altomedia_altoefect_AudioEngine_native_1setDefaultStreamValues(JNIEnv *env,
                                                                            jclass clazz,
                                                                            jint default_sample_rate,
                                                                            jint default_frames_per_burst) {
@@ -147,14 +147,14 @@ Java_com_altomedia_altogfx_AudioEngine_native_1setDefaultStreamValues(JNIEnv *en
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setMode(JNIEnv *env, jclass clazz, jint mode) {
+Java_com_altomedia_altoefect_AudioEngine_setMode(JNIEnv *env, jclass clazz, jint mode) {
     // TODO: implement setMode()
     if (engine == nullptr) return ;
     LOGD("setting mode to %d", mode) ;
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getSharedLibraries(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getSharedLibraries(JNIEnv *env, jclass clazz) {
     // TODO: implement getSharedLibraries()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -164,7 +164,7 @@ Java_com_altomedia_altogfx_AudioEngine_getSharedLibraries(JNIEnv *env, jclass cl
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPlugins(JNIEnv *env, jclass clazz, jint library) {
+Java_com_altomedia_altoefect_AudioEngine_getPlugins(JNIEnv *env, jclass clazz, jint library) {
     // TODO: implement getPlugins()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -174,7 +174,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPlugins(JNIEnv *env, jclass clazz, jin
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPluginControls(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getPluginControls(JNIEnv *env, jclass clazz,
                                                                 jint plugin) {
     // TODO: implement getPluginControls()
     if (engine == NULL) {
@@ -191,7 +191,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginControls(JNIEnv *env, jclass cla
 }
 extern "C"
 JNIEXPORT jfloatArray JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPluginControlValues(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getPluginControlValues(JNIEnv *env, jclass clazz,
                                                                      jint plugin, jint control) {
     // TODO: implement getPluginControlValues()
     if (engine == NULL) {
@@ -208,7 +208,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginControlValues(JNIEnv *env, jclas
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_addPlugin(JNIEnv *env, jclass clazz, jint library,
+Java_com_altomedia_altoefect_AudioEngine_addPlugin(JNIEnv *env, jclass clazz, jint library,
                                                         jint plugin) {
     // TODO: implement addPlugin()
     if (engine == NULL) {
@@ -221,7 +221,7 @@ Java_com_altomedia_altogfx_AudioEngine_addPlugin(JNIEnv *env, jclass clazz, jint
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_deletePlugin(JNIEnv *env, jclass clazz, jint plugin) {
+Java_com_altomedia_altoefect_AudioEngine_deletePlugin(JNIEnv *env, jclass clazz, jint plugin) {
     // TODO: implement deletePlugin()
     IN
     LOGD("Deleting plugin at position %d", plugin);
@@ -234,7 +234,7 @@ Java_com_altomedia_altogfx_AudioEngine_deletePlugin(JNIEnv *env, jclass clazz, j
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPluginControl(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setPluginControl(JNIEnv *env, jclass clazz,
                                                                jint plugin, jint control,
                                                                jfloat value) {
     // TODO: implement setPluginControl()
@@ -263,7 +263,7 @@ Java_com_altomedia_altogfx_AudioEngine_setPluginControl(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_movePlugin(JNIEnv *env, jclass clazz, jint plugin,
+Java_com_altomedia_altoefect_AudioEngine_movePlugin(JNIEnv *env, jclass clazz, jint plugin,
                                                          jint position) {
     // TODO: implement movePlugin()
     LOGF("%s UNIMPLEMENTED", __PRETTY_FUNCTION__ );
@@ -272,7 +272,7 @@ Java_com_altomedia_altogfx_AudioEngine_movePlugin(JNIEnv *env, jclass clazz, jin
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_togglePlugin(JNIEnv *env, jclass clazz, jint plugin,
+Java_com_altomedia_altoefect_AudioEngine_togglePlugin(JNIEnv *env, jclass clazz, jint plugin,
                                                            jboolean state) {
     // TODO: implement togglePlugin()
     if (engine == NULL) {
@@ -286,7 +286,7 @@ Java_com_altomedia_altogfx_AudioEngine_togglePlugin(JNIEnv *env, jclass clazz, j
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getLibraryName(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getLibraryName(JNIEnv *env, jclass clazz,
                                                              jint library) {
     // TODO: implement getLibraryName()
     if (engine == NULL) {
@@ -297,7 +297,7 @@ Java_com_altomedia_altogfx_AudioEngine_getLibraryName(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPluginName(JNIEnv *env, jclass clazz, jint library,
+Java_com_altomedia_altoefect_AudioEngine_getPluginName(JNIEnv *env, jclass clazz, jint library,
                                                             jint plugin) {
     // TODO: implement getPluginName()
     if (engine == NULL) {
@@ -308,7 +308,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginName(JNIEnv *env, jclass clazz, 
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginName(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginName(JNIEnv *env, jclass clazz,
                                                                   jint plugin) {
     // TODO: implement getActivePluginName()
     if (engine == NULL) {
@@ -328,7 +328,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginName(JNIEnv *env, jclass c
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getControlName(JNIEnv *env, jclass clazz, jint plugin,
+Java_com_altomedia_altoefect_AudioEngine_getControlName(JNIEnv *env, jclass clazz, jint plugin,
                                                              jint control) {
     // TODO: implement getControlName()
     if (engine == NULL) {
@@ -351,7 +351,7 @@ Java_com_altomedia_altogfx_AudioEngine_getControlName(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_loadLibrary(JNIEnv *env, jclass clazz, jstring filename) {
+Java_com_altomedia_altoefect_AudioEngine_loadLibrary(JNIEnv *env, jclass clazz, jstring filename) {
     // TODO: implement loadLibrary()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -367,7 +367,7 @@ Java_com_altomedia_altogfx_AudioEngine_loadLibrary(JNIEnv *env, jclass clazz, js
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_loadPlugins(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_loadPlugins(JNIEnv *env, jclass clazz) {
     // TODO: implement loadPlugins()
     IN
     if (engine == NULL) {
@@ -385,7 +385,7 @@ Java_com_altomedia_altogfx_AudioEngine_loadPlugins(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_debugInfo(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_debugInfo(JNIEnv *env, jclass clazz) {
     // TODO: implement debugInfo()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -402,7 +402,7 @@ Java_com_altomedia_altogfx_AudioEngine_debugInfo(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_movePluginDown(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_movePluginDown(JNIEnv *env, jclass clazz,
                                                              jint plugin) {
     // TODO: implement movePluginDown()
     engine -> mFullDuplexPass.bypass = true ;
@@ -413,7 +413,7 @@ Java_com_altomedia_altogfx_AudioEngine_movePluginDown(JNIEnv *env, jclass clazz,
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_movePluginUp(JNIEnv *env, jclass clazz, jint plugin) {
+Java_com_altomedia_altoefect_AudioEngine_movePluginUp(JNIEnv *env, jclass clazz, jint plugin) {
     // TODO: implement movePluginUp()
     engine -> mFullDuplexPass.bypass = true ;
     int res = engine ->moveActivePluginUp(plugin);
@@ -422,7 +422,7 @@ Java_com_altomedia_altogfx_AudioEngine_movePluginUp(JNIEnv *env, jclass clazz, j
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setExternalStoragePath(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setExternalStoragePath(JNIEnv *env, jclass clazz,
                                                                      jstring path) {
     // TODO: implement setExternalStoragePath()
     IN ;
@@ -439,7 +439,7 @@ Java_com_altomedia_altogfx_AudioEngine_setExternalStoragePath(JNIEnv *env, jclas
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setRecordingActive(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setRecordingActive(JNIEnv *env, jclass clazz,
                                                                  jboolean active) {
     // TODO: implement setRecordingActive()
     if (engine == NULL) {
@@ -452,7 +452,7 @@ Java_com_altomedia_altogfx_AudioEngine_setRecordingActive(JNIEnv *env, jclass cl
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_addPluginByName(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_addPluginByName(JNIEnv *env, jclass clazz,
                                                               jstring name) {
     // TODO: implement addPluginByName()
     const char *nativeString = env->GetStringUTFChars(name, 0);
@@ -462,7 +462,7 @@ Java_com_altomedia_altogfx_AudioEngine_addPluginByName(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPresetValue(JNIEnv *env, jclass clazz, jint plugin,
+Java_com_altomedia_altoefect_AudioEngine_setPresetValue(JNIEnv *env, jclass clazz, jint plugin,
                                                              jint control, jfloat value) {
     // TODO: implement setPresetValue()
     if (engine == NULL) {
@@ -484,7 +484,7 @@ Java_com_altomedia_altogfx_AudioEngine_setPresetValue(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jfloat JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPluginPresetValue(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getPluginPresetValue(JNIEnv *env, jclass clazz,
                                                                    jint plugin, jint control) {
     // TODO: implement getPluginPresetValue()
     if (engine == NULL) {
@@ -496,7 +496,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginPresetValue(JNIEnv *env, jclass 
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setExportFormat(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setExportFormat(JNIEnv *env, jclass clazz,
                                                               jint format) {
     // TODO: implement setExportFormat()
         if (engine == NULL) {
@@ -508,7 +508,7 @@ Java_com_altomedia_altogfx_AudioEngine_setExportFormat(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_clearActiveQueue(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_clearActiveQueue(JNIEnv *env, jclass clazz) {
     // TODO: implement clearActiveQueue()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -520,14 +520,14 @@ Java_com_altomedia_altogfx_AudioEngine_clearActiveQueue(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getRecordingFileName(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getRecordingFileName(JNIEnv *env, jclass clazz) {
     // TODO: implement getRecordingFileName()
     LOGD("%s", engine->fileWriter->filename.c_str());
     return env ->NewStringUTF(engine->fileWriter->filename.c_str());
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setLowLatency(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setLowLatency(JNIEnv *env, jclass clazz,
                                                             jboolean low_latency) {
     // TODO: implement setLowLatency()
     if (engine == NULL) {
@@ -542,7 +542,7 @@ Java_com_altomedia_altogfx_AudioEngine_setLowLatency(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setSampleRate(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setSampleRate(JNIEnv *env, jclass clazz,
                                                             jint sample_rate) {
     // TODO: implement setSampleRate()
     if (engine == NULL) {
@@ -554,7 +554,7 @@ Java_com_altomedia_altogfx_AudioEngine_setSampleRate(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setOpusBitRate(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setOpusBitRate(JNIEnv *env, jclass clazz,
                                                              jint bitrate) {
     // TODO: implement setOpusBitRate()
     if (engine == NULL) {
@@ -566,7 +566,7 @@ Java_com_altomedia_altogfx_AudioEngine_setOpusBitRate(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getTotalPlugins(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getTotalPlugins(JNIEnv *env, jclass clazz) {
     // TODO: implement getTotalPlugins()
     if (engine == NULL) return 0;
 
@@ -581,7 +581,7 @@ Java_com_altomedia_altogfx_AudioEngine_getTotalPlugins(JNIEnv *env, jclass clazz
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_wasLowLatency(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_wasLowLatency(JNIEnv *env, jclass clazz) {
     // TODO: implement wasLowLatency()
     if (engine == NULL) return false;
 
@@ -589,7 +589,7 @@ Java_com_altomedia_altogfx_AudioEngine_wasLowLatency(JNIEnv *env, jclass clazz) 
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getPluginUniqueID(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getPluginUniqueID(JNIEnv *env, jclass clazz,
                                                                 jint library, jint plugin) {
     // TODO: implement getPluginUniqueID()
     if (engine == NULL) {
@@ -600,7 +600,7 @@ Java_com_altomedia_altogfx_AudioEngine_getPluginUniqueID(JNIEnv *env, jclass cla
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePlugins(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getActivePlugins(JNIEnv *env, jclass clazz) {
     // TODO: implement getActivePlugins()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -610,7 +610,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePlugins(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT jfloatArray JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginValues(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginValues(JNIEnv *env, jclass clazz,
                                                                     jint plugin) {
     // TODO: implement getActivePluginValues()
     if (engine == NULL) {
@@ -632,7 +632,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginValues(JNIEnv *env, jclass
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setLazyLoad(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setLazyLoad(JNIEnv *env, jclass clazz,
                                                           jboolean lazy_load) {
     // TODO: implement setLazyLoad()
     // so finally i learnt this!
@@ -640,7 +640,7 @@ Java_com_altomedia_altogfx_AudioEngine_setLazyLoad(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_addPluginLazy(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_addPluginLazy(JNIEnv *env, jclass clazz,
                                                             jstring library, jint plugin) {
     // TODO: implement addPluginLazy()
     if (engine == NULL) return -1 ;
@@ -652,7 +652,7 @@ Java_com_altomedia_altogfx_AudioEngine_addPluginLazy(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_testLV2(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_testLV2(JNIEnv *env, jclass clazz) {
     // TODO: implement testLV2()
 //    engine ->loadPlugin("rkrlv2.so", SharedLibrary::LV2);
 //    engine -> libraries.at(0)->load();
@@ -668,7 +668,7 @@ Java_com_altomedia_altogfx_AudioEngine_testLV2(JNIEnv *env, jclass clazz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setLibraryPath(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setLibraryPath(JNIEnv *env, jclass clazz,
                                                              jstring path) {
     // TODO: implement setLibraryPath()
     IN
@@ -685,7 +685,7 @@ Java_com_altomedia_altogfx_AudioEngine_setLibraryPath(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_addPluginLazyLV2(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_addPluginLazyLV2(JNIEnv *env, jclass clazz,
                                                                jstring library, jint plugin) {
     // TODO: implement addPluginLazyLV2()
     if (engine == NULL) return -1 ;
@@ -697,7 +697,7 @@ Java_com_altomedia_altogfx_AudioEngine_addPluginLazyLV2(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setInputVolume(JNIEnv *env, jclass clazz, jfloat volume) {
+Java_com_altomedia_altoefect_AudioEngine_setInputVolume(JNIEnv *env, jclass clazz, jfloat volume) {
     // TODO: implement setVolume()
 //    IN
     if (engine == NULL) {
@@ -709,7 +709,7 @@ Java_com_altomedia_altogfx_AudioEngine_setInputVolume(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setOutputVolume(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setOutputVolume(JNIEnv *env, jclass clazz,
                                                               jfloat volume) {
     // TODO: implement setOutputVolume()
 //    IN
@@ -719,7 +719,7 @@ Java_com_altomedia_altogfx_AudioEngine_setOutputVolume(JNIEnv *env, jclass clazz
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_toggleMixer(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_toggleMixer(JNIEnv *env, jclass clazz,
                                                           jboolean toggle) {
     // TODO: implement toggleMixer()
     if (engine == NULL) return ;
@@ -732,7 +732,7 @@ Java_com_altomedia_altogfx_AudioEngine_toggleMixer(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_printActiveChain(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_printActiveChain(JNIEnv *env, jclass clazz) {
     // TODO: implement printActiveChain()
     IN
     if (engine == NULL) return ;
@@ -746,13 +746,13 @@ Java_com_altomedia_altogfx_AudioEngine_printActiveChain(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_bypass(JNIEnv *env, jclass clazz, jboolean state) {
+Java_com_altomedia_altoefect_AudioEngine_bypass(JNIEnv *env, jclass clazz, jboolean state) {
     // TODO: implement bypass()
     engine == NULL ?  LOGE("[%s] engine is null !", __PRETTY_FUNCTION__ ) :   engine -> mFullDuplexPass.bypass = state ;
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_toggleRecording(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_toggleRecording(JNIEnv *env, jclass clazz,
                                                               jboolean state) {
     // TODO: implement toggleRecording()
     engine == NULL ?  LOGE("[%s] engine is null !", __PRETTY_FUNCTION__ ) : engine -> mFullDuplexPass.recordingActive = state ;
@@ -765,7 +765,7 @@ Java_com_altomedia_altogfx_AudioEngine_toggleRecording(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setFileName(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setFileName(JNIEnv *env, jclass clazz,
                                                           jstring file_name) {
     // TODO: implement setFileName()
     const char *nativeString = env->GetStringUTFChars(file_name, 0);
@@ -775,7 +775,7 @@ Java_com_altomedia_altogfx_AudioEngine_setFileName(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getSampleRate(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getSampleRate(JNIEnv *env, jclass clazz) {
     // TODO: implement getSampleRate()
     // TODO: implement setSampleRate()
     if (engine == NULL) {
@@ -788,7 +788,7 @@ Java_com_altomedia_altogfx_AudioEngine_getSampleRate(JNIEnv *env, jclass clazz) 
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getTunerEnabled(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getTunerEnabled(JNIEnv *env, jclass clazz) {
     // TODO: implement getTunerEnabled()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -799,7 +799,7 @@ Java_com_altomedia_altogfx_AudioEngine_getTunerEnabled(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setTunerEnabled(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setTunerEnabled(JNIEnv *env, jclass clazz,
                                                               jboolean enabled) {
     // TODO: implement setTunerEnabled()
         if (engine == NULL) {
@@ -812,7 +812,7 @@ Java_com_altomedia_altogfx_AudioEngine_setTunerEnabled(JNIEnv *env, jclass clazz
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPluginBuffer(JNIEnv
+Java_com_altomedia_altoefect_AudioEngine_setPluginBuffer(JNIEnv
 * env,
 jclass clazz, jfloatArray
 data,
@@ -831,19 +831,19 @@ jint plugin
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_altomedia_altogfx_AudioEngine_tuneLatency(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_tuneLatency(JNIEnv *env, jclass clazz) {
     if (engine == NULL) return NULL ;
     return env->NewStringUTF (engine -> tuneLatency ().c_str());
 }
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getTimeStamp(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getTimeStamp(JNIEnv *env, jclass clazz) {
     // TODO: implement getTimeStamp()
     return (jlong) engine -> getTimeStamp() ;
 }
 extern "C"
 JNIEXPORT jdouble JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getLatency(JNIEnv *env, jclass clazz, jboolean input) {
+Java_com_altomedia_altoefect_AudioEngine_getLatency(JNIEnv *env, jclass clazz, jboolean input) {
     // TODO: implement getLatency()
     if (! engine)
         return -1.0;
@@ -852,7 +852,7 @@ Java_com_altomedia_altogfx_AudioEngine_getLatency(JNIEnv *env, jclass clazz, jbo
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPluginFilename(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setPluginFilename(JNIEnv *env, jclass clazz,
                                                                 jstring filename, jint plugin) {
     if (!engine)
         return;
@@ -866,7 +866,7 @@ Java_com_altomedia_altogfx_AudioEngine_setPluginFilename(JNIEnv *env, jclass cla
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getFilePort(JNIEnv *env, jclass clazz, jint plugin) {
+Java_com_altomedia_altoefect_AudioEngine_getFilePort(JNIEnv *env, jclass clazz, jint plugin) {
     // TODO: implement getFilePort()
     if (engine == NULL)
         return false ;
@@ -881,7 +881,7 @@ Java_com_altomedia_altogfx_AudioEngine_getFilePort(JNIEnv *env, jclass clazz, ji
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setFilePortValue(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setFilePortValue(JNIEnv *env, jclass clazz,
                                                                jint plugin, jstring filename) {
     // TODO: implement setFilePortValue()
     IN
@@ -901,7 +901,7 @@ Java_com_altomedia_altogfx_AudioEngine_setFilePortValue(JNIEnv *env, jclass claz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_popFunction(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_popFunction(JNIEnv *env, jclass clazz) {
     // TODO: implement popFunction()
     if (engine == nullptr)
         return;
@@ -910,7 +910,7 @@ Java_com_altomedia_altogfx_AudioEngine_popFunction(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setMainActivityClassName(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setMainActivityClassName(JNIEnv *env, jclass clazz,
                                                                        jstring class_name) {
     if (engine == nullptr)
         return;
@@ -922,7 +922,7 @@ Java_com_altomedia_altogfx_AudioEngine_setMainActivityClassName(JNIEnv *env, jcl
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_pushToLockFreeBeforeOutputVolumeAaaaaargh(JNIEnv *env,
+Java_com_altomedia_altoefect_AudioEngine_pushToLockFreeBeforeOutputVolumeAaaaaargh(JNIEnv *env,
                                                                                         jclass clazz,
                                                                                         jboolean setting) {
     // TODO: implement pushToLockFreeBeforeOutputVolumeAaaaaargh()
@@ -935,7 +935,7 @@ Java_com_altomedia_altogfx_AudioEngine_pushToLockFreeBeforeOutputVolumeAaaaaargh
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setLamePreset(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setLamePreset(JNIEnv *env, jclass clazz,
                                                             jint preset) {
     IN
     if (engine == nullptr) {
@@ -950,7 +950,7 @@ Java_com_altomedia_altogfx_AudioEngine_setLamePreset(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT int JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActiveEnabledPlugins(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_getActiveEnabledPlugins(JNIEnv *env, jclass clazz) {
     IN
     if (engine == nullptr) {
         OUT
@@ -969,7 +969,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActiveEnabledPlugins(JNIEnv *env, jcla
 
 extern "C"
 JNIEXPORT jfloat JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginValue(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginValue(JNIEnv *env, jclass clazz,
                                                                     jint plugin, jint control) {
     IN
     if (engine == NULL) {
@@ -996,7 +996,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginValue(JNIEnv *env, jclass 
 
 extern "C"
 JNIEXPORT jfloat JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginValueByIndex(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginValueByIndex(JNIEnv *env, jclass clazz,
                                                                     jint plugin, jint control) {
     IN
     if (engine == NULL) {
@@ -1022,7 +1022,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginValueByIndex(JNIEnv *env, 
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginEnabled(JNIEnv *env, jclass clazz, jint plugin) {
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginEnabled(JNIEnv *env, jclass clazz, jint plugin) {
     // TODO: implement togglePlugin()
     if (engine == NULL) {
         LOGF ("engine is NULL");
@@ -1035,7 +1035,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginEnabled(JNIEnv *env, jclas
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getActivePluginID(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getActivePluginID(JNIEnv *env, jclass clazz,
                                                                 jint plugin) {
     if (engine == nullptr)
         return -1 ;
@@ -1044,7 +1044,7 @@ Java_com_altomedia_altogfx_AudioEngine_getActivePluginID(JNIEnv *env, jclass cla
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setPluginControlByIndex(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_setPluginControlByIndex(JNIEnv *env, jclass clazz,
                                                                       jint plugin, jint control,
                                                                       jfloat value) {
     IN
@@ -1066,7 +1066,7 @@ Java_com_altomedia_altogfx_AudioEngine_setPluginControlByIndex(JNIEnv *env, jcla
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getBufferSizeInFrames(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getBufferSizeInFrames(JNIEnv *env, jclass clazz,
                                                                     jboolean input) {
     if (engine == nullptr) {
         HERE LOGE("engine is null");
@@ -1077,7 +1077,7 @@ Java_com_altomedia_altogfx_AudioEngine_getBufferSizeInFrames(JNIEnv *env, jclass
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_fixGlitches(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_fixGlitches(JNIEnv *env, jclass clazz) {
     if (engine == nullptr)
         return;
 
@@ -1085,7 +1085,7 @@ Java_com_altomedia_altogfx_AudioEngine_fixGlitches(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_minimizeLatency(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_minimizeLatency(JNIEnv *env, jclass clazz) {
     if (engine == nullptr)
         return;
 
@@ -1093,7 +1093,7 @@ Java_com_altomedia_altogfx_AudioEngine_minimizeLatency(JNIEnv *env, jclass clazz
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_pause(JNIEnv *env, jclass clazz, jboolean state) {
+Java_com_altomedia_altoefect_AudioEngine_pause(JNIEnv *env, jclass clazz, jboolean state) {
     if (engine == nullptr)
         return;
 
@@ -1101,7 +1101,7 @@ Java_com_altomedia_altogfx_AudioEngine_pause(JNIEnv *env, jclass clazz, jboolean
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_pushSamples(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_pushSamples(JNIEnv *env, jclass clazz,
                                                           jstring method_name) {
     if (engine == nullptr)
         return ;
@@ -1112,7 +1112,7 @@ Java_com_altomedia_altogfx_AudioEngine_pushSamples(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setBufferSizeFactor(JNIEnv *env, jclass clazz, jfloat factor) {
+Java_com_altomedia_altoefect_AudioEngine_setBufferSizeFactor(JNIEnv *env, jclass clazz, jfloat factor) {
     if (engine == nullptr) {
         return ;
     }
@@ -1121,7 +1121,7 @@ Java_com_altomedia_altogfx_AudioEngine_setBufferSizeFactor(JNIEnv *env, jclass c
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_latencyTuner(JNIEnv *env, jclass clazz) {
+Java_com_altomedia_altoefect_AudioEngine_latencyTuner(JNIEnv *env, jclass clazz) {
     if (engine == nullptr)
         return;
 
@@ -1133,7 +1133,7 @@ Java_com_altomedia_altogfx_AudioEngine_latencyTuner(JNIEnv *env, jclass clazz) {
 }
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getControlType(JNIEnv *env, jclass clazz, jint plugin,
+Java_com_altomedia_altoefect_AudioEngine_getControlType(JNIEnv *env, jclass clazz, jint plugin,
                                                              jint control) {
     // TODO: implement getControlType()
     if (engine == nullptr)
@@ -1143,7 +1143,7 @@ Java_com_altomedia_altogfx_AudioEngine_getControlType(JNIEnv *env, jclass clazz,
 }
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_altomedia_altogfx_AudioEngine_setAtomPort(JNIEnv *env, jclass clazz, jint plugin, int control, jstring text) {
+Java_com_altomedia_altoefect_AudioEngine_setAtomPort(JNIEnv *env, jclass clazz, jint plugin, int control, jstring text) {
     // TODO: implement setAtomPort()
     IN
     if (engine == nullptr) {
@@ -1166,7 +1166,7 @@ Java_com_altomedia_altogfx_AudioEngine_setAtomPort(JNIEnv *env, jclass clazz, ji
 }
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_altomedia_altogfx_AudioEngine_getControlIsLogarithmic(JNIEnv *env, jclass clazz,
+Java_com_altomedia_altoefect_AudioEngine_getControlIsLogarithmic(JNIEnv *env, jclass clazz,
                                                                       jint plugin, jint control) {
     // TODO: implement getControlIsLogarithmic()
     if (engine == nullptr) {

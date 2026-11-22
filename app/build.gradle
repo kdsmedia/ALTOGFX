@@ -22,11 +22,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.altomedia.altogfx"
+        applicationId "com.altomedia.altoefect"
         minSdk 24
         targetSdk 35
-        versionCode 121
-        versionName '5.95'
+        versionCode 1
+        versionName '1.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -39,7 +39,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        versionNameSuffix '-Raptor'
+        versionNameSuffix '-Efect'
     }
 
     buildTypes {
@@ -90,7 +90,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
-    namespace 'com.altomedia.altogfx'
+    namespace 'com.altomedia.altoefect'
     ndkVersion '26.1.10909125'
 }
 

@@ -330,7 +330,7 @@ std::string Plugin::getLV2JSON (std::string pluginName) {
     jstring libname = env->NewStringUTF(sharedLibrary->so_file.c_str());
 
     if (sharedLibrary->mainActivityClassName == "")
-        sharedLibrary->mainActivityClassName = std::string ("com/altomedia/altogfx/MainActivity");
+        sharedLibrary->mainActivityClassName = std::string ("com/altomedia/altoefect/MainActivity");
     jclass clazz = env->FindClass(sharedLibrary->mainActivityClassName.c_str());
     if (clazz == nullptr) {
         HERE LOGF("cannot find class!");
