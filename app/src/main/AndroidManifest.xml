@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-feature android:name="android.software.midi" android:required="false"/>
-    <uses-feature android:name="android.software.companion_device_setup"/>
 
     <!-- Strip network permissions pulled in transitively by libraries (e.g. ExoPlayer). -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
