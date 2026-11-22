@@ -174,9 +174,11 @@ public class PedalView extends View {
         for (int i = 0; i < count; i++) {
             int row = i / columns;
             int col = i % columns;
-            float cx = (row == rows - 1 && count % columns == 1)
-                    ? (left + right) / 2f
-                    : left + cellW * (col + 0.5f);
+            int lastRowCount = count % columns == 0 ? columns : count % columns;
+            float rowOffset = (row == rows - 1 && lastRowCount < columns)
+                    ? (columns - lastRowCount) / 2f
+                    : 0f;
+            float cx = left + cellW * (col + rowOffset + 0.5f);
             float cy = top + cellH * (row + (rows == 1 ? 0.5f : 0.42f));
             knobs.add(new KnobHit(state.controls.get(i), cx, cy, knob / 2f));
         }
