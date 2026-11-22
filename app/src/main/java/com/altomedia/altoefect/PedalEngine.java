@@ -35,6 +35,7 @@ public final class PedalEngine {
     private Preset currentPreset;
     private boolean initialized;
     private boolean started;
+    private int loadedSampleRate = 48000;
 
     private PedalEngine(Context context) {
         this.context = context.getApplicationContext();
@@ -67,6 +68,8 @@ public final class PedalEngine {
         AudioEngine.setLibraryPath(context.getApplicationInfo().nativeLibraryDir);
         AudioEngine.setLazyLoad(true);
         AudioEngine.setTunerEnabled(false);
+        loadedSampleRate = 48000;
+        AudioEngine.setSampleRate(loadedSampleRate);
         AudioEngine.setInputVolume(prefs.getFloat("input_gain", 1f));
         AudioEngine.setOutputVolume(prefs.getFloat("output_volume", 1f));
 
@@ -181,7 +184,7 @@ public final class PedalEngine {
         AudioEngine.setRecordingDeviceId(prefs.getInt("input_device", -1));
         AudioEngine.setPlaybackDeviceId(prefs.getInt("output_device", -1));
         AudioEngine.setLowLatency(prefs.getBoolean("low_latency", true));
-        AudioEngine.setSampleRate(prefs.getInt("sample_rate", 48000));
+        AudioEngine.setSampleRate(getSampleRate());
         AudioEngine.setInputVolume(prefs.getFloat("input_gain", 1f));
         AudioEngine.setOutputVolume(prefs.getFloat("output_volume", 1f));
     }
@@ -226,12 +229,11 @@ public final class PedalEngine {
     }
 
     public int getSampleRate() {
-        return prefs.getInt("sample_rate", 48000);
+        return initialized ? loadedSampleRate : prefs.getInt("sample_rate", 48000);
     }
 
     public void setSampleRate(int sampleRate) {
         prefs.edit().putInt("sample_rate", sampleRate).apply();
-        restartIfRunning();
     }
 
     public float getInputGain() {

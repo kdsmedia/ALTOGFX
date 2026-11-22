@@ -94,7 +94,6 @@ public class PedalboardActivity extends AppCompatActivity
 
     private Spinner inputSpinner;
     private Spinner outputSpinner;
-    private Spinner sampleRateSpinner;
     private SeekBar inputGain;
     private SeekBar outputVolume;
     private TextView inputGainValue;
@@ -587,29 +586,12 @@ public class PedalboardActivity extends AppCompatActivity
         lowLatencySwitch.setOnCheckedChangeListener((buttonView, isChecked) -> engine.setLowLatency(isChecked));
         engineCard.addView(lowLatencySwitch);
 
-        sampleRateSpinner = makeSpinner();
-        String[] rates = {"44.1 kHz", "48 kHz", "96 kHz"};
-        ArrayAdapter<String> rateAdapter = spinnerAdapter(rates);
-        sampleRateSpinner.setAdapter(rateAdapter);
-        int rateIndex = engine.getSampleRate() == 44100 ? 0 : engine.getSampleRate() == 96000 ? 2 : 1;
-        sampleRateSpinner.setSelection(rateIndex);
-        sampleRateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (suppressSpinner) {
-                    return;
-                }
-                int rate = position == 0 ? 44100 : position == 2 ? 96000 : 48000;
-                if (rate != engine.getSampleRate()) {
-                    engine.setSampleRate(rate);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        addField(engineCard, "SAMPLE RATE", sampleRateSpinner);
+        TextView sampleRateValue = new TextView(this);
+        sampleRateValue.setText((engine.getSampleRate() / 1000) + " kHz  •  locked while the engine is loaded");
+        sampleRateValue.setTextColor(0xFFD7D0C6);
+        sampleRateValue.setTextSize(10.5f);
+        sampleRateValue.setTypeface(bodyTypeface);
+        addField(engineCard, "SAMPLE RATE", sampleRateValue);
 
         inputGainValue = new TextView(this);
         inputGainValue.setTextColor(ACCENT);
