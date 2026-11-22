@@ -171,7 +171,7 @@ public class PedalView extends View {
         float knob = Math.min(maxKnob, Math.min(cellW * 0.74f, cellH * 0.66f));
         knob = Math.max(knob, dp(large ? 40 : 20));
 
-        for (int i = 0; i < count; i++) {
+        for (int i = 0; i < state.controls.size(); i++) {
             int row = i / columns;
             int col = i % columns;
             int lastRowCount = count % columns == 0 ? columns : count % columns;
@@ -432,7 +432,8 @@ public class PedalView extends View {
         smallPaint.setLetterSpacing(0.18f);
         smallPaint.setTextSize(sp(large ? 10 : 7));
         smallPaint.setColor(live ? state.spec.accentColor : 0x88F6EFE4);
-        canvas.drawText(live ? "ON" : "BYPASS", cx, footRect.bottom + dp(11), smallPaint);
+        String footLabel = !state.available ? "N/A" : live ? "ON" : "BYPASS";
+        canvas.drawText(footLabel, cx, footRect.bottom + dp(11), smallPaint);
     }
 
     private void drawLed(Canvas canvas, float cx, float cy, float r, boolean live) {
