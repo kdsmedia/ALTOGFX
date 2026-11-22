@@ -176,9 +176,9 @@ public class PedalView extends View {
             knobs.add(new KnobHit(state.controls.get(i), cx, cy, knob / 2f));
         }
 
-        float footSize = large ? dp(92) : dp(60);
+        float footSize = large ? dp(84) : dp(58);
         float footCx = w / 2f;
-        float footCy = bodyRect.bottom - footer * 0.45f;
+        float footCy = bodyRect.bottom - footer * 0.50f;
         footRect.set(footCx - footSize / 2f, footCy - footSize / 2f,
                 footCx + footSize / 2f, footCy + footSize / 2f);
     }
@@ -396,7 +396,7 @@ public class PedalView extends View {
         boolean live = state.enabled && state.available;
 
         // LED.
-        float ledY = footRect.top - dp(large ? 18 : 12);
+        float ledY = footRect.top - dp(large ? 8 : 6);
         drawLed(canvas, cx, ledY, dp(large ? 5.5f : 3.8f), live);
 
         paint.setStyle(Paint.Style.FILL);
@@ -425,7 +425,7 @@ public class PedalView extends View {
         smallPaint.setLetterSpacing(0.18f);
         smallPaint.setTextSize(sp(large ? 10 : 7));
         smallPaint.setColor(live ? state.spec.accentColor : 0x88F6EFE4);
-        canvas.drawText(live ? "ON" : "BYPASS", cx, footRect.bottom + dp(large ? 20 : 13), smallPaint);
+        canvas.drawText(live ? "ON" : "BYPASS", cx, footRect.bottom + dp(large ? 18 : 12), smallPaint);
     }
 
     private void drawLed(Canvas canvas, float cx, float cy, float r, boolean live) {

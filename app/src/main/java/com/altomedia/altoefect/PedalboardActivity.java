@@ -726,6 +726,7 @@ public class PedalboardActivity extends AppCompatActivity
 
     private void setPower(boolean on) {
         if (!uiReady) {
+            updatePower(false);
             return;
         }
         if (!on) {
