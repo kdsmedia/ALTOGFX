@@ -1,0 +1,717 @@
+{
+  "version": 1,
+  "presets": [
+    {
+      "name": "Studio Clean",
+      "tag": "CLEAN",
+      "description": "A pristine studio clean tone with gentle compression, a warm cabinet and a touch of room.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.55,
+            "RATIO": 0.25,
+            "ATTACK": 0.08,
+            "RELEASE": 0.12,
+            "KNEE": 0.4
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": false,
+          "controls": {
+            "DRIVE": 0.35,
+            "TONE": 0.6,
+            "LEVEL": 0.65
+          }
+        },
+        "dist": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.4,
+            "BASS": 0.5,
+            "MID": 0.55,
+            "TREBLE": 0.55,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": false,
+          "controls": {
+            "L Time": 0.65,
+            "L Level": 0.45,
+            "LFO": 0.3,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.35,
+            "Damp": 0.5,
+            "Dry/Wet": 0.18,
+            "LFO": 0.2
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.55,
+            "MIDS": 0.5,
+            "PUNCH": 0.45,
+            "RESONANCE": 0.4,
+            "SIZE": 0.5,
+            "TOP": 0.55
+          }
+        }
+      }
+    },
+    {
+      "name": "Blues Drive",
+      "tag": "BLUES",
+      "description": "Touch-sensitive blues overdrive. Roll the guitar volume back for clean, dig in for grit.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.6,
+            "RATIO": 0.3,
+            "ATTACK": 0.1,
+            "RELEASE": 0.18,
+            "KNEE": 0.35
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": true,
+          "controls": {
+            "DRIVE": 0.55,
+            "TONE": 0.62,
+            "LEVEL": 0.68
+          }
+        },
+        "dist": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.4,
+            "BASS": 0.5,
+            "MID": 0.55,
+            "TREBLE": 0.55,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": false,
+          "controls": {
+            "L Time": 0.65,
+            "L Level": 0.45,
+            "LFO": 0.3,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.4,
+            "Damp": 0.45,
+            "Dry/Wet": 0.22,
+            "LFO": 0.22
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.6,
+            "MIDS": 0.55,
+            "PUNCH": 0.5,
+            "RESONANCE": 0.45,
+            "SIZE": 0.52,
+            "TOP": 0.58
+          }
+        }
+      }
+    },
+    {
+      "name": "Classic Rock",
+      "tag": "ROCK",
+      "description": "British stack energy: stacked drive and distortion, short slap delay and a big cabinet.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.62,
+            "RATIO": 0.35,
+            "ATTACK": 0.12,
+            "RELEASE": 0.2,
+            "KNEE": 0.3
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": true,
+          "controls": {
+            "DRIVE": 0.6,
+            "TONE": 0.65,
+            "LEVEL": 0.65
+          }
+        },
+        "dist": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.55,
+            "BASS": 0.55,
+            "MID": 0.6,
+            "TREBLE": 0.55,
+            "LEVEL": 0.48
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": true,
+          "controls": {
+            "L Time": 0.55,
+            "L Level": 0.35,
+            "LFO": 0.25,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.45,
+            "Damp": 0.4,
+            "Dry/Wet": 0.2,
+            "LFO": 0.22
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.62,
+            "MIDS": 0.58,
+            "PUNCH": 0.55,
+            "RESONANCE": 0.5,
+            "SIZE": 0.55,
+            "TOP": 0.6
+          }
+        }
+      }
+    },
+    {
+      "name": "Metal Storm",
+      "tag": "METAL",
+      "description": "Tight, aggressive high-gain rhythm with scooped mids and a fast cabinet response.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.7,
+            "RATIO": 0.55,
+            "ATTACK": 0.05,
+            "RELEASE": 0.15,
+            "KNEE": 0.2
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": false,
+          "controls": {
+            "DRIVE": 0.35,
+            "TONE": 0.6,
+            "LEVEL": 0.65
+          }
+        },
+        "dist": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.9,
+            "BASS": 0.7,
+            "MID": 0.35,
+            "TREBLE": 0.72,
+            "LEVEL": 0.55
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": true,
+          "controls": {
+            "L Time": 0.55,
+            "L Level": 0.25,
+            "LFO": 0.2,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.35,
+            "Damp": 0.55,
+            "Dry/Wet": 0.15,
+            "LFO": 0.2
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.7,
+            "MIDS": 0.45,
+            "PUNCH": 0.68,
+            "RESONANCE": 0.6,
+            "SIZE": 0.6,
+            "TOP": 0.65
+          }
+        }
+      }
+    },
+    {
+      "name": "Ambient Space",
+      "tag": "AMBIENT",
+      "description": "Wide modulated chorus, long ping-pong echoes and a cavernous plate reverb.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.5,
+            "RATIO": 0.2,
+            "ATTACK": 0.2,
+            "RELEASE": 0.3,
+            "KNEE": 0.5
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": false,
+          "controls": {
+            "DRIVE": 0.35,
+            "TONE": 0.6,
+            "LEVEL": 0.65
+          }
+        },
+        "dist": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.4,
+            "BASS": 0.5,
+            "MID": 0.55,
+            "TREBLE": 0.55,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": true,
+          "controls": {
+            "DEPTH": 0.55,
+            "Freq": 0.22,
+            "Delay": 0.4,
+            "Level": 0.55
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": true,
+          "controls": {
+            "L Time": 0.78,
+            "L Level": 0.42,
+            "LFO": 0.4,
+            "Mode": 1
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.85,
+            "Damp": 0.35,
+            "Dry/Wet": 0.55,
+            "LFO": 0.28
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.5,
+            "MIDS": 0.5,
+            "PUNCH": 0.4,
+            "RESONANCE": 0.4,
+            "SIZE": 0.5,
+            "TOP": 0.5
+          }
+        }
+      }
+    },
+    {
+      "name": "Funk Wah",
+      "tag": "FUNK",
+      "description": "Snappy wah, optical phaser shimmer and a percussive clean amp for rhythm chops.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.58,
+            "RATIO": 0.3,
+            "ATTACK": 0.06,
+            "RELEASE": 0.14,
+            "KNEE": 0.3
+          }
+        },
+        "wah": {
+          "on": true,
+          "controls": {
+            "WAH": 0.55,
+            "FREQ": 0.45,
+            "WET_DRY": 0.75
+          }
+        },
+        "drive": {
+          "on": true,
+          "controls": {
+            "DRIVE": 0.3,
+            "TONE": 0.6,
+            "LEVEL": 0.6
+          }
+        },
+        "dist": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.4,
+            "BASS": 0.5,
+            "MID": 0.55,
+            "TREBLE": 0.55,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": true,
+          "controls": {
+            "SPEED": 0.45,
+            "Dry/Wet": 0.3,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": false,
+          "controls": {
+            "L Time": 0.65,
+            "L Level": 0.45,
+            "LFO": 0.3,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.3,
+            "Damp": 0.5,
+            "Dry/Wet": 0.15,
+            "LFO": 0.2
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.55,
+            "MIDS": 0.55,
+            "PUNCH": 0.5,
+            "RESONANCE": 0.45,
+            "SIZE": 0.5,
+            "TOP": 0.55
+          }
+        }
+      }
+    },
+    {
+      "name": "Lead Sustain",
+      "tag": "LEAD",
+      "description": "Singing lead tone with compression, stacked gain and a warm echo trail.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.68,
+            "RATIO": 0.45,
+            "ATTACK": 0.08,
+            "RELEASE": 0.25,
+            "KNEE": 0.3
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": true,
+          "controls": {
+            "DRIVE": 0.72,
+            "TONE": 0.62,
+            "LEVEL": 0.68
+          }
+        },
+        "dist": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.45,
+            "BASS": 0.55,
+            "MID": 0.62,
+            "TREBLE": 0.58,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": false,
+          "controls": {
+            "DEPTH": 0.35,
+            "Freq": 0.25,
+            "Delay": 0.35,
+            "Level": 0.5
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": true,
+          "controls": {
+            "L Time": 0.65,
+            "L Level": 0.4,
+            "LFO": 0.3,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.45,
+            "Damp": 0.45,
+            "Dry/Wet": 0.25,
+            "LFO": 0.22
+          }
+        },
+        "cab": {
+          "on": true,
+          "controls": {
+            "GAIN": 0.65,
+            "MIDS": 0.55,
+            "PUNCH": 0.55,
+            "RESONANCE": 0.5,
+            "SIZE": 0.55,
+            "TOP": 0.6
+          }
+        }
+      }
+    },
+    {
+      "name": "Acoustic Warm",
+      "tag": "ACOUSTIC",
+      "description": "Natural acoustic pickup tone with subtle chorus and a soft room.",
+      "pedals": {
+        "comp": {
+          "on": true,
+          "controls": {
+            "THRESHOLD": 0.55,
+            "RATIO": 0.2,
+            "ATTACK": 0.15,
+            "RELEASE": 0.2,
+            "KNEE": 0.45
+          }
+        },
+        "wah": {
+          "on": false,
+          "controls": {
+            "WAH": 0.4,
+            "FREQ": 0.45,
+            "WET_DRY": 0.6
+          }
+        },
+        "drive": {
+          "on": false,
+          "controls": {
+            "DRIVE": 0.35,
+            "TONE": 0.6,
+            "LEVEL": 0.65
+          }
+        },
+        "dist": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.4,
+            "BASS": 0.5,
+            "MID": 0.55,
+            "TREBLE": 0.55,
+            "LEVEL": 0.5
+          }
+        },
+        "chorus": {
+          "on": true,
+          "controls": {
+            "DEPTH": 0.25,
+            "Freq": 0.18,
+            "Delay": 0.3,
+            "Level": 0.4
+          }
+        },
+        "phaser": {
+          "on": false,
+          "controls": {
+            "SPEED": 0.3,
+            "Dry/Wet": 0.45,
+            "LEVEL": 0.65
+          }
+        },
+        "delay": {
+          "on": false,
+          "controls": {
+            "L Time": 0.65,
+            "L Level": 0.45,
+            "LFO": 0.3,
+            "Mode": 0
+          }
+        },
+        "reverb": {
+          "on": true,
+          "controls": {
+            "Roomsize": 0.5,
+            "Damp": 0.4,
+            "Dry/Wet": 0.3,
+            "LFO": 0.2
+          }
+        },
+        "cab": {
+          "on": false,
+          "controls": {
+            "GAIN": 0.55,
+            "MIDS": 0.5,
+            "PUNCH": 0.45,
+            "RESONANCE": 0.4,
+            "SIZE": 0.5,
+            "TOP": 0.55
+          }
+        }
+      }
+    }
+  ]
+}

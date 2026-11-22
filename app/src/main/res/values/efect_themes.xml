@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.AltoEfect" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@color/efect_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/efect_bg</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/efect_accent</item>
+        <item name="colorPrimaryDark">@color/efect_bg</item>
+        <item name="colorSecondary">@color/efect_accent</item>
+        <item name="android:fontFamily">@font/montserrat_alternates</item>
+        <item name="android:colorAccent">@color/efect_accent</item>
+    </style>
+
+    <style name="Theme.AltoEfect.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/efect_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/efect_bg</item>
+        <item name="postSplashScreenTheme">@style/Theme.AltoEfect</item>
+    </style>
+
+</resources>

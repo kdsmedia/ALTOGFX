@@ -225,30 +225,43 @@ PluginControl::PluginControl(const LV2_Descriptor *descriptor, nlohmann::json j)
     lv2_name = j.find("name").value();
     port = _port ;
 
-    if (j.find("InputPort").value() == true && j.find("ControlPort").value() == true) {
-        if (j.find("toggle").value() == true)
-            type = TOGGLE;
-        else
-            type = FLOAT;
+    if (j.contains("InputPort") && j["InputPort"].get<bool>()
+        && j.contains("ControlPort") && j["ControlPort"].get<bool>()) {
+        bool toggle = false;
+        if (j.contains("toggle") && j["toggle"].is_boolean()) {
+            toggle = j["toggle"].get<bool>();
+        } else if (j.contains("portProperty") && j["portProperty"].is_string()) {
+            std::string property = j["portProperty"].get<std::string>();
+            if (property.find("toggled") != std::string::npos)
+                toggle = true;
+        }
+        type = toggle ? TOGGLE : FLOAT;
         //~ LOGD("Setting up control %d: %s for %s", _port, descriptor -> URI , name);
         std::string _min  ;
         std::string _max  ;
         LADSPA_Data lower_bound  ;
         LADSPA_Data upper_bound ;
 
-        if (j.find("maximum")->is_string()) {
-            _max = j.find("maximum").value();
-            upper_bound = std::stof (_max);
+        if (j.contains("maximum")) {
+            if (j["maximum"].is_string()) {
+                _max = j["maximum"].get<std::string>();
+                upper_bound = std::stof (_max);
+            } else {
+                upper_bound = j["maximum"].get<LADSPA_Data>();
+            }
         } else {
-            upper_bound = j.find("maximum").value();
+            upper_bound = 1;
         }
 
-        if (j.find("minimum")->is_string()) {
-            _min = j.find("minimum").value();
-            LOGD("minimum: %s is string", _min.c_str());
-            lower_bound = std::stof (_min);
+        if (j.contains("minimum")) {
+            if (j["minimum"].is_string()) {
+                _min = j["minimum"].get<std::string>();
+                lower_bound = std::stof (_min);
+            } else {
+                lower_bound = j["minimum"].get<LADSPA_Data>();
+            }
         } else {
-            lower_bound = j.find("minimum").value();
+            lower_bound = 0;
         }
 
         //~ LOGD("[control] %s", name);
@@ -264,13 +277,14 @@ PluginControl::PluginControl(const LV2_Descriptor *descriptor, nlohmann::json j)
 
         def = (float *) malloc (sizeof (long int));
         std::string _def ;
-        if (j.find("default")->is_string()) {
-            LOGD("plugin default is string ..");
-            *def = std::stof(std::string(j.find("default").value()));
+        if (j.contains("default")) {
+            if (j["default"].is_string()) {
+                *def = std::stof(j["default"].get<std::string>());
+            } else {
+                *def = j["default"].get<LADSPA_Data>();
+            }
         } else {
-            *def = j.find("default").value();
-//            if (isLogarithmic)
-//                * def = logf (* def);
+            *def = 0;
         }
 
         /* Check the default */
