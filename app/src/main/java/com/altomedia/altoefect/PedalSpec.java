@@ -106,7 +106,8 @@ public final class PedalSpec {
                         new ControlSpec("LFO", "MOD", "Hz", 0.30f, true),
                         new ControlSpec("Mode", "MODE", "", 0.00f, false,
                                 new String[]{"LINEAR", "PINGPONG"}),
-                        new ControlSpec("Link (L+R)", "LINK", "", 1.00f)
+                        new ControlSpec("Link (L+R)", "LINK", "", 1.00f, false,
+                                new String[]{"OFF", "ON"})
                 }));
 
         pedals.add(new PedalSpec(
