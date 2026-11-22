@@ -32,6 +32,16 @@ public final class PedalSpec {
         List<PedalSpec> pedals = new ArrayList<>();
 
         pedals.add(new PedalSpec(
+                "wah", "WAH", "Vintage Wah",
+                "libgx_colwah.lv2.so", 0,
+                0xFF3A1E5C, 0xFFB98CFF,
+                new ControlSpec[]{
+                        new ControlSpec("WAH", "WAH", "%", 0.50f),
+                        new ControlSpec("FREQ", "FREQ", "Hz", 0.45f, true),
+                        new ControlSpec("WET_DRY", "MIX", "%", 0.70f)
+                }));
+
+        pedals.add(new PedalSpec(
                 "comp", "COMP", "Studio Compressor",
                 "libgx_compressor.lv2.so", 0,
                 0xFF14524E, 0xFF5BE0C8,
@@ -41,16 +51,6 @@ public final class PedalSpec {
                         new ControlSpec("ATTACK", "ATTACK", "ms", 0.35f, true),
                         new ControlSpec("RELEASE", "RELEASE", "ms", 0.30f, true),
                         new ControlSpec("KNEE", "KNEE", "dB", 0.40f)
-                }));
-
-        pedals.add(new PedalSpec(
-                "wah", "WAH", "Vintage Wah",
-                "libgx_colwah.lv2.so", 0,
-                0xFF3A1E5C, 0xFFB98CFF,
-                new ControlSpec[]{
-                        new ControlSpec("WAH", "WAH", "%", 0.50f),
-                        new ControlSpec("FREQ", "FREQ", "Hz", 0.45f, true),
-                        new ControlSpec("WET_DRY", "MIX", "%", 0.70f)
                 }));
 
         pedals.add(new PedalSpec(
