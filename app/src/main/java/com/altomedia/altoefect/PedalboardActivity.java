@@ -600,7 +600,9 @@ public class PedalboardActivity extends AppCompatActivity
                     return;
                 }
                 int rate = position == 0 ? 44100 : position == 2 ? 96000 : 48000;
-                engine.setSampleRate(rate);
+                if (rate != engine.getSampleRate()) {
+                    engine.setSampleRate(rate);
+                }
             }
 
             @Override
@@ -1054,7 +1056,6 @@ public class PedalboardActivity extends AppCompatActivity
         outputSpinner.setAdapter(spinnerAdapter(outputLabels));
         inputSpinner.setSelection(indexOf(inputEntries, engine.getInputDevice()));
         outputSpinner.setSelection(indexOf(outputEntries, engine.getOutputDevice()));
-        suppressSpinner = false;
 
         inputSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -1062,8 +1063,11 @@ public class PedalboardActivity extends AppCompatActivity
                 if (suppressSpinner) {
                     return;
                 }
-                engine.setInputDevice(inputEntries.get(position).id);
-                updateRoutingLabels();
+                int deviceId = inputEntries.get(position).id;
+                if (deviceId != engine.getInputDevice()) {
+                    engine.setInputDevice(deviceId);
+                    updateRoutingLabels();
+                }
             }
 
             @Override
@@ -1076,14 +1080,18 @@ public class PedalboardActivity extends AppCompatActivity
                 if (suppressSpinner) {
                     return;
                 }
-                engine.setOutputDevice(outputEntries.get(position).id);
-                updateRoutingLabels();
+                int deviceId = outputEntries.get(position).id;
+                if (deviceId != engine.getOutputDevice()) {
+                    engine.setOutputDevice(deviceId);
+                    updateRoutingLabels();
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        suppressSpinner = false;
 
         boolean headset = engine.findHeadsetOutput() != -1 || engine.findHeadsetInput() != -1;
         headsetStatus.setText(headset
