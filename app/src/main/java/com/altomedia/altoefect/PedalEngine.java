@@ -53,6 +53,7 @@ public final class PedalEngine {
             return;
         }
 
+        pedals.clear();
         EngineBridge.attach(context);
         AudioEngine.create();
         AudioEngine.setMainActivityClassName("com/altomedia/altoefect/EngineBridge");

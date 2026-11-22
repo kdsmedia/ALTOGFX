@@ -970,6 +970,12 @@ public class PedalboardActivity extends AppCompatActivity
                         toast("Please enter a preset name");
                         return;
                     }
+                    for (Preset preset : engine.getPresets()) {
+                        if (preset.factory && preset.name.equalsIgnoreCase(name)) {
+                            toast("That name belongs to a factory preset");
+                            return;
+                        }
+                    }
                     engine.saveCurrentAsPreset(name, "USER", "Captured from the pedalboard");
                     Preset saved = null;
                     for (Preset preset : engine.getPresets()) {

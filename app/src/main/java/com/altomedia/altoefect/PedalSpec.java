@@ -91,7 +91,7 @@ public final class PedalSpec {
                 "libgx_phaser.lv2.so", 0,
                 0xFF8A3B0B, 0xFFFFA45B,
                 new ControlSpec[]{
-                        new ControlSpec("SPEED", "SPEED", "", 0.35f, true),
+                        new ControlSpec("SPEED", "SPEED", "Hz", 0.35f, true),
                         new ControlSpec("Dry/Wet", "DEPTH", "%", 0.45f),
                         new ControlSpec("LEVEL", "LEVEL", "dB", 0.65f)
                 }));
