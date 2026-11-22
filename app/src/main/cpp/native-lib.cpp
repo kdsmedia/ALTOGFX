@@ -279,6 +279,10 @@ Java_com_altomedia_altoefect_AudioEngine_togglePlugin(JNIEnv *env, jclass clazz,
         LOGF ("engine is NULL");
         return false;
     }
+    if (plugin < 0 || plugin >= (jint) engine->activePlugins.size()) {
+        LOGF("plugin index %d out of range", plugin);
+        return false;
+    }
     engine->activePlugins.at(plugin)->active = state ;
     engine->buildPluginChain();
     return engine->activePlugins.at(plugin)->active ;
@@ -1026,6 +1030,9 @@ Java_com_altomedia_altoefect_AudioEngine_getActivePluginEnabled(JNIEnv *env, jcl
     // TODO: implement togglePlugin()
     if (engine == NULL) {
         LOGF ("engine is NULL");
+        return false;
+    }
+    if (plugin < 0 || plugin >= (jint) engine->activePlugins.size()) {
         return false;
     }
 

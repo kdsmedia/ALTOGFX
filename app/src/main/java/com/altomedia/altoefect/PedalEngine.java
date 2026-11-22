@@ -55,7 +55,14 @@ public final class PedalEngine {
 
         pedals.clear();
         EngineBridge.attach(context);
-        AudioEngine.create();
+        try {
+            AudioEngine.setDefaultStreamValues(context);
+        } catch (Exception ignored) {
+            // Some devices do not expose the native stream properties.
+        }
+        if (!AudioEngine.create()) {
+            throw new IllegalStateException("Audio engine could not be created");
+        }
         AudioEngine.setMainActivityClassName("com/altomedia/altoefect/EngineBridge");
         AudioEngine.setLibraryPath(context.getApplicationInfo().nativeLibraryDir);
         AudioEngine.setLazyLoad(true);
