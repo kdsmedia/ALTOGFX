@@ -69,6 +69,7 @@ public class PedalView extends View {
     private Typeface bodyTypeface;
 
     private int activeKnob = -1;
+    private float touchStartX;
     private float touchStartY;
     private float startNorm;
     private boolean footPressed;
@@ -427,7 +428,7 @@ public class PedalView extends View {
         smallPaint.setLetterSpacing(0.18f);
         smallPaint.setTextSize(sp(large ? 10 : 7));
         smallPaint.setColor(live ? state.spec.accentColor : 0x88F6EFE4);
-        canvas.drawText(live ? "ON" : "BYPASS", cx, footRect.bottom + dp(large ? 18 : 12), smallPaint);
+        canvas.drawText(live ? "ON" : "BYPASS", cx, footRect.bottom + dp(11), smallPaint);
     }
 
     private void drawLed(Canvas canvas, float cx, float cy, float r, boolean live) {
@@ -488,9 +489,10 @@ public class PedalView extends View {
             case MotionEvent.ACTION_DOWN: {
                 activeKnob = findKnob(x, y);
                 moved = false;
+                touchStartX = x;
+                touchStartY = y;
                 if (activeKnob >= 0) {
                     RuntimeControl control = knobs.get(activeKnob).control;
-                    touchStartY = y;
                     startNorm = control.getNormalized();
                     getParent().requestDisallowInterceptTouchEvent(true);
                 } else if (footRect.contains(x, y)) {
@@ -517,7 +519,8 @@ public class PedalView extends View {
                     }
                     return true;
                 }
-                if (Math.abs(y - touchStartY) > touchSlop) {
+                if (Math.abs(y - touchStartY) > touchSlop
+                        || Math.abs(x - touchStartX) > touchSlop) {
                     moved = true;
                 }
                 return true;
@@ -525,6 +528,7 @@ public class PedalView extends View {
             case MotionEvent.ACTION_UP: {
                 if (activeKnob >= 0) {
                     activeKnob = -1;
+                    getParent().requestDisallowInterceptTouchEvent(false);
                     invalidate();
                     return true;
                 }
@@ -558,6 +562,7 @@ public class PedalView extends View {
                 footPressed = false;
                 bodyPressed = false;
                 pressOffset = 0;
+                getParent().requestDisallowInterceptTouchEvent(false);
                 invalidate();
                 return true;
             }
