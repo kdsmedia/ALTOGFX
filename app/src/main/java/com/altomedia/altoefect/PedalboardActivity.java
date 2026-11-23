@@ -107,6 +107,7 @@ public class PedalboardActivity extends AppCompatActivity
     private final List<LibraryRow> libraryRows = new ArrayList<>();
     private final List<PedalView> boardPedalViews = new ArrayList<>();
 
+    private HorizontalScrollView presetScroll;
     private LinearLayout presetRow;
     private LinearLayout presetPedalRow;
     private TextView presetDescription;
@@ -488,7 +489,7 @@ public class PedalboardActivity extends AppCompatActivity
         titleRow.addView(badge);
         root.addView(titleRow);
 
-        HorizontalScrollView presetScroll = new HorizontalScrollView(this);
+        presetScroll = new HorizontalScrollView(this);
         presetScroll.setHorizontalScrollBarEnabled(false);
         presetScroll.setClipToPadding(false);
         presetRow = new LinearLayout(this);
@@ -498,6 +499,35 @@ public class PedalboardActivity extends AppCompatActivity
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         presetParams.topMargin = dp(10);
         root.addView(presetScroll, presetParams);
+
+        LinearLayout presetNav = new LinearLayout(this);
+        presetNav.setOrientation(LinearLayout.HORIZONTAL);
+        presetNav.setGravity(Gravity.CENTER_VERTICAL);
+        TextView prevPreset = presetArrow("‹");
+        prevPreset.setContentDescription("Scroll presets left");
+        prevPreset.setOnClickListener(v -> scrollPresetStrip(-1));
+        LinearLayout.LayoutParams prevParams = new LinearLayout.LayoutParams(dp(34), dp(30));
+        prevParams.rightMargin = dp(8);
+        presetNav.addView(prevPreset, prevParams);
+        TextView presetSwipeHint = new TextView(this);
+        presetSwipeHint.setText("SWIPE LEFT / RIGHT");
+        presetSwipeHint.setTextColor(MUTED);
+        presetSwipeHint.setTextSize(8);
+        presetSwipeHint.setTypeface(bodyTypeface, Typeface.BOLD);
+        presetSwipeHint.setLetterSpacing(0.12f);
+        presetSwipeHint.setGravity(Gravity.CENTER);
+        presetNav.addView(presetSwipeHint, new LinearLayout.LayoutParams(
+                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        TextView nextPreset = presetArrow("›");
+        nextPreset.setContentDescription("Scroll presets right");
+        nextPreset.setOnClickListener(v -> scrollPresetStrip(1));
+        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(dp(34), dp(30));
+        nextParams.leftMargin = dp(8);
+        presetNav.addView(nextPreset, nextParams);
+        LinearLayout.LayoutParams presetNavParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        presetNavParams.topMargin = dp(6);
+        root.addView(presetNav, presetNavParams);
 
         presetDescription = new TextView(this);
         presetDescription.setTextColor(0xFFD7D0C6);
@@ -1084,6 +1114,7 @@ public class PedalboardActivity extends AppCompatActivity
             return;
         }
         presetRow.removeAllViews();
+        View selectedChip = null;
         List<Preset> presets = engine.getPresets();
         for (Preset preset : presets) {
             boolean selected = selectedPreset != null && preset.name.equalsIgnoreCase(selectedPreset.name);
@@ -1099,7 +1130,36 @@ public class PedalboardActivity extends AppCompatActivity
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.rightMargin = dp(8);
             presetRow.addView(chip, params);
+            if (selected) {
+                selectedChip = chip;
+            }
         }
+        if (selectedChip != null && presetScroll != null) {
+            final View target = selectedChip;
+            presetScroll.post(() -> presetScroll.smoothScrollTo(
+                    Math.max(0, target.getLeft() - dp(8)), 0));
+        }
+    }
+
+    private void scrollPresetStrip(int direction) {
+        if (presetScroll == null) {
+            return;
+        }
+        int step = Math.max(dp(140), presetScroll.getWidth() * 2 / 3);
+        presetScroll.smoothScrollBy(direction * step, 0);
+    }
+
+    private TextView presetArrow(String text) {
+        TextView arrow = new TextView(this);
+        arrow.setText(text);
+        arrow.setTextColor(ACCENT);
+        arrow.setTextSize(18);
+        arrow.setTypeface(displayTypeface);
+        arrow.setGravity(Gravity.CENTER);
+        arrow.setBackground(cardBackground());
+        arrow.setClickable(true);
+        arrow.setFocusable(true);
+        return arrow;
     }
 
     private void rebuildPedalChips() {
