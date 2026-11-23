@@ -54,6 +54,12 @@ ALTOMEDIA/
 │   └── SCREENSHOTS/
 │       ├── README.md
 │       └── capture-screenshots.sh
+├── BLOG/
+│   ├── README.md                 ← metadata & panduan publikasi
+│   ├── ALTODFX-blog-id.md        ← naskah artikel panjang
+│   ├── ALTODFX-blog-id.html      ← versi HTML siap hosting
+│   ├── CHECKSUMS.sha256          ← checksum naskah & aset
+│   └── assets/                   ← hero, ikon, kartu sosial
 ├── QA/
 │   ├── INSTALL-APK.md
 │   └── SMOKE-TEST.md

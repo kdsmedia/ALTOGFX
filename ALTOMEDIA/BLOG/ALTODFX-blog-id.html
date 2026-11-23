@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ALTODFX: Pedalboard Gitar 9 Efek yang Bekerja 100% Offline di Android</title>
+<meta name="description" content="ALTODFX (ALTO EFECT) mengubah HP Android menjadi pedalboard gitar dengan 9 efek, 8 preset, kontrol potensiometer, dan audio native tanpa internet.">
+<meta name="author" content="ALTOMEDIA">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="keywords" content="guitar effects, pedalboard, aplikasi gitar, efek gitar offline, ALTODFX, ALTO EFECT">
+<link rel="canonical" href="[ISI URL BLOG ANDA]">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="id_ID">
+<meta property="og:site_name" content="ALTOMEDIA">
+<meta property="og:title" content="ALTODFX: Pedalboard Gitar 9 Efek yang Bekerja 100% Offline di Android">
+<meta property="og:description" content="ALTODFX (ALTO EFECT) mengubah HP Android menjadi pedalboard gitar dengan 9 efek, 8 preset, kontrol potensiometer, dan audio native tanpa internet.">
+<meta property="og:image" content="[ISI URL GAMBAR ARTIKEL]">
+<meta property="article:published_time" content="2026-11-23">
+<meta property="article:author" content="ALTOMEDIA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ALTODFX: Pedalboard Gitar 9 Efek yang Bekerja 100% Offline di Android">
+<meta name="twitter:description" content="ALTODFX (ALTO EFECT) mengubah HP Android menjadi pedalboard gitar dengan 9 efek, 8 preset, kontrol potensiometer, dan audio native tanpa internet.">
+<meta name="twitter:image" content="[ISI URL GAMBAR ARTIKEL]">
+<link rel="icon" href="assets/altodfx-icon.png">
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "ALTODFX: Pedalboard Gitar 9 Efek yang Bekerja 100% Offline di Android",
+  "description": "ALTODFX (ALTO EFECT) mengubah HP Android menjadi pedalboard gitar dengan 9 efek, 8 preset, kontrol potensiometer, dan audio native tanpa internet.",
+  "author": {
+    "@type": "Organization",
+    "name": "ALTOMEDIA"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "ALTOMEDIA",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "[ISI URL LOGO]"
+    }
+  },
+  "datePublished": "2026-11-23",
+  "dateModified": "2026-11-23",
+  "inLanguage": "id",
+  "image": "[ISI URL GAMBAR ARTIKEL]",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "[ISI URL BLOG ANDA]"
+  }
+}</script>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #07070b;
+    --panel: #101018;
+    --panel-2: #151522;
+    --text: #f6efe4;
+    --muted: #a6a6b2;
+    --line: #2a2a38;
+    --blue: #6fc8ff;
+    --orange: #ffa45b;
+    --orange-2: #ff7a18;
+    --max: 1180px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.75 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--blue); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+  a:hover { color: #a7e0ff; }
+  img { max-width: 100%; height: auto; display: block; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 22px; }
+  .topbar {
+    border-bottom: 1px solid var(--line); background: rgba(7,7,11,.82);
+    backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 10;
+  }
+  .topbar .wrap { display: flex; align-items: center; gap: 12px; min-height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; color: var(--text); text-decoration: none; font-weight: 800; letter-spacing: .02em; }
+  .brand img { width: 34px; height: 34px; border-radius: 50%; }
+  .brand span { font-size: 14px; color: var(--muted); font-weight: 500; }
+  .hero { border-bottom: 1px solid var(--line); background: radial-gradient(900px 420px at 75% 0%, rgba(80,30,150,.38), transparent 70%), var(--bg); }
+  .hero .wrap { padding-top: 38px; padding-bottom: 34px; }
+  .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 34px; align-items: center; }
+  .kicker { color: var(--orange); font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+  h1 { font-size: clamp(34px, 5.2vw, 62px); line-height: 1.04; letter-spacing: -.03em; margin: 12px 0 16px; }
+  .dek { color: #d8d4ce; font-size: clamp(17px, 1.8vw, 20px); line-height: 1.55; margin: 0 0 20px; max-width: 62ch; }
+  .meta { color: var(--muted); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+  .meta strong { color: var(--text); }
+  .hero-art { position: relative; }
+  .hero-art img { border-radius: 18px; border: 1px solid #303044; box-shadow: 0 26px 70px rgba(0,0,0,.5); }
+  .hero-art::after { content: ""; position: absolute; inset: auto 8% -14px 8%; height: 28px; background: var(--orange-2); filter: blur(34px); opacity: .25; z-index: -1; }
+  .layout { display: grid; grid-template-columns: minmax(0, 780px) 300px; gap: 52px; align-items: start; padding: 44px 0 72px; }
+  article h2 { font-size: clamp(26px, 3vw, 36px); line-height: 1.18; margin: 48px 0 14px; letter-spacing: -.02em; color: #fff; }
+  article h3 { font-size: clamp(20px, 2.2vw, 25px); line-height: 1.3; margin: 32px 0 8px; color: var(--orange); }
+  article p { margin: 0 0 18px; color: #dedad3; }
+  article strong { color: #fff; }
+  article em { color: #cfc9bf; }
+  article ul, article ol { margin: 0 0 20px; padding-left: 24px; color: #dedad3; }
+  article li { margin: 7px 0; }
+  article li::marker { color: var(--orange); }
+  article code { background: #1b1b28; color: #ffd7ae; padding: 2px 6px; border-radius: 5px; font-size: .92em; }
+  article blockquote {
+    margin: 24px 0; padding: 18px 20px; border-left: 4px solid var(--orange);
+    background: linear-gradient(90deg, rgba(255,122,24,.10), rgba(111,200,255,.05));
+    border-radius: 0 12px 12px 0; color: #eee6dc;
+  }
+  article blockquote p { margin: 0; }
+  article hr { border: 0; border-top: 1px solid var(--line); margin: 40px 0; }
+  .table-wrap { overflow-x: auto; margin: 22px 0 26px; border: 1px solid var(--line); border-radius: 12px; }
+  table { width: 100%; border-collapse: collapse; min-width: 520px; }
+  th, td { text-align: left; vertical-align: top; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  th { color: var(--orange); background: #14141f; font-size: 14px; letter-spacing: .02em; }
+  tr:last-child td { border-bottom: 0; }
+  td { color: #dedad3; }
+  .toc {
+    position: sticky; top: 86px; border: 1px solid var(--line); border-radius: 14px;
+    background: linear-gradient(180deg, #12121c, #0d0d14); padding: 18px 18px 14px;
+  }
+  .toc h2 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--orange); margin: 0 0 10px; }
+  .toc ol { margin: 0; padding-left: 18px; }
+  .toc li { margin: 7px 0; font-size: 14px; line-height: 1.35; }
+  .toc a { color: #cfc9bf; text-decoration: none; }
+  .toc a:hover { color: var(--blue); }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .tag { font-size: 12px; color: #cfc9bf; border: 1px solid #343446; border-radius: 999px; padding: 4px 9px; background: #12121b; }
+  .endnote { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 20px; margin-top: 34px; }
+  footer { border-top: 1px solid var(--line); padding: 26px 0 40px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .hero-art { order: -1; }
+    .layout { grid-template-columns: 1fr; gap: 30px; }
+    .toc { position: static; order: -1; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 16px; }
+    .hero .wrap { padding-top: 26px; }
+    h1 { font-size: clamp(31px, 10vw, 42px); }
+    article h2 { margin-top: 38px; }
+    .meta { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="[ISI URL BLOG ANDA]"><img src="assets/altodfx-icon.png" alt="ALTODFX"> ALTODFX <span>oleh ALTOMEDIA</span></a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="kicker">Blog ALTOMEDIA · Guitar Tech</div>
+        <h1>ALTODFX: Pedalboard Gitar 9 Efek yang Bekerja 100% Offline di Android</h1>
+        <p class="dek">ALTODFX (ALTO EFECT) mengubah HP Android menjadi pedalboard gitar dengan 9 efek, 8 preset, kontrol potensiometer, dan audio native tanpa internet.</p>
+        <div class="meta">
+          <span>Oleh <strong>ALTOMEDIA</strong></span>
+          <span>2026-11-23</span>
+          <span>15 menit baca</span>
+          <span>3,250 kata</span>
+        </div>
+        <div class="tags"><span class="tag">guitar effects</span> <span class="tag">pedalboard</span> <span class="tag">aplikasi gitar</span> <span class="tag">efek gitar offline</span> <span class="tag">ALTODFX</span> <span class="tag">ALTO EFECT</span></div>
+      </div>
+      <div class="hero-art">
+        <img src="assets/altodfx-social-1200x630.png" alt="ALTODFX — pedalboard gitar di saku Anda, 9 efek, 8 preset, 100% offline" width="1200" height="630">
+      </div>
+    </div>
+  </div>
+</section>
+
+<main class="wrap layout">
+  <article>
+    <h2 id="pendahuluan-ketika-pedalboard-masuk-ke-saku">Pendahuluan: ketika pedalboard masuk ke saku</h2>
+<p>Ada momen yang akrab bagi hampir setiap gitaris: ide riff muncul saat sedang di perjalanan, di kamar kos, atau di sela jam istirahat. Gitar ada di tangan, tetapi pedalboard tertinggal di rumah. Mau merekam ide, belum tentu ada laptop. Mau latihan dengan tone yang mirip panggung, peralatan masih terlalu banyak untuk dibawa.</p>
+<p><strong>ALTODFX</strong> hadir untuk menjawab situasi seperti itu. Ini adalah aplikasi multi-efek gitar untuk Android yang mengubah ponsel menjadi pedalboard virtual: sembilan efek bergaya pedal fisik, delapan preset pabrik, kontrol potensiometer, tombol on/off, dan mesin audio native yang bekerja langsung di perangkat. Tidak ada akun, tidak ada iklan, dan tidak ada koneksi internet yang dibutuhkan.</p>
+<blockquote><p><strong>Catatan nama:</strong> Di Play Store, aplikasi ini memakai nama <strong>ALTO EFECT</strong>. <strong>ALTODFX</strong> adalah nama yang tampil pada emblem/ikon aplikasi. Artikel ini memakai ALTODFX agar sesuai dengan branding visual tersebut, sementara nama paket dan listing tetap ALTO EFECT.</p></blockquote>
+<p>ALTODFX bukan klaim bahwa satu aplikasi bisa menggantikan seluruh rig panggung. Ini adalah alat yang praktis: untuk latihan, eksplorasi suara, menulis lagu, merekam ide, atau tampil di situasi ringan dengan setup seminimal mungkin.</p>
+<h2 id="sekilas-altodfx">Sekilas ALTODFX</h2>
+<div class="table-wrap"><table><thead><tr><th>Aspek</th><th>Keterangan</th></tr></thead><tbody>
+<tr><td>Platform</td><td>Android 7.0+</td></tr>
+<tr><td>Efek</td><td>9 pedal: WAH, COMP, DRIVE, DIST, CHORUS, PHASER, DELAY, REVERB, CAB</td></tr>
+<tr><td>Preset</td><td>8 preset pabrik + preset buatan pengguna</td></tr>
+<tr><td>Tampilan</td><td>Pedalboard dengan tombol on/off, LED status, dan potensiometer</td></tr>
+<tr><td>Audio</td><td>Mesin native Oboe/AAudio dengan pemrosesan LV2/LADSPA</td></tr>
+<tr><td>Input</td><td>Mikrofon/headset jack atau antarmuka audio USB</td></tr>
+<tr><td>Output</td><td>Headset, speaker ponsel, atau antarmuka audio</td></tr>
+<tr><td>Koneksi</td><td>100% offline; tanpa izin INTERNET</td></tr>
+<tr><td>Model</td><td>Tanpa akun, tanpa iklan, tanpa pembelian dalam aplikasi</td></tr>
+</tbody></table></div>
+<p>Angka-angka itu penting, tetapi yang membuat ALTODFX terasa berbeda adalah cara ia dipakai. Pengguna tidak disuguhi daftar menu panjang. Yang tampil adalah papan efek: pedal-pedal berjajar, masing-masing punya karakter warna, sakelar, lampu, dan kenop yang bisa diputar. Pendekatan ini membuat proses membentuk tone terasa lebih dekat dengan pengalaman memakai perangkat keras.</p>
+<h2 id="tampilan-yang-dibuat-seperti-pedal-sungguhan">Tampilan yang dibuat seperti pedal sungguhan</h2>
+<p>Hal pertama yang orang perhatikan dari ALTODFX adalah tampilannya. Setiap efek direpresentasikan sebagai pedal dengan warna dan aksen berbeda. Ada sakelar on/off, indikator LED, dan beberapa kenop sesuai parameter efek tersebut. Saat pedal diaktifkan, lampu menyala dan efek masuk ke rantai sinyal. Saat dimatikan, pedal tetap terlihat tetapi tidak memproses suara.</p>
+<p>Kontrol potensiometer dibuat untuk diputar dengan jari. Ini bukan sekadar slider horizontal yang terasa generik. Pengguna bisa menaikkan atau menurunkan nilai dengan gerakan memutar, seperti mengatur kenop volume, drive, atau mix pada pedal fisik. Untuk parameter yang memiliki nilai diskret, seperti mode delay <code>LINEAR</code>/<code>PINGPONG</code> atau link kanal kiri-kanan, pilihan ditampilkan sebagai opsi yang bisa diganti.</p>
+<p>Di bagian bawah aplikasi terdapat navigasi utama. Pengguna bisa berpindah antara papan efek, daftar efek, preset, dan pengaturan audio tanpa kehilangan konteks. Semua yang penting untuk bermain berada dalam jangkauan satu tangan, sehingga ponsel bisa diletakkan di atas meja atau klip stand saat latihan.</p>
+<h2 id="sembilan-efek-satu-rantai-sinyal">Sembilan efek, satu rantai sinyal</h2>
+<p>ALTODFX menyediakan sembilan efek yang bisa disusun ulang. Berikut ringkasan karakter dan kontrolnya.</p>
+<h3 id="1-wah-vintage-wah">1. WAH — Vintage Wah</h3>
+<p>Wah adalah efek yang paling terasa “hidup” saat dimainkan. ALTODFX memakai model wah klasik dengan kontrol <code>WAH</code>, <code>FREQ</code>, dan <code>MIX</code>. <code>WAH</code> mengatur posisi pedal wah, <code>FREQ</code> menentukan rentang frekuensi, dan <code>MIX</code> menyeimbangkan sinyal kering dan basah.</p>
+<p>Wah cocok untuk funk, rock, dan lead yang ingin menonjol. Coba mulai dengan <code>MIX</code> sekitar 60–70 persen, lalu sapukan <code>WAH</code> sambil memainkan ritme pendek. Untuk funk, posisi wah yang lebih terbuka memberi karakter “quack” yang khas.</p>
+<h3 id="2-comp-studio-compressor">2. COMP — Studio Compressor</h3>
+<p>Compressor membuat level suara lebih rata dan menambah sustain. Kontrolnya cukup lengkap: <code>THRESH</code>, <code>RATIO</code>, <code>ATTACK</code>, <code>RELEASE</code>, dan <code>KNEE</code>. Threshold menentukan kapan kompresi mulai bekerja, ratio menentukan seberapa kuat sinyal ditekan, attack mengatur seberapa cepat compressor merespons, release mengatur seberapa cepat ia melepas, dan knee menentukan transisi kompresi.</p>
+<p>Compressor sering diremehkan, padahal ia bisa membuat clean terdengar lebih “mahal” dan membuat drive terasa lebih rapi. Untuk clean, coba threshold rendah, ratio sekitar 2:1–3:1, attack agak lambat, dan release sedang. Untuk funk, attack cepat dan release pendek membantu menjaga punch.</p>
+<h3 id="3-drive-super-overdrive">3. DRIVE — Super Overdrive</h3>
+<p>DRIVE adalah overdrive yang hangat dan responsif. Kontrol <code>DRIVE</code>, <code>TONE</code>, dan <code>LEVEL</code> memberi rentang dari crunch ringan sampai distorsi sedang. Efek ini paling cocok ditempatkan sebelum distorsi atau sebagai satu-satunya efek gain untuk blues dan rock klasik.</p>
+<p>Kunci overdrive yang enak adalah gain staging. Jangan langsung menaikkan <code>DRIVE</code> dan <code>LEVEL</code> bersamaan. Mulai dari <code>DRIVE</code> rendah, naikkan <code>LEVEL</code> sampai levelnya seimbang dengan suara bypass, lalu tambahkan <code>DRIVE</code> sedikit demi sedikit. <code>TONE</code> bisa dipakai untuk mengurangi kesan terlalu gelap saat gain dinaikkan.</p>
+<h3 id="4-dist-british-distortion">4. DIST — British Distortion</h3>
+<p>DIST memberi karakter distorsi British dengan kontrol <code>GAIN</code>, <code>BASS</code>, <code>MID</code>, <code>TREBLE</code>, dan <code>LEVEL</code>. Ini adalah efek yang lebih agresif daripada DRIVE, cocok untuk rock, hard rock, dan metal dengan gain yang tidak terlalu ekstrem.</p>
+<p>Untuk rhythm metal, coba <code>GAIN</code> sekitar 50–60 persen, <code>BASS</code> secukupnya, <code>MID</code> sedikit dipotong, dan <code>TREBLE</code> dinaikkan tipis agar tetap jelas di mix. Untuk lead, naikkan <code>MID</code> dan tambahkan sedikit delay agar nada tidak terasa kering.</p>
+<h3 id="5-chorus-analog-chorus">5. CHORUS — Analog Chorus</h3>
+<p>CHORUS menambahkan lapisan modulasi yang lembut. Kontrol <code>DEPTH</code>, <code>RATE</code>, <code>DELAY</code>, dan <code>LEVEL</code> memungkinkan pengguna membuat efek dari chorus halus sampai getaran yang lebih dramatis. Chorus klasik biasanya dipakai untuk clean arpeggio, akor terbuka, atau intro yang ingin terdengar lebar.</p>
+<p>Untuk clean yang elegan, gunakan <code>DEPTH</code> rendah, <code>RATE</code> lambat, dan <code>LEVEL</code> sekitar 30–40 persen. Untuk ambient, naikkan <code>DEPTH</code> dan <code>RATE</code> sedikit, lalu kombinasikan dengan delay dan reverb.</p>
+<h3 id="6-phaser-optical-phaser">6. PHASER — Optical Phaser</h3>
+<p>PHASER memberi gerakan fase yang khas, dengan kontrol <code>SPEED</code>, <code>DEPTH</code>, dan <code>LEVEL</code>. Karakternya bisa lembut seperti shimmer pada clean, atau lebih menonjol untuk funk dan rock psikedelik.</p>
+<p>Phaser sering terdengar paling musical saat ditempatkan setelah drive dan sebelum delay. Coba <code>SPEED</code> lambat untuk akor yang mengambang, atau <code>SPEED</code> lebih cepat untuk riff funk yang ingin terasa berdenyut.</p>
+<h3 id="7-delay-stereo-echo">7. DELAY — Stereo Echo</h3>
+<p>DELAY adalah salah satu efek paling serbaguna di ALTODFX. Kontrolnya mencakup <code>TIME</code>, <code>LEVEL</code>, <code>MOD</code>, <code>MODE</code>, dan <code>LINK</code>. Mode <code>LINEAR</code> memberi echo yang mengikuti kanal, sedangkan <code>PINGPONG</code> membuat echo bergerak antara kiri dan kanan. <code>LINK</code> mengatur apakah kanal kiri dan kanan dihubungkan.</p>
+<p>Untuk slapback rockabilly, gunakan waktu pendek dan level rendah. Untuk lead, delay sedang dengan modulasi tipis membuat nada lebih hidup. Untuk ambient, delay panjang dengan mode ping-pong dan reverb di belakangnya bisa menciptakan ruang yang sangat lebar.</p>
+<h3 id="8-reverb-studio-reverb">8. REVERB — Studio Reverb</h3>
+<p>REVERB menambahkan ruang akustik pada sinyal. Kontrol <code>ROOM</code>, <code>DAMP</code>, <code>MIX</code>, dan <code>MOD</code> memberi fleksibilitas dari ruang kecil yang intimate sampai reverb yang luas. <code>DAMP</code> mengatur seberapa cepat frekuensi tinggi meredup, sedangkan <code>MOD</code> menambahkan gerakan halus pada tail.</p>
+<p>Reverb sebaiknya tidak berlebihan. Untuk mix yang rapi, mulai dari <code>MIX</code> rendah, lalu naikkan sampai suara terasa memiliki ruang tanpa kehilangan definisi. Untuk ambient, reverb bisa menjadi bagian utama dari karakter suara.</p>
+<h3 id="9-cab-cabinet-simulator">9. CAB — Cabinet Simulator</h3>
+<p>CAB adalah “penutup” rantai sinyal. Kontrol <code>GAIN</code>, <code>MIDS</code>, <code>PUNCH</code>, <code>RESONANCE</code>, <code>SIZE</code>, dan <code>TOP</code> memungkinkan pengguna membentuk karakter kotak speaker virtual. Tanpa cabinet simulation, distorsi sering terdengar terlalu tajam dan “direct”. CAB membantu memberi bobot dan tekstur yang lebih mirip amplifier.</p>
+<p>Tempatkan CAB setelah DRIVE/DIST. Untuk rhythm, coba <code>MIDS</code> sedikit rendah dan <code>PUNCH</code> cukup. Untuk lead, naikkan <code>MIDS</code> agar tetap terdengar di mix. <code>SIZE</code> dan <code>RESONANCE</code> bisa membuat suara terasa lebih besar atau lebih fokus.</p>
+<h2 id="delapan-preset-pabrik-untuk-mulai-cepat">Delapan preset pabrik untuk mulai cepat</h2>
+<p>Membuat tone dari nol bisa menyenangkan, tetapi tidak selalu praktis. ALTODFX menyediakan delapan preset pabrik yang bisa langsung dimuat:</p>
+<ol><li><strong>Studio Clean</strong> — clean studio dengan kompresi lembut, cabinet hangat, dan sedikit room. Cocok untuk arpeggio, chord terbuka, dan tracking.</li><li><strong>Blues Drive</strong> — overdrive yang sensitif terhadap dinamika. Volume gitar bisa dibuka-tutup untuk berpindah dari clean ke grit.</li><li><strong>Classic Rock</strong> — energi stack British: drive dan distorsi bertumpuk, delay slapback pendek, dan cabinet besar.</li><li><strong>Metal Storm</strong> — rhythm high-gain yang ketat dan agresif, mid sedikit dipotong, respons cabinet cepat.</li><li><strong>Ambient Space</strong> — chorus lebar, echo ping-pong panjang, dan reverb yang luas.</li><li><strong>Funk Wah</strong> — wah snappy, phaser optik, dan clean amp perkusif untuk rhythm chop.</li><li><strong>Lead Sustain</strong> — tone lead yang menyanyi dengan kompresi, gain bertumpuk, dan trail echo hangat.</li><li><strong>Acoustic Warm</strong> — karakter pickup akustik natural dengan chorus tipis dan room lembut.</li></ol>
+<p>Preset pabrik adalah titik awal, bukan harga mati. Pengguna bisa memuat preset, mematikan pedal tertentu, memutar kenop, lalu menyimpan hasilnya sebagai preset baru. Preset disimpan secara lokal di perangkat, sehingga tetap tersedia tanpa internet.</p>
+<h2 id="membangun-rantai-efek-yang-masuk-akal">Membangun rantai efek yang masuk akal</h2>
+<p>Urutan efek sangat memengaruhi hasil. Tidak ada aturan mutlak, tetapi urutan berikut adalah titik awal yang aman:</p>
+<p><strong>WAH → COMP → DRIVE/DIST → CAB → CHORUS/PHASER → DELAY → REVERB</strong></p>
+<p>Beberapa prinsip yang membantu:</p>
+<ul><li><strong>Wah dan compressor di depan.</strong> Wah biasanya bekerja paling alami saat menerima sinyal gitar langsung. Compressor setelah wah membantu meratakan level.</li><li><strong>Drive sebelum cab.</strong> Cabinet simulation dirancang untuk menerima sinyal yang sudah berkarakter amplifier. Menempatkan CAB setelah drive/dist memberi hasil yang lebih natural.</li><li><strong>Modulasi setelah gain.</strong> Chorus dan phaser biasanya terdengar lebih bersih setelah distorsi, kecuali jika sengaja ingin efek yang lebih eksperimental.</li><li><strong>Delay dan reverb di belakang.</strong> Keduanya adalah efek ruang dan waktu; menempatkannya di akhir rantai menjaga tail tetap bersih.</li><li><strong>Jangan takut bereksperimen.</strong> ALTODFX memungkinkan pedal disusun ulang. Coba phaser sebelum drive untuk karakter yang lebih tajam, atau reverb sebelum delay untuk tail yang berbeda.</li></ul>
+<h2 id="mesin-audio-mengapa-terasa-langsung">Mesin audio: mengapa terasa langsung</h2>
+<p>ALTODFX memakai mesin audio native berbasis Oboe/AAudio dan host plugin LV2/LADSPA. Pendekatan ini dipilih karena pemrosesan efek gitar sangat sensitif terhadap latensi. Jika input, pemrosesan, dan output tidak berjalan mulus, permainan terasa “berat” dan tidak nyaman.</p>
+<p>Dengan audio native, sinyal gitar diproses di perangkat tanpa perjalanan ke server. Tidak ada koneksi internet yang terlibat. Efek-efek dijalankan sebagai plugin audio lokal, dan parameter dikirim ke mesin audio saat pengguna memutar kenop atau menekan sakelar.</p>
+<p>Latensi akhir tetap bergantung pada perangkat, versi Android, adaptor, dan antarmuka audio yang dipakai. Ponsel dengan audio stack yang baik dan adaptor yang sesuai biasanya memberi pengalaman yang lebih responsif. Headset juga penting: memakai speaker ponsel sambil membuka mikrofon hampir selalu menimbulkan feedback.</p>
+<h2 id="cara-menyambungkan-gitar-ke-altodfx">Cara menyambungkan gitar ke ALTODFX</h2>
+<p>Ada beberapa cara yang bisa dicoba, dari yang paling sederhana sampai yang lebih serius.</p>
+<h3 id="setup-paling-sederhana">Setup paling sederhana</h3>
+<ol><li>Sambungkan gitar ke adaptor gitar-ke-HP yang sesuai.</li><li>Masukkan adaptor ke jack headset ponsel.</li><li>Sambungkan headset ke ponsel.</li><li>Buka ALTODFX, tekan <strong>POWER</strong>, dan izinkan akses mikrofon.</li><li>Pilih preset dan mulai bermain.</li></ol>
+<p>Adaptor yang dipakai harus cocok dengan ponsel dan gitar. Tidak semua adaptor memiliki kualitas input yang sama; adaptor dengan preamp gitar yang baik akan memberi hasil lebih bersih.</p>
+<h3 id="setup-antarmuka-audio-usb">Setup antarmuka audio USB</h3>
+<p>Untuk hasil yang lebih serius, gunakan audio interface USB dan kabel OTG:</p>
+<ol><li>Hubungkan gitar ke input instrument pada audio interface.</li><li>Hubungkan audio interface ke ponsel melalui OTG.</li><li>Buka <strong>Audio Setup</strong> di ALTODFX.</li><li>Pilih input dan output yang sesuai.</li><li>Mulai dari volume rendah, lalu naikkan perlahan.</li></ol>
+<p>Audio interface biasanya memberi kualitas preamp dan latency yang lebih baik daripada adaptor sederhana. Namun, tidak semua ponsel atau kabel OTG mendukung kelas audio USB dengan sempurna; pengujian di perangkat nyata tetap penting.</p>
+<h3 id="headset-dan-feedback">Headset dan feedback</h3>
+<p>Gunakan headset atau earphone. Jika ALTODFX memakai speaker ponsel sambil menerima input mikrofon, suara output bisa masuk kembali ke mikrofon dan menimbulkan feedback. Jika terpaksa memakai speaker, mulai dari volume sangat rendah dan jauhkan ponsel dari gitar.</p>
+<h2 id="lima-menit-pertama-panduan-memulai">Lima menit pertama: panduan memulai</h2>
+<ol><li><strong>Pasang aplikasi</strong> dan buka ALTODFX.</li><li>Tekan <strong>POWER</strong>. Dialog penjelasan mikrofon akan muncul.</li><li>Baca penjelasan, tekan <strong>Continue</strong>, lalu setujui izin mikrofon Android.</li><li>Jika ada peringatan headphone, sambungkan headset atau lanjutkan dengan volume rendah.</li><li>Pilih salah satu preset, misalnya <strong>Studio Clean</strong>.</li><li>Aktifkan pedal yang ingin dicoba. Perhatikan LED dan perubahan suara.</li><li>Putar kenop perlahan. Mulai dari perubahan kecil agar telinga terbiasa.</li><li>Simpan hasil sebagai preset baru dengan nama yang mudah diingat.</li><li>Matikan pedal satu per satu untuk memahami kontribusinya.</li><li>Coba preset lain, lalu bandingkan karakter dan levelnya.</li></ol>
+<p>Kebiasaan yang baik: selalu mulai dari volume rendah, dan jangan menaikkan gain serta output secara bersamaan. Telinga perlu waktu untuk menilai tone; perubahan besar dalam satu langkah sering terdengar mengesankan sesaat tetapi sulit dipakai dalam mix.</p>
+<h2 id="resep-suara-per-gaya">Resep suara per gaya</h2>
+<h3 id="clean-dan-neo-soul">Clean dan neo-soul</h3>
+<p>Gunakan <strong>Studio Clean</strong>. Aktifkan COMP dengan kompresi ringan, CAB dengan <code>MIDS</code> sedang, dan CHORUS tipis jika ingin suara lebih lebar. Untuk chord yang “mahal”, tambahkan reverb kecil dan delay pendek. Jaga gain tetap rendah agar dinamika picking tetap terasa.</p>
+<h3 id="blues">Blues</h3>
+<p>Gunakan <strong>Blues Drive</strong>. DRIVE dengan gain rendah sampai sedang, <code>TONE</code> sedikit lebih terang, dan COMP ringan. Untuk solo, tambahkan DELAY pendek dan sedikit reverb. Mainkan dengan dinamika: pukulan lembut untuk clean, pukulan kuat untuk grit.</p>
+<h3 id="rock-klasik">Rock klasik</h3>
+<p>Gunakan <strong>Classic Rock</strong>. DIST memberi karakter British, DRIVE bisa dipakai sebagai booster sebelum DIST. CAB dengan <code>PUNCH</code> cukup dan <code>MIDS</code> seimbang. Delay slapback pendek memberi kesan panggung tanpa mengaburkan riff.</p>
+<h3 id="metal">Metal</h3>
+<p>Gunakan <strong>Metal Storm</strong>. DIST dengan gain cukup, <code>BASS</code> tidak berlebihan, <code>MID</code> sedikit dipotong, dan <code>TREBLE</code> secukupnya. CAB dengan <code>PUNCH</code> dan <code>RESONANCE</code> membantu keketatan. Tambahkan noise gate jika gain tinggi; jangan menutup terlalu agresif agar sustain tidak hilang.</p>
+<h3 id="ambient-dan-post-rock">Ambient dan post-rock</h3>
+<p>Gunakan <strong>Ambient Space</strong>. CHORUS lebar, DELAY panjang dengan mode <code>PINGPONG</code>, dan REVERB besar. Mainkan nada panjang dan biarkan tail berkembang. Untuk variasi, matikan chorus dan gunakan phaser lambat sebagai pengganti.</p>
+<h3 id="funk">Funk</h3>
+<p>Gunakan <strong>Funk Wah</strong>. WAH dengan <code>MIX</code> cukup tinggi, COMP dengan attack cepat, dan clean amp yang perkusif. PHASER bisa ditambahkan tipis untuk gerakan. Mainkan chord pendek dan muting rapi; wah akan menonjolkan aksen ritmis.</p>
+<h3 id="lead">Lead</h3>
+<p>Gunakan <strong>Lead Sustain</strong>. COMP untuk sustain, DRIVE/DIST bertumpuk secukupnya, CAB dengan <code>MIDS</code> cukup, dan DELAY hangat. Jangan terlalu banyak reverb pada lead yang padat; ruang bisa membuat nada kehilangan fokus.</p>
+<h3 id="akustik">Akustik</h3>
+<p>Gunakan <strong>Acoustic Warm</strong>. COMP ringan, CHORUS tipis, dan reverb kecil. Hindari gain tinggi. Untuk gitar akustik dengan pickup, atur input level agar tidak clipping; ALTODFX adalah prosesor efek, bukan pengganti preamp akustik.</p>
+<h2 id="gain-staging-noise-gate-dan-hum-filter">Gain staging, noise gate, dan hum filter</h2>
+<p>Tone yang baik bukan hanya soal efek. Gain staging menentukan seberapa bersih sinyal masuk dan keluar.</p>
+<ul><li><strong>Input gain:</strong> atur sampai sinyal cukup kuat tetapi tidak clipping. Jika suara pecah bahkan saat efek dimatikan, turunkan input.</li><li><strong>Output volume:</strong> atur setelah efek, bukan sebagai kompensasi gain yang berlebihan.</li><li><strong>Master gain:</strong> gunakan untuk menyeimbangkan keseluruhan. Jangan mendorong terlalu tinggi hanya agar terdengar lebih keras.</li><li><strong>Noise gate:</strong> berguna untuk gain tinggi dan gitar dengan hum. Threshold terlalu tinggi akan memotong sustain; terlalu rendah tidak menutup noise.</li><li><strong>Hum filter:</strong> membantu mengurangi dengung frekuensi rendah. Aktifkan jika diperlukan; jika tone terasa terlalu tipis, coba matikan dan periksa kabel atau adaptor.</li></ul>
+<p>Salah satu kesalahan umum adalah menaikkan gain di beberapa titik sekaligus: input, drive, compressor, dan output. Hasilnya sering terdengar keras tetapi tidak lebih baik. Mulai dari satu sumber gain, lalu gunakan efek lain untuk membentuk karakter.</p>
+<h2 id="latensi-dan-masalah-umum">Latensi dan masalah umum</h2>
+<p>Latensi adalah jeda antara senar dipetik dan suara terdengar. Beberapa hal yang bisa membantu:</p>
+<ul><li>Gunakan headset berkabel, bukan Bluetooth. Bluetooth menambah latensi yang cukup besar untuk permainan gitar.</li><li>Gunakan adaptor atau audio interface yang dirancang untuk gitar.</li><li>Tutup aplikasi lain yang berat saat bermain.</li><li>Mulai dari sample rate dan buffer yang stabil; jangan mengejar angka terendah jika menyebabkan crackle.</li><li>Uji di perangkat nyata. Latensi berbeda antarponsel dan antarmuka audio.</li></ul>
+<div class="table-wrap"><table><thead><tr><th>Gejala</th><th>Kemungkinan penyebab</th><th>Yang bisa dicoba</th></tr></thead><tbody>
+<tr><td>Suara tidak keluar</td><td>Izin mikrofon belum diberikan</td><td>Tekan POWER dan setujui izin</td></tr>
+<tr><td>Feedback melengking</td><td>Speaker ponsel aktif</td><td>Gunakan headset, turunkan volume</td></tr>
+<tr><td>Suara pecah</td><td>Input/output terlalu tinggi</td><td>Turunkan gain, cek level</td></tr>
+<tr><td>Latensi terasa berat</td><td>Bluetooth atau buffer besar</td><td>Gunakan kabel, tutup aplikasi lain</td></tr>
+<tr><td>Efek tidak terdengar</td><td>Pedal mati atau mix rendah</td><td>Nyalakan pedal, naikkan mix</td></tr>
+<tr><td>Noise saat gain tinggi</td><td>Hum atau gate</td><td>Cek kabel, atur gate/hum filter</td></tr>
+</tbody></table></div>
+<h2 id="privasi-dan-filosofi-offline">Privasi dan filosofi offline</h2>
+<p>ALTODFX dirancang untuk bekerja sepenuhnya offline. Aplikasi tidak meminta izin INTERNET, tidak menampilkan iklan, tidak memakai analytics, dan tidak membutuhkan akun. Preset serta pengaturan disimpan secara lokal di perangkat.</p>
+<p>Mikrofon digunakan hanya untuk menerima input gitar/audio secara real-time. Sebelum izin sistem diminta, aplikasi menampilkan penjelasan bahwa audio diproses di perangkat, tidak direkam, dan tidak diunggah. Ini penting karena izin mikrofon sering disalahpahami sebagai izin merekam percakapan.</p>
+<p>Filosofi ini punya trade-off: tidak ada sinkronisasi cloud, tidak ada berbagi preset antarperangkat secara otomatis, dan tidak ada rekomendasi berbasis data. Sebagai gantinya, pengguna mendapat alat yang sederhana, privat, dan bisa dipakai di mana saja tanpa koneksi.</p>
+<h2 id="untuk-siapa-altodfx">Untuk siapa ALTODFX?</h2>
+<p>ALTODFX cocok untuk:</p>
+<ul><li>Gitaris yang ingin latihan tanpa membawa pedalboard.</li><li>Penulis lagu yang butuh suara cepat untuk demo.</li><li>Pemula yang ingin mengenal karakter efek gitar tanpa membeli banyak pedal.</li><li>Gitaris yang sering bepergian dan ingin setup ringan.</li><li>Pengguna yang peduli privasi dan tidak ingin aplikasi musik yang penuh iklan.</li></ul>
+<p>ALTODFX bukan pengganti terbaik untuk:</p>
+<ul><li>Panggung besar yang membutuhkan switching preset kompleks dan kontrol MIDI.</li><li>Rekaman studio profesional yang membutuhkan chain analog spesifik.</li><li>Pemain yang membutuhkan latency ultra-rendah dengan amplifier fisik dan load box.</li><li>Pengguna yang ingin sinkronisasi cloud dan kolaborasi real-time.</li></ul>
+<p>Mengenali batasan ini penting. Alat yang tepat bukan alat yang paling banyak fiturnya, tetapi alat yang paling sesuai dengan konteks pemakaian.</p>
+<h2 id="spesifikasi-teknis">Spesifikasi teknis</h2>
+<div class="table-wrap"><table><thead><tr><th>Item</th><th>Detail</th></tr></thead><tbody>
+<tr><td>Nama aplikasi</td><td>ALTO EFECT (emblem: ALTODFX)</td></tr>
+<tr><td>Platform</td><td>Android 7.0+</td></tr>
+<tr><td>Arsitektur</td><td>arm64-v8a, armeabi-v7a, x86, x86_64</td></tr>
+<tr><td>Mesin audio</td><td>Oboe/AAudio</td></tr>
+<tr><td>Format plugin</td><td>LV2/LADSPA</td></tr>
+<tr><td>Efek</td><td>9 pedal</td></tr>
+<tr><td>Preset pabrik</td><td>8</td></tr>
+<tr><td>Preset pengguna</td><td>Lokal, dapat disimpan dan dihapus</td></tr>
+<tr><td>Izin</td><td>Mikrofon untuk input audio</td></tr>
+<tr><td>Internet</td><td>Tidak ada izin INTERNET</td></tr>
+<tr><td>Iklan</td><td>Tidak ada</td></tr>
+<tr><td>Akun</td><td>Tidak perlu</td></tr>
+<tr><td>Pembelian dalam aplikasi</td><td>Tidak ada</td></tr>
+</tbody></table></div>
+<h2 id="faq">FAQ</h2>
+<h3 id="apakah-altodfx-benar-benar-offline">Apakah ALTODFX benar-benar offline?</h3>
+<p>Ya. Aplikasi dirancang tanpa izin INTERNET dan tidak mengirim audio, preset, atau data penggunaan ke server.</p>
+<h3 id="apakah-aplikasi-merekam-suara-saya">Apakah aplikasi merekam suara saya?</h3>
+<p>Tidak. Mikrofon dipakai untuk input efek secara real-time. Audio diproses di perangkat dan tidak disimpan atau diunggah oleh aplikasi.</p>
+<h3 id="bisakah-saya-memakai-gitar-listrik-langsung-ke-ponsel">Bisakah saya memakai gitar listrik langsung ke ponsel?</h3>
+<p>Bisa, dengan adaptor gitar-ke-HP yang sesuai. Untuk hasil lebih baik, gunakan audio interface USB. Kualitas input sangat bergantung pada adaptor dan perangkat.</p>
+<h3 id="apakah-saya-perlu-headset">Apakah saya perlu headset?</h3>
+<p>Sangat disarankan. Memakai speaker ponsel sambil mikrofon aktif dapat menimbulkan feedback. Headset berkabel juga membantu mengurangi latensi dibandingkan Bluetooth.</p>
+<h3 id="apakah-preset-saya-hilang-jika-aplikasi-ditutup">Apakah preset saya hilang jika aplikasi ditutup?</h3>
+<p>Tidak. Preset disimpan secara lokal. Namun, menghapus data aplikasi atau meng-uninstall aplikasi akan menghapus preset tersebut.</p>
+<h3 id="apakah-altodfx-menggantikan-amplifier">Apakah ALTODFX menggantikan amplifier?</h3>
+<p>Tidak. Ini adalah prosesor efek. Anda tetap membutuhkan jalur output (headset, speaker, atau antarmuka audio) dan sebaiknya mulai dari volume rendah.</p>
+<h3 id="apakah-ada-iklan-atau-langganan">Apakah ada iklan atau langganan?</h3>
+<p>Tidak. Model yang dirancang adalah aplikasi gratis tanpa iklan dan tanpa pembelian dalam aplikasi.</p>
+<h2 id="penutup">Penutup</h2>
+<p>ALTODFX adalah jawaban untuk kebutuhan yang sederhana tetapi sering terabaikan: pedalboard yang selalu ada saat ide datang. Sembilan efek, delapan preset, kontrol yang terasa seperti perangkat keras, dan mesin audio native membuatnya cukup serius untuk latihan dan eksplorasi, tetapi tetap cukup ringan untuk dibawa ke mana saja.</p>
+<p>Jika Anda ingin mencoba, siapkan gitar, adaptor atau audio interface, dan headset. Mulai dari <strong>Studio Clean</strong>, putar beberapa kenop, lalu simpan satu preset pertama Anda. Dari situ, ALTODFX bisa menjadi tempat untuk menemukan suara yang benar-benar Anda sukai — tanpa internet, tanpa akun, dan tanpa gangguan.</p>
+<p><strong>Tautan Play Store:</strong> [isi setelah rilis] <strong>Repositori / info pengembang:</strong> https://github.com/kdsmedia/ALTOGFX</p>
+<hr>
+<p><em>Nama efek dan merek dagang yang disebutkan adalah milik pemiliknya masing-masing. Preset ALTODFX terinspirasi oleh karakter suara umum, bukan emulasi resmi atau afiliasi dengan merek pedal tertentu.</em></p>
+    <p class="endnote">Artikel ini disiapkan sebagai materi publikasi ALTODFX / ALTO EFECT. Ganti placeholder URL dan tautan Play Store sebelum menerbitkan.</p>
+  </article>
+  <aside class="toc" aria-label="Daftar isi">
+    <h2>Daftar isi</h2>
+    <ol><li><a href="#pendahuluan-ketika-pedalboard-masuk-ke-saku">Pendahuluan: ketika pedalboard masuk ke saku</a></li>
+<li><a href="#sekilas-altodfx">Sekilas ALTODFX</a></li>
+<li><a href="#tampilan-yang-dibuat-seperti-pedal-sungguhan">Tampilan yang dibuat seperti pedal sungguhan</a></li>
+<li><a href="#sembilan-efek-satu-rantai-sinyal">Sembilan efek, satu rantai sinyal</a></li>
+<li><a href="#delapan-preset-pabrik-untuk-mulai-cepat">Delapan preset pabrik untuk mulai cepat</a></li>
+<li><a href="#membangun-rantai-efek-yang-masuk-akal">Membangun rantai efek yang masuk akal</a></li>
+<li><a href="#mesin-audio-mengapa-terasa-langsung">Mesin audio: mengapa terasa langsung</a></li>
+<li><a href="#cara-menyambungkan-gitar-ke-altodfx">Cara menyambungkan gitar ke ALTODFX</a></li>
+<li><a href="#lima-menit-pertama-panduan-memulai">Lima menit pertama: panduan memulai</a></li>
+<li><a href="#resep-suara-per-gaya">Resep suara per gaya</a></li>
+<li><a href="#gain-staging-noise-gate-dan-hum-filter">Gain staging, noise gate, dan hum filter</a></li>
+<li><a href="#latensi-dan-masalah-umum">Latensi dan masalah umum</a></li>
+<li><a href="#privasi-dan-filosofi-offline">Privasi dan filosofi offline</a></li>
+<li><a href="#untuk-siapa-altodfx">Untuk siapa ALTODFX?</a></li>
+<li><a href="#spesifikasi-teknis">Spesifikasi teknis</a></li>
+<li><a href="#faq">FAQ</a></li>
+<li><a href="#penutup">Penutup</a></li></ol>
+  </aside>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 ALTOMEDIA. ALTODFX / ALTO EFECT.</span>
+    <span><a href="https://github.com/kdsmedia/ALTOGFX">github.com/kdsmedia/ALTOGFX</a></span>
+  </div>
+</footer>
+</body>
+</html>
