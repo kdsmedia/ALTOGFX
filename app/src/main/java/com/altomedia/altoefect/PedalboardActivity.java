@@ -506,7 +506,7 @@ public class PedalboardActivity extends AppCompatActivity
         TextView prevPreset = presetArrow("‹");
         prevPreset.setContentDescription("Scroll presets left");
         prevPreset.setOnClickListener(v -> scrollPresetStrip(-1));
-        LinearLayout.LayoutParams prevParams = new LinearLayout.LayoutParams(dp(34), dp(30));
+        LinearLayout.LayoutParams prevParams = new LinearLayout.LayoutParams(dp(42), dp(36));
         prevParams.rightMargin = dp(8);
         presetNav.addView(prevPreset, prevParams);
         TextView presetSwipeHint = new TextView(this);
@@ -521,7 +521,7 @@ public class PedalboardActivity extends AppCompatActivity
         TextView nextPreset = presetArrow("›");
         nextPreset.setContentDescription("Scroll presets right");
         nextPreset.setOnClickListener(v -> scrollPresetStrip(1));
-        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(dp(34), dp(30));
+        LinearLayout.LayoutParams nextParams = new LinearLayout.LayoutParams(dp(42), dp(36));
         nextParams.leftMargin = dp(8);
         presetNav.addView(nextPreset, nextParams);
         LinearLayout.LayoutParams presetNavParams = new LinearLayout.LayoutParams(
