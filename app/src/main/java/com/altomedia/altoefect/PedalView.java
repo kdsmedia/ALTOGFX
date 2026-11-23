@@ -147,7 +147,7 @@ public class PedalView extends View {
         }
 
         float header = large ? dp(104) : dp(76);
-        float footer = large ? dp(112) : dp(86);
+        float footer = large ? dp(100) : dp(86);
         float left = bodyRect.left + dp(large ? 18 : 9);
         float right = bodyRect.right - dp(large ? 18 : 9);
         float top = bodyRect.top + header;
@@ -167,7 +167,7 @@ public class PedalView extends View {
         int rows = (int) Math.ceil(count / (float) columns);
         float cellW = (right - left) / columns;
         float cellH = (bottom - top) / rows;
-        float maxKnob = large ? dp(96) : dp(52);
+        float maxKnob = large ? dp(96) : dp(40);
         float knob = Math.min(maxKnob, Math.min(cellW * 0.74f, cellH * 0.66f));
         knob = Math.max(knob, dp(large ? 40 : 20));
 
@@ -183,7 +183,7 @@ public class PedalView extends View {
             knobs.add(new KnobHit(state.controls.get(i), cx, cy, knob / 2f));
         }
 
-        float footSize = large ? dp(84) : dp(58);
+        float footSize = large ? dp(76) : dp(58);
         float footCx = w / 2f;
         float footCy = bodyRect.bottom - footer * 0.50f;
         footRect.set(footCx - footSize / 2f, footCy - footSize / 2f,
@@ -433,7 +433,7 @@ public class PedalView extends View {
         smallPaint.setTextSize(sp(large ? 10 : 7));
         smallPaint.setColor(live ? state.spec.accentColor : 0x88F6EFE4);
         String footLabel = !state.available ? "N/A" : live ? "ON" : "BYPASS";
-        canvas.drawText(footLabel, cx, footRect.bottom + dp(11), smallPaint);
+        canvas.drawText(footLabel, cx, footRect.bottom + dp(large ? 10 : 11), smallPaint);
     }
 
     private void drawLed(Canvas canvas, float cx, float cy, float r, boolean live) {
