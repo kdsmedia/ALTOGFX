@@ -47,7 +47,9 @@ AAB validation    : bundletool 1.18.3 validate — exit 0
 AAB signature     : jarsigner -verify — "jar verified"
 APK signature     : apksigner verify — signer #1 certificate matches above
 AAB size check    : 176 MB compressed; below Play base-module 200 MB limit.
-                    Play delivers ABI-split downloads, so device download is smaller.
+                    bundletool split-APK estimate (download size by ABI):
+                    arm64-v8a ~57.7 MB, armeabi-v7a ~56.0 MB,
+                    x86 ~58.8 MB, x86_64 ~58.8 MB.
 
 Permissions in release APK
 --------------------------
