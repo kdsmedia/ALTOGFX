@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public final class PedalEngine {
+public final class PedalEngine implements EngineBridge.Listener {
     private static final String TAG = "PedalEngine";
     private static final String PREFS = "altoefect";
     private static PedalEngine instance;
@@ -56,6 +56,7 @@ public final class PedalEngine {
 
         pedals.clear();
         EngineBridge.attach(context);
+        EngineBridge.setListener(this);
         try {
             AudioEngine.setDefaultStreamValues(context);
         } catch (Exception ignored) {
@@ -145,6 +146,22 @@ public final class PedalEngine {
 
     public void setListener(Listener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void onMeter(float value, boolean input) {
+        Listener current = listener;
+        if (current != null) {
+            current.onMeter(value, input);
+        }
+    }
+
+    @Override
+    public void onSampleRate(int sampleRate, boolean lowLatency) {
+        Listener current = listener;
+        if (current != null) {
+            current.onSampleRate(sampleRate, lowLatency);
+        }
     }
 
     public boolean isStarted() {
