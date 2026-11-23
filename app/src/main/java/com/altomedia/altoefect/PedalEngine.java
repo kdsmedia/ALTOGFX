@@ -1,7 +1,9 @@
 package com.altomedia.altoefect;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.util.Log;
@@ -270,6 +272,10 @@ public final class PedalEngine implements EngineBridge.Listener {
         initialize();
         if (started) {
             return true;
+        }
+        if (context.checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+                != PackageManager.PERMISSION_GRANTED) {
+            return false;
         }
         applyAudioSettings();
         boolean ok = AudioEngine.setEffectOn(true);
