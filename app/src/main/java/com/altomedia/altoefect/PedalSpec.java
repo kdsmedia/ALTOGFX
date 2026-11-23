@@ -13,9 +13,15 @@ public final class PedalSpec {
     public final int bodyColor;
     public final int accentColor;
     public final ControlSpec[] controls;
+    public final boolean lv2;
 
     public PedalSpec(String id, String model, String subtitle, String library, int pluginIndex,
                      int bodyColor, int accentColor, ControlSpec[] controls) {
+        this(id, model, subtitle, library, pluginIndex, bodyColor, accentColor, controls, true);
+    }
+
+    public PedalSpec(String id, String model, String subtitle, String library, int pluginIndex,
+                     int bodyColor, int accentColor, ControlSpec[] controls, boolean lv2) {
         this.id = id;
         this.model = model;
         this.subtitle = subtitle;
@@ -24,6 +30,7 @@ public final class PedalSpec {
         this.bodyColor = bodyColor;
         this.accentColor = accentColor;
         this.controls = controls;
+        this.lv2 = lv2;
     }
 
     public static final List<PedalSpec> BOARD;

@@ -100,21 +100,19 @@ public final class PresetStore {
             String description = object.optString("description", "");
             JSONObject pedalObject = object.getJSONObject("pedals");
             Map<String, Preset.PedalPreset> pedals = new LinkedHashMap<>();
-            for (PedalSpec spec : PedalSpec.BOARD) {
-                if (!pedalObject.has(spec.id)) {
-                    continue;
-                }
-                JSONObject entry = pedalObject.getJSONObject(spec.id);
+            for (java.util.Iterator<String> it = pedalObject.keys(); it.hasNext(); ) {
+                String id = it.next();
+                JSONObject entry = pedalObject.getJSONObject(id);
                 boolean on = entry.optBoolean("on", false);
                 Map<String, Float> controls = new LinkedHashMap<>();
                 JSONObject controlsObject = entry.optJSONObject("controls");
                 if (controlsObject != null) {
-                    for (java.util.Iterator<String> it = controlsObject.keys(); it.hasNext(); ) {
-                        String key = it.next();
+                    for (java.util.Iterator<String> cit = controlsObject.keys(); cit.hasNext(); ) {
+                        String key = cit.next();
                         controls.put(key, (float) controlsObject.getDouble(key));
                     }
                 }
-                pedals.put(spec.id, new Preset.PedalPreset(on, controls));
+                pedals.put(id, new Preset.PedalPreset(on, controls));
             }
             return new Preset(name, tag, description, factory, pedals);
         } catch (Exception e) {

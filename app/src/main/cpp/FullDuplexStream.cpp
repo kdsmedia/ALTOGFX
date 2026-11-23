@@ -94,6 +94,9 @@ oboe::Result FullDuplexStream::start() {
     // Determine maximum size that could possibly be called.
     int32_t bufferSize = mOutputStream->getBufferCapacityInFrames()
             * mOutputStream->getChannelCount();
+    if (bufferSize <= 0) {
+        bufferSize = 2048 * mOutputStream->getChannelCount();
+    }
     if (bufferSize > mBufferSize) {
         mInputBuffer = std::make_unique<float[]>(bufferSize);
         mBufferSize = bufferSize;

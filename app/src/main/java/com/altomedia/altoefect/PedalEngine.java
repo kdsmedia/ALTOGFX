@@ -73,30 +73,128 @@ public final class PedalEngine implements EngineBridge.Listener {
         AudioEngine.setSampleRate(loadedSampleRate);
         AudioEngine.setInputVolume(prefs.getFloat("input_gain", 1f));
         AudioEngine.setOutputVolume(prefs.getFloat("output_volume", 1f));
+        AudioEngine.setMasterGain(prefs.getFloat("master_gain", 1.8f));
+        AudioEngine.setNoiseGateEnabled(prefs.getBoolean("noise_gate", true));
+        AudioEngine.setNoiseGateThreshold(prefs.getFloat("gate_threshold_db", -55f));
+        AudioEngine.setHumFilterEnabled(prefs.getBoolean("hum_filter", true));
 
-        for (PedalSpec spec : PedalSpec.BOARD) {
-            int before = AudioEngine.getActivePlugins();
-            int result = AudioEngine.addPluginLazyLV2(spec.library, spec.pluginIndex);
-            int after = AudioEngine.getActivePlugins();
-            boolean available = after > before && result >= 0;
-            int pluginIndex = available ? after - 1 : -1;
-            if (!available) {
-                Log.e(TAG, "Unable to load pedal " + spec.id + " from " + spec.library);
-            }
-            PedalState state = new PedalState(spec, pluginIndex, available);
-            pedals.add(state);
+        for (PedalSpec spec : selectedSpecs()) {
+            addSpec(spec);
         }
 
         presets.clear();
         presets.addAll(PresetStore.loadAll(context));
         if (!presets.isEmpty()) {
-            applyPreset(presets.get(0), false);
+            Preset first = presets.get(0);
+            applyPreset(first, false);
+            for (PedalState pedal : pedals) {
+                if (!first.pedals.containsKey(pedal.spec.id)) {
+                    pedal.setEnabled(true);
+                }
+            }
         } else {
             for (PedalState pedal : pedals) {
                 pedal.setEnabled(false);
             }
         }
         initialized = true;
+    }
+
+    private List<PedalSpec> selectedSpecs() {
+        List<PedalSpec> all = PluginCatalog.get(context);
+        List<PedalSpec> selected = new ArrayList<>();
+        String saved = prefs.getString("board_ids", "");
+        if (!saved.isEmpty()) {
+            for (String id : saved.split(",")) {
+                for (PedalSpec spec : all) {
+                    if (spec.id.equals(id)) {
+                        selected.add(spec);
+                        break;
+                    }
+                }
+            }
+        }
+        if (selected.isEmpty()) {
+            selected.addAll(PedalSpec.BOARD);
+        }
+        return selected;
+    }
+
+    private void addSpec(PedalSpec spec) {
+        int before = AudioEngine.getActivePlugins();
+        int result = spec.lv2
+                ? AudioEngine.addPluginLazyLV2(spec.library, spec.pluginIndex)
+                : AudioEngine.addPluginLazy(spec.library, spec.pluginIndex);
+        int after = AudioEngine.getActivePlugins();
+        boolean available = after > before && result >= 0;
+        int pluginIndex = available ? after - 1 : -1;
+        if (!available) {
+            Log.e(TAG, "Unable to load pedal " + spec.id + " from " + spec.library);
+        }
+        pedals.add(new PedalState(spec, pluginIndex, available));
+    }
+
+    public List<String> getSelectedIds() {
+        List<String> ids = new ArrayList<>();
+        if (!pedals.isEmpty()) {
+            for (PedalState pedal : pedals) {
+                ids.add(pedal.spec.id);
+            }
+            return ids;
+        }
+        String saved = prefs.getString("board_ids", "");
+        if (!saved.isEmpty()) {
+            Collections.addAll(ids, saved.split(","));
+        }
+        if (ids.isEmpty()) {
+            for (PedalSpec spec : PedalSpec.BOARD) {
+                ids.add(spec.id);
+            }
+        }
+        return ids;
+    }
+
+    public synchronized void setBoard(List<PedalSpec> specs) {
+        if (specs == null || specs.isEmpty()) {
+            return;
+        }
+        initialize();
+        boolean wasStarted = started;
+        if (wasStarted) {
+            stop();
+        }
+        AudioEngine.setEffectOn(false);
+        int guard = 0;
+        while (AudioEngine.getActivePlugins() > 0 && guard++ < 64) {
+            AudioEngine.deletePlugin(AudioEngine.getActivePlugins() - 1);
+        }
+        pedals.clear();
+        StringBuilder ids = new StringBuilder();
+        for (PedalSpec spec : specs) {
+            if (ids.length() > 0) {
+                ids.append(',');
+            }
+            ids.append(spec.id);
+            addSpec(spec);
+        }
+        prefs.edit().putString("board_ids", ids.toString()).apply();
+        presets.clear();
+        presets.addAll(PresetStore.loadAll(context));
+        if (!presets.isEmpty()) {
+            Preset first = presets.get(0);
+            applyPreset(first, false);
+            for (PedalState pedal : pedals) {
+                if (!first.pedals.containsKey(pedal.spec.id)) {
+                    pedal.setEnabled(true);
+                }
+            }
+        }
+        if (wasStarted) {
+            start();
+        }
+        if (listener != null) {
+            listener.onAudioStateChanged(started);
+        }
     }
 
     public List<PedalState> getPedals() {
@@ -204,6 +302,10 @@ public final class PedalEngine implements EngineBridge.Listener {
         AudioEngine.setSampleRate(getSampleRate());
         AudioEngine.setInputVolume(prefs.getFloat("input_gain", 1f));
         AudioEngine.setOutputVolume(prefs.getFloat("output_volume", 1f));
+        AudioEngine.setMasterGain(prefs.getFloat("master_gain", 1.8f));
+        AudioEngine.setNoiseGateEnabled(prefs.getBoolean("noise_gate", true));
+        AudioEngine.setNoiseGateThreshold(prefs.getFloat("gate_threshold_db", -55f));
+        AudioEngine.setHumFilterEnabled(prefs.getBoolean("hum_filter", true));
     }
 
     public int getInputDevice() {
@@ -269,6 +371,42 @@ public final class PedalEngine implements EngineBridge.Listener {
     public void setOutputVolume(float volume) {
         prefs.edit().putFloat("output_volume", volume).apply();
         AudioEngine.setOutputVolume(volume);
+    }
+
+    public float getMasterGain() {
+        return prefs.getFloat("master_gain", 1.8f);
+    }
+
+    public void setMasterGain(float gain) {
+        prefs.edit().putFloat("master_gain", gain).apply();
+        AudioEngine.setMasterGain(gain);
+    }
+
+    public boolean isNoiseGateEnabled() {
+        return prefs.getBoolean("noise_gate", true);
+    }
+
+    public void setNoiseGateEnabled(boolean enabled) {
+        prefs.edit().putBoolean("noise_gate", enabled).apply();
+        AudioEngine.setNoiseGateEnabled(enabled);
+    }
+
+    public float getGateThresholdDb() {
+        return prefs.getFloat("gate_threshold_db", -55f);
+    }
+
+    public void setGateThresholdDb(float db) {
+        prefs.edit().putFloat("gate_threshold_db", db).apply();
+        AudioEngine.setNoiseGateThreshold(db);
+    }
+
+    public boolean isHumFilterEnabled() {
+        return prefs.getBoolean("hum_filter", true);
+    }
+
+    public void setHumFilterEnabled(boolean enabled) {
+        prefs.edit().putBoolean("hum_filter", enabled).apply();
+        AudioEngine.setHumFilterEnabled(enabled);
     }
 
     private void restartIfRunning() {

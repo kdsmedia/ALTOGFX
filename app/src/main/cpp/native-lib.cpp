@@ -555,6 +555,7 @@ Java_com_altomedia_altoefect_AudioEngine_setSampleRate(JNIEnv *env, jclass clazz
     }
 
     engine->mSampleRate = sample_rate;
+    engine->mFullDuplexPass.setSampleRate(sample_rate);
 }
 extern "C"
 JNIEXPORT void JNICALL
@@ -715,10 +716,9 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_altomedia_altoefect_AudioEngine_setOutputVolume(JNIEnv *env, jclass clazz,
                                                               jfloat volume) {
-    // TODO: implement setOutputVolume()
-//    IN
-    engine -> mFullDuplexPass . outputVolume = volume ;
-//    OUT
+    if (engine != nullptr) {
+        engine->mFullDuplexPass.outputVolume = volume;
+    }
 }
 
 extern "C"
@@ -1182,4 +1182,39 @@ Java_com_altomedia_altoefect_AudioEngine_getControlIsLogarithmic(JNIEnv *env, jc
     }
 
     return engine -> activePlugins.at(plugin)->pluginControls.at(control)->isLogarithmic;
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_altomedia_altoefect_AudioEngine_setNoiseGateEnabled(JNIEnv *env, jclass clazz,
+                                                              jboolean enabled) {
+    if (engine != nullptr) {
+        engine->mFullDuplexPass.noiseGateEnabled = enabled;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_altomedia_altoefect_AudioEngine_setNoiseGateThreshold(JNIEnv *env, jclass clazz,
+                                                                jfloat db) {
+    if (engine != nullptr) {
+        engine->mFullDuplexPass.gateThresholdDb = db;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_altomedia_altoefect_AudioEngine_setHumFilterEnabled(JNIEnv *env, jclass clazz,
+                                                              jboolean enabled) {
+    if (engine != nullptr) {
+        engine->mFullDuplexPass.humFilterEnabled = enabled;
+    }
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_altomedia_altoefect_AudioEngine_setMasterGain(JNIEnv *env, jclass clazz,
+                                                        jfloat gain) {
+    if (engine != nullptr) {
+        engine->mFullDuplexPass.masterGain = gain;
+    }
 }

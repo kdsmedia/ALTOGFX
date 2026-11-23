@@ -65,6 +65,9 @@ public final class PedalState {
                 ControlSpec fallback = new ControlSpec(name, name.toUpperCase(), "", 0.5f);
                 curated.add(new RuntimeControl(pluginIndex, i, name, fallback,
                         values[1], values[2], type == 1));
+                if (curated.size() >= 8) {
+                    break;
+                }
             }
         }
 

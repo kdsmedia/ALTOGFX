@@ -19,6 +19,9 @@
 
 #include <dlfcn.h>
 #include <mutex>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
 #include "ladspa.h"
 #include "FullDuplexStream.h"
 #include "FileWriter.h"
@@ -26,17 +29,21 @@
 #include "LockFreeQueue.h"
 
 class FullDuplexPass : public FullDuplexStream {
-    //| TODO: Limit number of plugins active in free version?
 public:
-    #define MAX_PLUGINS 10 // for now
-    float inputVolume = 1.0 ;
-    float outputVolume = 1.0 ;
+    #define MAX_PLUGINS 10
+    float inputVolume = 1.0f ;
+    float outputVolume = 1.0f ;
+    float masterGain = 1.8f ;
     bool meterEnabled = true ;
     bool pause = false ;
-    
+    bool noiseGateEnabled = true ;
+    float gateThresholdDb = -55.0f ;
+    bool humFilterEnabled = true ;
+    int sampleRate = 48000 ;
+
     // Lock Free Queue Manager
     void (queue)(float * data, int frames) ;
-    LockFreeQueueManager * lockFreeQueueManager;
+    LockFreeQueueManager * lockFreeQueueManager = nullptr;
 
     void (*connect_port [MAX_PLUGINS])(LADSPA_Handle Instance,
                          unsigned long Port,
@@ -56,145 +63,214 @@ public:
     int outputPorts [MAX_PLUGINS] ;
     int outputPorts2 [MAX_PLUGINS] ;
     bool pushToLockFreeBeforeOutputVolume = false ;
-    int activePlugins =  0 ;
+    int activePlugins = 0 ;
     std::mutex chainMutex ;
-    float * raw = NULL; // this will never be greater than this(TM)
+    float * raw = nullptr ;
     bool recordingActive = false ;
     bool triggerRecord = false ;
     bool bypass = false ;
-    float * inSamples = NULL ;
+    float * inSamples = nullptr ;
+    float * left = nullptr ;
+    float * right = nullptr ;
+
+    void setSampleRate (int rate) {
+        if (rate > 0) {
+            sampleRate = rate ;
+            configureFilters () ;
+        }
+    }
 
     virtual oboe::DataCallbackResult
     onBothStreamsReady(
             std::shared_ptr<oboe::AudioStream> inputStream,
             const void *inputData,
-            int   numInputFrames,
+            int numInputFrames,
             std::shared_ptr<oboe::AudioStream> outputStream,
             void *outputData,
-            int   numOutputFrames) {
-        // This code assumes the data format for both streams is Float.
+            int numOutputFrames) {
         const float *inputFloats = static_cast<const float *>(inputData);
         float *outputFloats = static_cast<float *>(outputData);
+        int32_t inputChannels = std::max(1, inputStream->getChannelCount());
+        int32_t outputChannels = std::max(1, outputStream->getChannelCount());
+        int32_t frames = std::min(numInputFrames, numOutputFrames);
 
-        // It also assumes the channel count for each stream is the same.
-        int32_t samplesPerFrame = outputStream->getChannelCount();
-        int32_t numInputSamples = numInputFrames * samplesPerFrame;
-        int32_t numOutputSamples = numOutputFrames * samplesPerFrame;
-
-        // It is possible that there may be fewer input than output samples.
-        int32_t samplesToProcess = std::min(numInputSamples, numOutputSamples);
-
-//        float inSamples [samplesToProcess];
-        for (int i = 0 ; i < samplesToProcess ; i ++) {
-            raw [i] = inSamples [i] = inputFloats [i] * inputVolume ;
+        if (left == nullptr || right == nullptr || numOutputFrames <= 0) {
+            memset(outputData, 0, numOutputFrames * outputChannels * sizeof(float));
+            return oboe::DataCallbackResult::Continue;
         }
 
-//        if (meterEnabled) {
-//            Meter::process (samplesToProcess, inSamples, true);
-//        }
-        // this
-        // am I devloper yet?
-//        memcpy(outputData, inputData, samplesToProcess);
-        if (! bypass)
-            process(inSamples, numInputSamples);
-
-        /* this is not supposed to be called directly.
-         * hence the entire vringbuffer stuff
-         */
-
-        if (pushToLockFreeBeforeOutputVolume && ! pause)
-            lockFreeQueueManager->process(raw, inSamples, samplesToProcess) ;
-
-        for (int32_t i = 0; i < samplesToProcess; i++) {
-            inSamples [i] = inSamples [i]  * outputVolume; // do some arbitrary processing
-            *outputFloats++ = inSamples [i];
+        for (int32_t i = 0; i < numOutputFrames; i++) {
+            left[i] = 0.0f;
+            right[i] = 0.0f;
         }
 
-//        if (meterEnabled) {
-//            Meter::process (samplesToProcess, inSamples, false);
-//        }
-
-        if (! pushToLockFreeBeforeOutputVolume && ! pause)
-            lockFreeQueueManager->process(raw, inSamples, samplesToProcess) ;
-
-        //        for (int32_t i = 0; i < samplesToProcess; i++) {
-//            *outputFloats++ = *inputFloats++  * outputVolume; // do some arbitrary processing
-//        }
-
-        // If there are fewer input samples then clear the rest of the buffer.
-        int32_t samplesLeft = numOutputSamples - numInputSamples;
-        for (int32_t i = 0; i < samplesLeft; i++) {
-            *outputFloats++ = 0.0; // silence
+        for (int32_t i = 0; i < frames; i++) {
+            float l = inputFloats[i * inputChannels] * inputVolume;
+            float r = inputChannels > 1
+                    ? inputFloats[i * inputChannels + 1] * inputVolume
+                    : l;
+            left[i] = l;
+            right[i] = r;
         }
 
-        //        OUT ;
+        if (noiseGateEnabled) {
+            applyNoiseGate(left, right, numOutputFrames);
+        }
+        if (humFilterEnabled) {
+            applyHumFilters(left, right, numOutputFrames);
+        }
+
+        if (!bypass) {
+            process(left, right, numOutputFrames);
+        }
+
+        float gain = outputVolume * masterGain;
+        for (int32_t i = 0; i < numOutputFrames; i++) {
+            float l = softClip(left[i] * gain);
+            float r = softClip(right[i] * gain);
+            for (int32_t c = 0; c < outputChannels; c++) {
+                outputFloats[i * outputChannels + c] = (c == 0) ? l : r;
+            }
+        }
+
+        if (lockFreeQueueManager != nullptr && raw != nullptr && inSamples != nullptr && !pause && numOutputFrames > 0) {
+            for (int32_t i = 0; i < numOutputFrames; i++) {
+                raw[i] = left[i];
+                inSamples[i] = right[i];
+            }
+            lockFreeQueueManager->process(raw, inSamples, numOutputFrames);
+        }
+
         return oboe::DataCallbackResult::Continue;
     }
 
-    void process (const float * data, int samplesToProcess) {
+    void process (float * l, float * r, int frames) {
         std::unique_lock<std::mutex> lock(chainMutex, std::try_to_lock);
         if (!lock.owns_lock()) {
             return;
         }
-#define PROFILE_PLUGINS1
-#ifdef PROFILE_PLUGINS
-        auto start = std::chrono::system_clock::now();
-        auto since_last = start ;
-#endif
-        for (int i = 0 ; i < activePlugins ; i ++) {
-            if (inputPorts [i] != -1)
-                connect_port [i] (handle [i], inputPorts [i], (LADSPA_Data *) data);
-            if (outputPorts [i] != -1)
-                connect_port [i] (handle [i], outputPorts [i], (LADSPA_Data *) data);
+        for (int i = 0; i < activePlugins; i++) {
+            if (inputPorts[i] != -1)
+                connect_port[i](handle[i], inputPorts[i], (LADSPA_Data *) l);
+            if (inputPorts2[i] != -1)
+                connect_port[i](handle[i], inputPorts2[i], (LADSPA_Data *) r);
+            if (outputPorts[i] != -1)
+                connect_port[i](handle[i], outputPorts[i], (LADSPA_Data *) l);
+            if (outputPorts2[i] != -1)
+                connect_port[i](handle[i], outputPorts2[i], (LADSPA_Data *) r);
 
-//            LOGD("I/O Ports %d %d", inputPorts [i], outputPorts [i]);
-//            LOGD("[%d] samples", samplesToProcess);
+            if (run[i] == nullptr) {
+                continue;
+            }
+            run[i](handle[i], frames);
 
-            if (inputPorts2 [i] != -1)
-                connect_port [i] (handle [i], inputPorts2 [i], (LADSPA_Data *) data);
-            if (outputPorts2 [i] != -1)
-                connect_port [i] (handle [i], outputPorts2 [i], (LADSPA_Data *) data);
-
-//            LOGD("I/O 2 Ports %d %d", inputPorts2 [i], outputPorts2 [i]);
-
-            if (run [i] == NULL)
-                LOGF ("run %d is null", i);
-            else
-                run [i] (handle [i], samplesToProcess);
-            /*
-            if (set_run_adding_gain [i] != NULL)
-                set_run_adding_gain [i] (handle [i], run_adding_gain [i]) ;
-            if (run_adding [i] != NULL)
-                run [i] (handle [i], samplesToProcess);
-            */
-
-#ifdef PROFILE_PLUGINS
-            auto elapsed = std::chrono::system_clock::now() - since_last ;
-            since_last = since_last + elapsed;
-            LOGD("[%d: %d] %lld ms", i, samplesToProcess, elapsed.count ()) ;
-#endif
+            // A mono pedal only writes the left channel. Mirror it so the
+            // pedal does not collapse the output to one side.
+            if (outputPorts2[i] == -1) {
+                for (int f = 0; f < frames; f++) {
+                    r[f] = l[f];
+                }
+            }
         }
-
-#ifdef PROFILE_PLUGINS
-        auto elapsed = std::chrono::system_clock::now() - start ;
-        LOGD("[%d] %lld ms", samplesToProcess, elapsed.count ()) ;
-#endif
-
-        /*
-        if (triggerRecord) {
-            LOGD("%f", data [0]);
-            if (data [0] > 0.1)
-                recordingActive = true ;
-            else
-                recordingActive = false ;
-        }
-         */
-
-//        if (recordingActive) {
-//            FileWriter::process(samplesToProcess, data);
-//        }
-
-
     }
+
+    void configureFilters () {
+        float sr = (float) std::max(1, sampleRate);
+        hpL.setHighPass(sr, 25.0f, 0.707f);
+        hpR.setHighPass(sr, 25.0f, 0.707f);
+        notch50L.setNotch(sr, 50.0f, 12.0f);
+        notch50R.setNotch(sr, 50.0f, 12.0f);
+        notch60L.setNotch(sr, 60.0f, 12.0f);
+        notch60R.setNotch(sr, 60.0f, 12.0f);
+        gateEnv = 0.0f;
+        gateGain = 1.0f;
+    }
+
+    void applyHumFilters (float * l, float * r, int frames) {
+        for (int i = 0; i < frames; i++) {
+            float xl = hpL.process(notch50L.process(notch60L.process(l[i])));
+            float xr = hpR.process(notch50R.process(notch60R.process(r[i])));
+            l[i] = xl;
+            r[i] = xr;
+        }
+    }
+
+    void applyNoiseGate (float * l, float * r, int frames) {
+        float threshold = std::pow(10.0f, gateThresholdDb / 20.0f);
+        float attack = std::exp(-1.0f / (0.002f * (float) sampleRate));
+        float release = std::exp(-1.0f / (0.150f * (float) sampleRate));
+        for (int i = 0; i < frames; i++) {
+            float level = std::max(std::fabs(l[i]), std::fabs(r[i]));
+            if (level > gateEnv) {
+                gateEnv = attack * gateEnv + (1.0f - attack) * level;
+            } else {
+                gateEnv = release * gateEnv + (1.0f - release) * level;
+            }
+            float target = gateEnv > threshold ? 1.0f : 0.0f;
+            float speed = target > gateGain ? 0.08f : 0.002f;
+            gateGain += (target - gateGain) * speed;
+            l[i] *= gateGain;
+            r[i] *= gateGain;
+        }
+    }
+
+    static float softClip (float x) {
+        float ax = std::fabs(x);
+        if (ax <= 0.8f) {
+            return x;
+        }
+        float y = 0.8f + 0.2f * std::tanh((ax - 0.8f) / 0.2f);
+        return x < 0.0f ? -y : y;
+    }
+
+    static constexpr float kPi = 3.14159265358979323846f;
+
+    struct Biquad {
+        float b0 = 1.0f, b1 = 0.0f, b2 = 0.0f, a1 = 0.0f, a2 = 0.0f;
+        float x1 = 0.0f, x2 = 0.0f, y1 = 0.0f, y2 = 0.0f;
+
+        void setHighPass (float sr, float freq, float q) {
+            float w0 = 2.0f * kPi * freq / sr;
+            float alpha = std::sin(w0) / (2.0f * q);
+            float cosw = std::cos(w0);
+            float a0 = 1.0f + alpha;
+            b0 = ((1.0f + cosw) / 2.0f) / a0;
+            b1 = -(1.0f + cosw) / a0;
+            b2 = b0;
+            a1 = (-2.0f * cosw) / a0;
+            a2 = (1.0f - alpha) / a0;
+            reset();
+        }
+
+        void setNotch (float sr, float freq, float q) {
+            float w0 = 2.0f * kPi * freq / sr;
+            float alpha = std::sin(w0) / (2.0f * q);
+            float cosw = std::cos(w0);
+            float a0 = 1.0f + alpha;
+            b0 = 1.0f / a0;
+            b1 = (-2.0f * cosw) / a0;
+            b2 = 1.0f / a0;
+            a1 = (-2.0f * cosw) / a0;
+            a2 = (1.0f - alpha) / a0;
+            reset();
+        }
+
+        void reset () {
+            x1 = x2 = y1 = y2 = 0.0f;
+        }
+
+        inline float process (float x) {
+            float y = b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
+            x2 = x1;
+            x1 = x;
+            y2 = y1;
+            y1 = y;
+            return y;
+        }
+    };
+
+    Biquad hpL, hpR, notch50L, notch50R, notch60L, notch60R;
+    float gateEnv = 0.0f;
+    float gateGain = 1.0f;
 };
 #endif //SAMPLES_FULLDUPLEXPASS_H

@@ -22,7 +22,7 @@ public class BottomNavView extends View {
         void onSelected(int index);
     }
 
-    private static final String[] LABELS = {"PEDALBOARD", "PRESETS", "SETUP"};
+    private static final String[] LABELS = {"PEDALBOARD", "PRESETS", "LIBRARY", "SETUP"};
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -42,8 +42,8 @@ public class BottomNavView extends View {
         Typeface typeface = ResourcesCompat.getFont(context, R.font.montserrat_alternates);
         textPaint.setTypeface(typeface != null ? typeface : Typeface.SANS_SERIF);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setTextSize(sp(8.2f));
-        textPaint.setLetterSpacing(0.16f);
+        textPaint.setTextSize(sp(7.4f));
+        textPaint.setLetterSpacing(0.10f);
     }
 
     public void setListener(Listener listener) {
@@ -51,7 +51,7 @@ public class BottomNavView extends View {
     }
 
     public void setSelected(int index) {
-        if (index < 0 || index > 2) {
+        if (index < 0 || index > 3) {
             return;
         }
         selected = index;
@@ -83,8 +83,8 @@ public class BottomNavView extends View {
         canvas.drawRect(0, 0, w, dp(1.2f), paint);
         paint.setShader(null);
 
-        float itemW = w / 3f;
-        for (int i = 0; i < 3; i++) {
+        float itemW = w / 4f;
+        for (int i = 0; i < 4; i++) {
             float cx = itemW * (i + 0.5f);
             boolean active = i == selected;
             if (active) {
@@ -126,6 +126,15 @@ public class BottomNavView extends View {
                         cx + (float) Math.cos(angle) * s * 1.12f,
                         cy + (float) Math.sin(angle) * s * 1.12f, stroke);
             }
+        } else if (index == 2) {
+            float box = s * 0.62f;
+            for (int row = -1; row <= 1; row += 2) {
+                for (int col = -1; col <= 1; col += 2) {
+                    rect.set(cx + col * s * 0.35f - box, cy + row * s * 0.35f - box,
+                            cx + col * s * 0.35f + box, cy + row * s * 0.35f + box);
+                    canvas.drawRoundRect(rect, dp(1.6f), dp(1.6f), stroke);
+                }
+            }
         } else {
             for (int i = -1; i <= 1; i++) {
                 float y = cy + i * dp(5.2f);
@@ -147,8 +156,8 @@ public class BottomNavView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
-            int index = (int) (event.getX() / (getWidth() / 3f));
-            if (index >= 0 && index <= 2 && index != selected) {
+            int index = (int) (event.getX() / (getWidth() / 4f));
+            if (index >= 0 && index <= 3 && index != selected) {
                 selected = index;
                 performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 invalidate();

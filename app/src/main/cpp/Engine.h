@@ -80,7 +80,7 @@ public:
     int addPlugintoRackByName(std::string);
     int lowLatency = 12 ;
     const int32_t     mInputChannelCount = oboe::ChannelCount::Mono;
-    const int32_t     mOutputChannelCount = oboe::ChannelCount::Mono;
+    const int32_t     mOutputChannelCount = oboe::ChannelCount::Stereo;
     const oboe::AudioFormat mFormat = oboe::AudioFormat::Float; // for easier processing
 
     std::shared_ptr<oboe::AudioStream> mRecordingStream;

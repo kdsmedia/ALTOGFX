@@ -12,7 +12,9 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.media.AudioDeviceInfo;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -43,8 +46,10 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class PedalboardActivity extends AppCompatActivity
         implements EngineBridge.Listener, PedalEngine.Listener {
@@ -56,6 +61,18 @@ public class PedalboardActivity extends AppCompatActivity
     private static final int ACCENT = 0xFFFFB35C;
     private static final int CARD_FILL = 0x14FFFFFF;
     private static final int CARD_STROKE = 0x26FFFFFF;
+
+    private static final class LibraryRow {
+        final PedalSpec spec;
+        final LinearLayout row;
+        final CheckBox check;
+
+        LibraryRow(PedalSpec spec, LinearLayout row, CheckBox check) {
+            this.spec = spec;
+            this.row = row;
+            this.check = check;
+        }
+    }
 
     private static final class DeviceEntry {
         final int id;
@@ -82,7 +99,12 @@ public class PedalboardActivity extends AppCompatActivity
 
     private LinearLayout pedalboardScreen;
     private ScrollView presetsScreen;
+    private ScrollView libraryScreen;
     private ScrollView setupScreen;
+    private LinearLayout libraryList;
+    private TextView libraryCount;
+    private final Set<String> librarySelected = new LinkedHashSet<>();
+    private final List<LibraryRow> libraryRows = new ArrayList<>();
     private final List<PedalView> boardPedalViews = new ArrayList<>();
 
     private LinearLayout presetRow;
@@ -98,6 +120,12 @@ public class PedalboardActivity extends AppCompatActivity
     private SeekBar outputVolume;
     private TextView inputGainValue;
     private TextView outputVolumeValue;
+    private SeekBar masterGain;
+    private TextView masterGainValue;
+    private Switch gateSwitch;
+    private SeekBar gateThreshold;
+    private TextView gateThresholdValue;
+    private Switch humSwitch;
     private Switch lowLatencySwitch;
     private TextView headsetStatus;
     private final List<DeviceEntry> inputEntries = new ArrayList<>();
@@ -284,6 +312,7 @@ public class PedalboardActivity extends AppCompatActivity
         }
         buildPedalboardScreen();
         buildPresetsScreen();
+        buildLibraryScreen();
         buildSetupScreen();
         uiReady = true;
         showScreen(0);
@@ -533,6 +562,207 @@ public class PedalboardActivity extends AppCompatActivity
         presetsScreen = scroll;
     }
 
+    private void buildLibraryScreen() {
+        libraryRows.clear();
+        librarySelected.clear();
+        librarySelected.addAll(engine.getSelectedIds());
+
+        ScrollView scroll = new ScrollView(this);
+        scroll.setFillViewport(true);
+        scroll.setVerticalScrollBarEnabled(false);
+        LinearLayout root = new LinearLayout(this);
+        root.setOrientation(LinearLayout.VERTICAL);
+        root.setPadding(dp(16), dp(6), dp(16), dp(20));
+
+        LinearLayout titleRow = new LinearLayout(this);
+        titleRow.setOrientation(LinearLayout.HORIZONTAL);
+        titleRow.setGravity(Gravity.CENTER_VERTICAL);
+        titleRow.addView(sectionTitle("EFFECT LIBRARY"),
+                new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+        libraryCount = new TextView(this);
+        libraryCount.setTextColor(ACCENT);
+        libraryCount.setTextSize(9);
+        libraryCount.setTypeface(bodyTypeface, Typeface.BOLD);
+        titleRow.addView(libraryCount);
+        root.addView(titleRow);
+
+        TextView intro = new TextView(this);
+        intro.setText("Choose up to 10 pedals for your signal chain. The nine factory pedals are already selected.");
+        intro.setTextColor(MUTED);
+        intro.setTextSize(9.5f);
+        intro.setTypeface(bodyTypeface);
+        intro.setLineSpacing(dp(1), 1f);
+        LinearLayout.LayoutParams introParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        introParams.topMargin = dp(4);
+        root.addView(intro, introParams);
+
+        EditText search = new EditText(this);
+        search.setHint("Search effects");
+        search.setSingleLine(true);
+        search.setInputType(InputType.TYPE_CLASS_TEXT);
+        search.setTextColor(CREAM);
+        search.setHintTextColor(0x88F6EFE4);
+        search.setTextSize(11);
+        search.setTypeface(bodyTypeface);
+        search.setBackground(cardBackground());
+        search.setPadding(dp(14), dp(10), dp(14), dp(10));
+        LinearLayout.LayoutParams searchParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        searchParams.topMargin = dp(10);
+        root.addView(search, searchParams);
+
+        libraryList = new LinearLayout(this);
+        libraryList.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        listParams.topMargin = dp(10);
+        root.addView(libraryList, listParams);
+
+        for (PedalSpec spec : PluginCatalog.get(this)) {
+            LinearLayout row = new LinearLayout(this);
+            row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);
+            row.setPadding(dp(12), dp(8), dp(12), dp(8));
+            row.setBackground(cardBackground());
+
+            CheckBox check = new CheckBox(this);
+            check.setChecked(librarySelected.contains(spec.id));
+            check.setButtonTintList(ColorStateList.valueOf(ACCENT));
+            row.addView(check, new LinearLayout.LayoutParams(dp(38), dp(38)));
+
+            LinearLayout labels = new LinearLayout(this);
+            labels.setOrientation(LinearLayout.VERTICAL);
+            TextView name = new TextView(this);
+            name.setText(spec.subtitle);
+            name.setTextColor(CREAM);
+            name.setTextSize(10.5f);
+            name.setTypeface(bodyTypeface, Typeface.BOLD);
+            TextView meta = new TextView(this);
+            meta.setText(spec.model + "  •  " + spec.library.replace(".lv2.so", "").replace(".so", ""));
+            meta.setTextColor(MUTED);
+            meta.setTextSize(8);
+            meta.setTypeface(bodyTypeface);
+            labels.addView(name);
+            labels.addView(meta);
+            row.addView(labels, new LinearLayout.LayoutParams(0,
+                    ViewGroup.LayoutParams.WRAP_CONTENT, 1f));
+
+            final PedalSpec rowSpec = spec;
+            check.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    librarySelected.add(rowSpec.id);
+                } else {
+                    librarySelected.remove(rowSpec.id);
+                }
+                updateLibraryCount();
+            });
+            row.setOnClickListener(v -> check.setChecked(!check.isChecked()));
+
+            LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            rowParams.bottomMargin = dp(5);
+            libraryList.addView(row, rowParams);
+            libraryRows.add(new LibraryRow(spec, row, check));
+        }
+
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim().toLowerCase(Locale.US);
+                for (LibraryRow item : libraryRows) {
+                    String haystack = (item.spec.subtitle + " " + item.spec.model + " "
+                            + item.spec.library).toLowerCase(Locale.US);
+                    item.row.setVisibility(query.isEmpty() || haystack.contains(query)
+                            ? View.VISIBLE : View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        TextView apply = makeButton("APPLY TO PEDALBOARD");
+        apply.setOnClickListener(v -> applyLibrarySelection());
+        LinearLayout.LayoutParams applyParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(48));
+        applyParams.topMargin = dp(14);
+        root.addView(apply, applyParams);
+
+        TextView reset = makeButton("RESET TO DEFAULT 9 PEDALS");
+        reset.setTextColor(ACCENT);
+        reset.setBackground(cardBackground());
+        reset.setOnClickListener(v -> {
+            librarySelected.clear();
+            for (PedalSpec spec : PedalSpec.BOARD) {
+                librarySelected.add(spec.id);
+            }
+            for (LibraryRow item : libraryRows) {
+                item.check.setChecked(librarySelected.contains(item.spec.id));
+            }
+            updateLibraryCount();
+        });
+        LinearLayout.LayoutParams resetParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, dp(44));
+        resetParams.topMargin = dp(8);
+        root.addView(reset, resetParams);
+
+        scroll.addView(root);
+        libraryScreen = scroll;
+        updateLibraryCount();
+    }
+
+    private void updateLibraryCount() {
+        if (libraryCount != null) {
+            libraryCount.setText(librarySelected.size() + " / 10");
+        }
+    }
+
+    private void applyLibrarySelection() {
+        if (librarySelected.isEmpty()) {
+            toast("Select at least one effect");
+            return;
+        }
+        if (librarySelected.size() > 10) {
+            toast("Select no more than 10 effects");
+            return;
+        }
+        List<PedalSpec> chosen = new ArrayList<>();
+        for (PedalSpec spec : PluginCatalog.get(this)) {
+            if (librarySelected.contains(spec.id)) {
+                chosen.add(spec);
+            }
+        }
+        try {
+            engine.setBoard(chosen);
+        } catch (Exception e) {
+            toast("Could not load that effect chain");
+            return;
+        }
+        rebuildUi();
+        showScreen(0);
+        nav.setSelected(0);
+        toast("Pedalboard updated  •  " + chosen.size() + " effects");
+    }
+
+    private void rebuildUi() {
+        boardPedalViews.clear();
+        presetPedalView = null;
+        presetPedalRow = null;
+        buildPedalboardScreen();
+        buildPresetsScreen();
+        buildLibraryScreen();
+        buildSetupScreen();
+        showScreen(0);
+        refreshDeviceLists();
+        selectPreset(engine.getCurrentPreset(), false);
+    }
+
     private void buildSetupScreen() {
         ScrollView scroll = new ScrollView(this);
         scroll.setFillViewport(true);
@@ -626,7 +856,63 @@ public class PedalboardActivity extends AppCompatActivity
         });
         outputVolumeValue.setText((int) (engine.getOutputVolume() * 100) + "%");
         addFieldWithValue(engineCard, "OUTPUT VOLUME", outputVolume, outputVolumeValue);
+
+        masterGainValue = new TextView(this);
+        masterGainValue.setTextColor(ACCENT);
+        masterGainValue.setTextSize(10);
+        masterGainValue.setTypeface(bodyTypeface, Typeface.BOLD);
+        masterGain = makeSeekBar((int) (engine.getMasterGain() * 100), 200);
+        masterGain.setOnSeekBarChangeListener(new SimpleSeekListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                masterGainValue.setText(progress + "%");
+                if (fromUser) {
+                    engine.setMasterGain(progress / 100f);
+                }
+            }
+        });
+        masterGainValue.setText((int) (engine.getMasterGain() * 100) + "%");
+        addFieldWithValue(engineCard, "MASTER GAIN", masterGain, masterGainValue);
         addCard(root, engineCard);
+
+        LinearLayout gateCard = makeCard("NOISE GATE & HUM FILTER");
+        gateSwitch = new Switch(this);
+        gateSwitch.setText("Noise gate");
+        gateSwitch.setTextColor(CREAM);
+        gateSwitch.setTextSize(12);
+        gateSwitch.setTypeface(bodyTypeface);
+        gateSwitch.setChecked(engine.isNoiseGateEnabled());
+        gateSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> engine.setNoiseGateEnabled(isChecked));
+        gateCard.addView(gateSwitch);
+
+        gateThresholdValue = new TextView(this);
+        gateThresholdValue.setTextColor(ACCENT);
+        gateThresholdValue.setTextSize(10);
+        gateThresholdValue.setTypeface(bodyTypeface, Typeface.BOLD);
+        int gateProgress = Math.round((engine.getGateThresholdDb() + 80f) / 0.6f);
+        gateThreshold = makeSeekBar(Math.max(0, Math.min(100, gateProgress)));
+        gateThreshold.setOnSeekBarChangeListener(new SimpleSeekListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                float db = -80f + progress * 0.6f;
+                gateThresholdValue.setText(Math.round(db) + " dB");
+                if (fromUser) {
+                    engine.setGateThresholdDb(db);
+                }
+            }
+        });
+        gateThresholdValue.setText(Math.round(engine.getGateThresholdDb()) + " dB");
+        addFieldWithValue(gateCard, "GATE THRESHOLD", gateThreshold, gateThresholdValue);
+
+        humSwitch = new Switch(this);
+        humSwitch.setText("50/60 Hz hum filter");
+        humSwitch.setTextColor(CREAM);
+        humSwitch.setTextSize(12);
+        humSwitch.setTypeface(bodyTypeface);
+        humSwitch.setChecked(engine.isHumFilterEnabled());
+        humSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> engine.setHumFilterEnabled(isChecked));
+        gateCard.addView(humSwitch);
+        addCard(root, gateCard);
 
         LinearLayout guideCard = makeCard("CONNECTION GUIDE");
         TextView guide = new TextView(this);
@@ -687,6 +973,8 @@ public class PedalboardActivity extends AppCompatActivity
         if (index == 1) {
             screen = presetsScreen;
         } else if (index == 2) {
+            screen = libraryScreen;
+        } else if (index == 3) {
             screen = setupScreen;
         } else {
             screen = pedalboardScreen;
@@ -699,6 +987,8 @@ public class PedalboardActivity extends AppCompatActivity
             rebuildPresetChips();
             updatePresetPedal();
         } else if (index == 2) {
+            subtitle.setText("EFFECT LIBRARY");
+        } else if (index == 3) {
             subtitle.setText("AUDIO SETUP");
             refreshDeviceLists();
         } else if (selectedPreset != null) {
@@ -780,7 +1070,7 @@ public class PedalboardActivity extends AppCompatActivity
         if (presetDescription != null) {
             presetDescription.setText(preset.tag + "  •  " + preset.description);
         }
-        if (nav.getSelected() != 2) {
+        if (nav.getSelected() == 0) {
             subtitle.setText(preset.name.toUpperCase(Locale.US));
         }
         rebuildPresetChips();
@@ -871,7 +1161,7 @@ public class PedalboardActivity extends AppCompatActivity
     }
 
     private void markEdited() {
-        if (selectedPreset != null && nav.getSelected() != 2) {
+        if (selectedPreset != null && nav.getSelected() == 0) {
             subtitle.setText((selectedPreset.name + "  •  EDIT").toUpperCase(Locale.US));
         }
     }
@@ -1136,8 +1426,8 @@ public class PedalboardActivity extends AppCompatActivity
                 .setTitle("Plug in and play")
                 .setMessage("ALTO EFECT uses the phone's headset jack: guitar in through the microphone input, headphones out through the headphone output. Use a TRRS headset or splitter, or a USB audio interface.\n\nOpen AUDIO SETUP to choose your devices.")
                 .setPositiveButton("OPEN SETUP", (dialog, which) -> {
-                    showScreen(2);
-                    nav.setSelected(2);
+                    showScreen(3);
+                    nav.setSelected(3);
                 })
                 .setNegativeButton("GOT IT", null)
                 .show();
@@ -1323,8 +1613,12 @@ public class PedalboardActivity extends AppCompatActivity
     }
 
     private SeekBar makeSeekBar(int progress) {
+        return makeSeekBar(progress, 100);
+    }
+
+    private SeekBar makeSeekBar(int progress, int max) {
         SeekBar seekBar = new SeekBar(this);
-        seekBar.setMax(100);
+        seekBar.setMax(max);
         seekBar.setProgress(progress);
         seekBar.setProgressTintList(ColorStateList.valueOf(ACCENT));
         seekBar.setThumbTintList(ColorStateList.valueOf(0xFFFFD79A));

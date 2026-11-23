@@ -1,4 +1,6 @@
 #include <cassert>
+#include <algorithm>
+#include <cstdlib>
 
 #include "Engine.h"
 #include "logging_macros.h"
@@ -17,7 +19,6 @@ static jobject gClassLoader;
 static jmethodID gFindClassMethod;
 
 Engine::Engine () {
-    assert(mOutputChannelCount == mInputChannelCount);
 //    queueManager = new LockFreeQueueManager ();
     fileWriter = new FileWriter ();
     queueManager.add_function (fileWriter->disk_write);
@@ -77,9 +78,12 @@ bool Engine::setEffectOn(bool isOn) {
 //                fileWriter->setFileName(externalStoragePath + "/" + std::string (buffer)) ;
 //                fileWriter->setBufferSize(mFullDuplexPass.mBufferSize);
                 int bufferSizeInFrames = mRecordingStream->getBufferSizeInFrames() ;
-                fileWriter->setBufferSize (mPlayStream->getBufferSizeInFrames()/mPlayStream->getChannelCount());
-
-                queueManager.init (mPlayStream->getBufferSizeInFrames()/mPlayStream->getChannelCount());
+                int queueFrames = mPlayStream->getBufferSizeInFrames();
+                if (queueFrames <= 0) {
+                    queueFrames = 2048;
+                }
+                fileWriter->setBufferSize (queueFrames);
+                queueManager.init (queueFrames);
 
                 if (mFullDuplexPass.inSamples != NULL)
                     free (static_cast<void *>(mFullDuplexPass.inSamples));
@@ -87,9 +91,19 @@ bool Engine::setEffectOn(bool isOn) {
                 if (mFullDuplexPass.raw != NULL)
                     free (static_cast<void *>(mFullDuplexPass.raw));
 
-                mFullDuplexPass.inSamples = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize));
+                if (mFullDuplexPass.left != NULL) free(static_cast<void *>(mFullDuplexPass.left));
+                if (mFullDuplexPass.right != NULL) free(static_cast<void *>(mFullDuplexPass.right));
+
+                int workFrames = mFullDuplexPass.mBufferSize / std::max(1, (int) mOutputChannelCount);
+                if (workFrames <= 0) {
+                    workFrames = 2048;
+                    mFullDuplexPass.mBufferSize = workFrames * mOutputChannelCount;
+                }
+                mFullDuplexPass.inSamples = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize * sizeof(float)));
                 LOGD("[engine] allocated %d bytes to raw samples", mFullDuplexPass.mBufferSize);
-                mFullDuplexPass.raw = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize));
+                mFullDuplexPass.raw = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize * sizeof(float)));
+                mFullDuplexPass.left = static_cast<float *>(malloc(workFrames * sizeof(float)));
+                mFullDuplexPass.right = static_cast<float *>(malloc(workFrames * sizeof(float)));
 //                for (int i = 0 ; i < mFullDuplexPass.mBufferSize; i ++)
 //                    mFullDuplexPass.raw [i] = 0.0f ;
                 fileWriter->setChannels(mOutputChannelCount);
@@ -164,6 +178,7 @@ oboe::Result  Engine::openStreams() {
     } else {
         // The input stream needs to run at the same sample rate as the output.
         mSampleRate = mPlayStream->getSampleRate();
+        mFullDuplexPass.setSampleRate(mSampleRate);
     }
     warnIfNotLowLatency(mPlayStream);
 
@@ -173,18 +188,25 @@ oboe::Result  Engine::openStreams() {
 //    inBuilder.setFramesPerCallback(160);
 
     result = inBuilder.openStream(mRecordingStream);
+    if (result != oboe::Result::OK) {
+        LOGW("Unprocessed input unavailable (%s), retrying with voice recognition",
+             oboe::convertToText(result));
+        inBuilder.setInputPreset(oboe::InputPreset::VoiceRecognition);
+        result = inBuilder.openStream(mRecordingStream);
+    }
 
-    latencyTuner = new oboe::LatencyTuner ( *mRecordingStream);
-//    latencyTuner->setMinimumBufferSize(160);
-//    mRecordingStream->setBufferSizeInFrames(80);
-    latencyTuner->tune();
-//    mRecordingStream->setBufferSizeInFrames(80);
     if (result != oboe::Result::OK) {
         LOGE("Failed to open input stream. Error %s", oboe::convertToText(result));
         closeStream(mPlayStream);
         OUT ;
         return result;
     }
+
+    latencyTuner = new oboe::LatencyTuner ( *mRecordingStream);
+//    latencyTuner->setMinimumBufferSize(160);
+//    mRecordingStream->setBufferSizeInFrames(80);
+    latencyTuner->tune();
+//    mRecordingStream->setBufferSizeInFrames(80);
 
     latencyTunerOut = new oboe::LatencyTuner ( *mPlayStream);
     latencyTunerOut->tune();
@@ -247,7 +269,8 @@ oboe::AudioStreamBuilder *Engine::setupPlaybackStreamParameters(
             ->setErrorCallback(this)
             ->setDeviceId(mPlaybackDeviceId)
             ->setDirection(oboe::Direction::Output)
-//            ->setSampleRate(48000)
+            ->setSampleRate(48000)
+            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
             /* fixme:
              * we do this because
              * 1. sample rate on Android is *almost always™ 48000
@@ -277,7 +300,7 @@ oboe::AudioStreamBuilder *Engine::setupCommonStreamParameters(
 //            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Fastest)
             ->setFormatConversionAllowed(true)
             ->setSharingMode(oboe::SharingMode::Exclusive)
-            ->setInputPreset(oboe::VoicePerformance)
+            ->setInputPreset(oboe::InputPreset::Unprocessed)
 //            ->setPerformanceMode(static_cast<oboe::PerformanceMode>(lowLatency));
             ->setPerformanceMode(oboe::PerformanceMode::LowLatency);
     return builder;
@@ -405,6 +428,13 @@ int Engine::addPluginToRackLazy(char* library, int pluginIndex, SharedLibrary::P
     plugin->sharedLibrary = sharedLibrary;
     if (_type == SharedLibrary::LV2) {
         plugin -> load () ;
+    }
+    if (plugin->handle == nullptr) {
+        LOGE("Plugin instantiate failed: %s", library);
+        delete plugin;
+        sharedLibrary->unload();
+        delete sharedLibrary;
+        return -1;
     }
     activePlugins .push_back(plugin);
     buildPluginChain();
