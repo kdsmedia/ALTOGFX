@@ -71,6 +71,9 @@ public class BottomNavView extends View {
     protected void onDraw(Canvas canvas) {
         float w = getWidth();
         float h = getHeight();
+        if (w <= 0 || h <= 0) {
+            return;
+        }
         paint.setShader(new LinearGradient(0, 0, 0, h,
                 new int[]{0xFF0B0B0F, 0xFF050507}, null, Shader.TileMode.CLAMP));
         canvas.drawRect(0, 0, w, h, paint);

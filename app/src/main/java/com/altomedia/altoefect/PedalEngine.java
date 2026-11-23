@@ -463,8 +463,16 @@ public final class PedalEngine implements EngineBridge.Listener {
     }
 
     public void deleteUserPreset(String name) {
+        boolean deletedCurrent = currentPreset != null
+                && currentPreset.name.equalsIgnoreCase(name);
         PresetStore.deleteUser(context, name);
         reloadPresets();
+        if (deletedCurrent) {
+            currentPreset = presets.isEmpty() ? null : presets.get(0);
+            if (currentPreset != null) {
+                applyPreset(currentPreset, false);
+            }
+        }
     }
 
     public List<AudioDeviceInfo> inputDevices() {

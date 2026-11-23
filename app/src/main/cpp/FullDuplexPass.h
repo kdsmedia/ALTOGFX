@@ -99,8 +99,14 @@ public:
         int32_t outputChannels = std::max(1, outputStream->getChannelCount());
         int32_t frames = std::min(numInputFrames, numOutputFrames);
 
-        if (left == nullptr || right == nullptr || numOutputFrames <= 0) {
-            memset(outputData, 0, numOutputFrames * outputChannels * sizeof(float));
+        if (outputFloats == nullptr) {
+            return oboe::DataCallbackResult::Continue;
+        }
+        if (numOutputFrames <= 0) {
+            return oboe::DataCallbackResult::Continue;
+        }
+        if (inputFloats == nullptr || left == nullptr || right == nullptr) {
+            memset(outputFloats, 0, numOutputFrames * outputChannels * sizeof(float));
             return oboe::DataCallbackResult::Continue;
         }
 
@@ -114,8 +120,8 @@ public:
             float r = inputChannels > 1
                     ? inputFloats[i * inputChannels + 1] * inputVolume
                     : l;
-            left[i] = l;
-            right[i] = r;
+            left[i] = std::isfinite(l) ? l : 0.0f;
+            right[i] = std::isfinite(r) ? r : 0.0f;
         }
 
         if (noiseGateEnabled) {
@@ -140,6 +146,12 @@ public:
             float r = dcBlock(right[i], dcInR, dcOutR);
             l = softClip(l);
             r = softClip(r);
+            if (!std::isfinite(l)) {
+                l = 0.0f;
+            }
+            if (!std::isfinite(r)) {
+                r = 0.0f;
+            }
             for (int32_t c = 0; c < outputChannels; c++) {
                 outputFloats[i * outputChannels + c] = (c == 0) ? l : r;
             }
@@ -229,6 +241,12 @@ public:
     void applyOutputLimiter (float *l, float *r, int32_t frames) {
         float peak = 0.0f;
         for (int32_t i = 0; i < frames; i++) {
+            if (!std::isfinite(l[i])) {
+                l[i] = 0.0f;
+            }
+            if (!std::isfinite(r[i])) {
+                r[i] = 0.0f;
+            }
             peak = std::max(peak, std::fabs(l[i]));
             peak = std::max(peak, std::fabs(r[i]));
         }

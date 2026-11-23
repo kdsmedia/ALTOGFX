@@ -61,65 +61,51 @@ bool Engine::setEffectOn(bool isOn) {
 
 //                mFullDuplexPass.queue = queueManager.process ;
                 mFullDuplexPass.lockFreeQueueManager = &queueManager ;
-                mFullDuplexPass.start();
 
                 fileWriter->setSampleRate (mSampleRate);
-
-//                char buffer [80];
-//
-//                time_t rawtime;
-//                struct tm * timeinfo;
-//                time (&rawtime);
-//                timeinfo = localtime (&rawtime);
-//
-//                strftime (buffer,80,"%d-%m-%y__%I.%M%p",timeinfo);
-
-//                fileWriter->setFileName(externalStoragePath + std::string ("/AmpRack/") + std::string (buffer)) ;
-//                fileWriter->setFileName(externalStoragePath + "/" + std::string (buffer)) ;
-//                fileWriter->setBufferSize(mFullDuplexPass.mBufferSize);
-                int bufferSizeInFrames = mRecordingStream->getBufferSizeInFrames() ;
+                int maxFrames = mPlayStream->getBufferCapacityInFrames();
+                if (maxFrames <= 0) {
+                    maxFrames = 2048;
+                }
+                int outputChannels = std::max(1, (int) mPlayStream->getChannelCount());
+                int bufferFrames = std::max(maxFrames * 2, 2048);
+                int bufferSamples = bufferFrames * outputChannels;
                 int queueFrames = mPlayStream->getBufferSizeInFrames();
                 if (queueFrames <= 0) {
                     queueFrames = 2048;
+                }
+                if (bufferFrames > queueFrames) {
+                    queueFrames = bufferFrames;
                 }
                 fileWriter->setBufferSize (queueFrames);
                 queueManager.init (queueFrames);
 
                 if (mFullDuplexPass.inSamples != NULL)
                     free (static_cast<void *>(mFullDuplexPass.inSamples));
-
                 if (mFullDuplexPass.raw != NULL)
                     free (static_cast<void *>(mFullDuplexPass.raw));
-
                 if (mFullDuplexPass.left != NULL) free(static_cast<void *>(mFullDuplexPass.left));
                 if (mFullDuplexPass.right != NULL) free(static_cast<void *>(mFullDuplexPass.right));
 
-                int workFrames = mFullDuplexPass.mBufferSize / std::max(1, (int) mOutputChannelCount);
-                if (workFrames <= 0) {
-                    workFrames = 2048;
-                    mFullDuplexPass.mBufferSize = workFrames * mOutputChannelCount;
-                }
-                mFullDuplexPass.inSamples = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize * sizeof(float)));
-                LOGD("[engine] allocated %d bytes to raw samples", mFullDuplexPass.mBufferSize);
-                mFullDuplexPass.raw = static_cast<float *>(malloc(mFullDuplexPass.mBufferSize * sizeof(float)));
-                mFullDuplexPass.left = static_cast<float *>(malloc(workFrames * sizeof(float)));
-                mFullDuplexPass.right = static_cast<float *>(malloc(workFrames * sizeof(float)));
-//                for (int i = 0 ; i < mFullDuplexPass.mBufferSize; i ++)
-//                    mFullDuplexPass.raw [i] = 0.0f ;
+                mFullDuplexPass.inSamples = static_cast<float *>(malloc(bufferSamples * sizeof(float)));
+                mFullDuplexPass.raw = static_cast<float *>(malloc(bufferSamples * sizeof(float)));
+                mFullDuplexPass.left = static_cast<float *>(malloc(bufferFrames * sizeof(float)));
+                mFullDuplexPass.right = static_cast<float *>(malloc(bufferFrames * sizeof(float)));
                 fileWriter->setChannels(mOutputChannelCount);
-                /*
-                if (mFullDuplexPass.recordingActive) {
-                    fileWriter->startRecording();
-                }
-                 */
 
-                meter->lastRecordedFileName = fileWriter->filename;
-                meter->jack_samplerate = mSampleRate ;
-                meter->lowLatency = lowLatencyMode ;
-                meter->enable();
-                meter->start();
-//                addPluginToRack(0, 0);
-                mIsEffectOn = isOn;
+                oboe::Result startResult = mFullDuplexPass.start();
+                if (startResult != oboe::Result::OK) {
+                    mFullDuplexPass.stop();
+                    closeStreams();
+                    success = false;
+                } else {
+                    meter->lastRecordedFileName = fileWriter->filename;
+                    meter->jack_samplerate = mSampleRate ;
+                    meter->lowLatency = lowLatencyMode ;
+                    meter->enable();
+                    meter->start();
+                    mIsEffectOn = isOn;
+                }
             }
         } else {
             if (mFullDuplexPass.recordingActive) {

@@ -11,6 +11,7 @@ import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -32,7 +33,13 @@ public class StageBackgroundView extends View {
 
     public StageBackgroundView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        background = BitmapFactory.decodeResource(getResources(), R.drawable.altomedia_background);
+        Bitmap decoded = null;
+        try {
+            decoded = BitmapFactory.decodeResource(getResources(), R.drawable.altomedia_background);
+        } catch (OutOfMemoryError error) {
+            Log.w("StageBackgroundView", "Could not decode stage artwork", error);
+        }
+        background = decoded;
         Random random = new Random(7);
         for (int i = 0; i < noiseX.length; i++) {
             noiseX[i] = random.nextFloat();
@@ -45,6 +52,9 @@ public class StageBackgroundView extends View {
     protected void onDraw(Canvas canvas) {
         int w = getWidth();
         int h = getHeight();
+        if (w <= 0 || h <= 0) {
+            return;
+        }
 
         if (background != null) {
             float scale = Math.max(w / (float) background.getWidth(),

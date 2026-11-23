@@ -132,6 +132,7 @@ public class PedalboardActivity extends AppCompatActivity
     private final List<DeviceEntry> inputEntries = new ArrayList<>();
     private final List<DeviceEntry> outputEntries = new ArrayList<>();
     private boolean suppressSpinner;
+    private int spinnerRefreshVersion;
 
     private Typeface displayTypeface;
     private Typeface bodyTypeface;
@@ -1136,8 +1137,12 @@ public class PedalboardActivity extends AppCompatActivity
         }
         if (selectedChip != null && presetScroll != null) {
             final View target = selectedChip;
-            presetScroll.post(() -> presetScroll.smoothScrollTo(
-                    Math.max(0, target.getLeft() - dp(8)), 0));
+            final HorizontalScrollView scroll = presetScroll;
+            scroll.post(() -> {
+                if (scroll == presetScroll) {
+                    scroll.smoothScrollTo(Math.max(0, target.getLeft() - dp(8)), 0);
+                }
+            });
         }
     }
 
@@ -1336,12 +1341,13 @@ public class PedalboardActivity extends AppCompatActivity
                 .setMessage("Delete \"" + preset.name + "\"?")
                 .setPositiveButton("DELETE", (dialog, which) -> {
                     engine.deleteUserPreset(preset.name);
-                    if (selectedPreset != null && selectedPreset.name.equalsIgnoreCase(preset.name)) {
-                        List<Preset> presets = engine.getPresets();
-                        selectedPreset = presets.isEmpty() ? null : presets.get(0);
+                    selectedPreset = engine.getCurrentPreset();
+                    if (selectedPreset != null) {
+                        selectPreset(selectedPreset, false);
+                    } else {
+                        rebuildPresetChips();
+                        updatePresetPedal();
                     }
-                    rebuildPresetChips();
-                    updatePresetPedal();
                 })
                 .setNegativeButton("CANCEL", null)
                 .show();
@@ -1384,13 +1390,16 @@ public class PedalboardActivity extends AppCompatActivity
             outputLabels[i] = outputEntries.get(i).label;
         }
 
+        final int refreshVersion = ++spinnerRefreshVersion;
         suppressSpinner = true;
+        inputSpinner.setOnItemSelectedListener(null);
+        outputSpinner.setOnItemSelectedListener(null);
         inputSpinner.setAdapter(spinnerAdapter(inputLabels));
         outputSpinner.setAdapter(spinnerAdapter(outputLabels));
         inputSpinner.setSelection(indexOf(inputEntries, engine.getInputDevice()));
         outputSpinner.setSelection(indexOf(outputEntries, engine.getOutputDevice()));
 
-        inputSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        final AdapterView.OnItemSelectedListener inputListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (suppressSpinner) {
@@ -1406,8 +1415,8 @@ public class PedalboardActivity extends AppCompatActivity
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
-        outputSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        };
+        final AdapterView.OnItemSelectedListener outputListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (suppressSpinner) {
@@ -1423,8 +1432,15 @@ public class PedalboardActivity extends AppCompatActivity
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
+        };
+        inputSpinner.post(() -> {
+            if (refreshVersion != spinnerRefreshVersion) {
+                return;
+            }
+            inputSpinner.setOnItemSelectedListener(inputListener);
+            outputSpinner.setOnItemSelectedListener(outputListener);
+            suppressSpinner = false;
         });
-        suppressSpinner = false;
 
         boolean headset = engine.findHeadsetOutput() != -1 || engine.findHeadsetInput() != -1;
         headsetStatus.setText(headset
