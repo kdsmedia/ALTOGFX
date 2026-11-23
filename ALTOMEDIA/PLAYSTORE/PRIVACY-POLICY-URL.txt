@@ -1,0 +1,21 @@
+URL PRIVACY POLICY UNTUK PLAY CONSOLE
+=====================================
+
+Play Console membutuhkan URL HTTPS yang dapat diakses publik. Pilih salah satu:
+
+OPSI A — GitHub (paling mudah, setelah folder ini di-push ke branch main):
+https://github.com/kdsmedia/ALTOGFX/blob/main/ALTOMEDIA/PLAYSTORE/PRIVACY-POLICY.md
+
+OPSI B — GitHub Pages (tampilan HTML lebih rapi):
+1. Salin PRIVACY-POLICY.html ke folder docs/ dengan nama privacy-alto-efect.html.
+2. Aktifkan GitHub Pages untuk branch main / folder docs.
+3. Gunakan URL:
+   https://kdsmedia.github.io/ALTOGFX/privacy-alto-efect.html
+
+OPSI C — Hosting statis lain (Netlify, Cloudflare Pages, Vercel, dsb.):
+Unggah PRIVACY-POLICY.html dan gunakan URL HTTPS hasil hosting.
+
+Catatan:
+- Jangan memakai URL file lokal (file://) atau URL yang memerlukan login.
+- Pastikan halaman dapat dibuka tanpa login dan tanpa JavaScript.
+- Ganti URL ini di Play Console jika domain berubah.

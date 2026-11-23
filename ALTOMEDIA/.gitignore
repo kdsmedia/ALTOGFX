@@ -1,0 +1,4 @@
+
+# Build artifacts are distributed via Play Console / GitHub Releases.
+ARTIFACTS/*.aab
+ARTIFACTS/*.apk

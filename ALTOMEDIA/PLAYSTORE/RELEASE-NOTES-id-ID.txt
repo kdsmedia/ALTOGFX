@@ -1,0 +1,17 @@
+ALTO EFECT 1.0 (versionCode 1)
+
+Rilis pertama untuk Google Play.
+
+• 9 efek gitar bergaya pedal: WAH, COMP, DRIVE, DIST, CHORUS, PHASER, DELAY,
+  REVERB, dan CAB.
+• 8 preset pabrik: Studio Clean, Blues Drive, Classic Rock, Metal Storm,
+  Ambient Space, Funk Wah, Lead Sustain, Acoustic Warm.
+• Kontrol potensiometer dan tombol on/off bergaya pedal fisik.
+• Rantai efek fleksibel: tambah, hapus, dan susun ulang pedal.
+• Simpan dan kelola preset lokal.
+• Mesin audio native berlatensi rendah dengan pemrosesan LV2/LADSPA.
+• Pengaturan input/output, noise gate, dan hum filter.
+• 100% offline; tanpa iklan, analytics, akun, atau pembelian dalam aplikasi.
+
+Catatan: gunakan headset untuk menghindari feedback. Latensi bergantung pada
+perangkat dan adaptor audio.

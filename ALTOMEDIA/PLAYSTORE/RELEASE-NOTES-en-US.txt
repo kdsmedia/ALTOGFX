@@ -1,0 +1,17 @@
+ALTO EFECT 1.0 (versionCode 1)
+
+First Google Play release.
+
+• 9 pedal-style guitar effects: WAH, COMP, DRIVE, DIST, CHORUS, PHASER, DELAY,
+  REVERB, and CAB.
+• 8 factory presets: Studio Clean, Blues Drive, Classic Rock, Metal Storm,
+  Ambient Space, Funk Wah, Lead Sustain, Acoustic Warm.
+• Potentiometer controls and pedal-style on/off switches.
+• Flexible effect chain: add, remove, and reorder pedals.
+• Save and manage local presets.
+• Low-latency native audio engine with LV2/LADSPA processing.
+• Input/output level, noise gate, and hum filter controls.
+• 100% offline; no ads, analytics, account, or in-app purchases.
+
+Note: use headphones to avoid feedback. Latency depends on your device and
+audio adapter.

@@ -1042,9 +1042,7 @@ public class PedalboardActivity extends AppCompatActivity
         }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {
-            pendingStart = true;
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_AUDIO);
+            requestAudioPermissionWithDisclosure();
             updatePower(false);
             return;
         }
@@ -1058,6 +1056,33 @@ public class PedalboardActivity extends AppCompatActivity
             return;
         }
         startAudio();
+    }
+
+    private void requestAudioPermissionWithDisclosure() {
+        pendingStart = true;
+        SharedPreferences prefs = getSharedPreferences("altoefect", Context.MODE_PRIVATE);
+        if (prefs.getBoolean("mic_disclosure_shown", false)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_AUDIO);
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Microphone access")
+                .setMessage("ALTO EFECT uses the microphone only for live guitar or audio input. "
+                        + "Audio is processed on this device in real time and is never recorded, "
+                        + "stored, or uploaded. The app has no internet permission.\n\n"
+                        + "Tap Continue to allow microphone access.")
+                .setPositiveButton("Continue", (dialog, which) -> {
+                    prefs.edit().putBoolean("mic_disclosure_shown", true).apply();
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.RECORD_AUDIO}, REQUEST_AUDIO);
+                })
+                .setNegativeButton("Not now", (dialog, which) -> {
+                    pendingStart = false;
+                    updatePower(false);
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private void startAudio() {

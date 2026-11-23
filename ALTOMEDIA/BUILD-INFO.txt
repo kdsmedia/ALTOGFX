@@ -1,0 +1,68 @@
+ALTO EFECT — BUILD & ARTIFACT INFORMATION
+=========================================
+
+Application name : ALTO EFECT
+Package name     : com.altomedia.altoefect
+Version name     : 1.0
+Version code     : 1
+Min SDK          : 24 (Android 7.0)
+Target SDK       : 35 (Android 15)
+Compile SDK      : 35
+Build type       : release
+Build date       : 2026-11-23 (UTC)
+Build command    : ./gradlew :app:bundleRelease :app:assembleRelease :app:testDebugUnitTest
+Gradle / AGP     : Gradle 8.13 / Android Gradle Plugin 8.13.0
+JDK              : OpenJDK 21.0.13
+NDK              : 26.1.10909125
+CMake            : 3.22.1
+
+Native ABIs in AAB/APK
+----------------------
+arm64-v8a, armeabi-v7a, x86, x86_64
+
+Release artifacts
+-----------------
+AAB : ARTIFACTS/ALTO-EFECT-1.0-release.aab
+      184,311,719 bytes (175.8 MiB)
+      SHA-256: 782b0ae6342074825c4030a52f2cc385f6b5f0bf036ea6fa962bee4608802b30
+
+APK : ARTIFACTS/ALTO-EFECT-1.0-release.apk
+      252,544,172 bytes (240.8 MiB)
+      SHA-256: 0f22f13d2d4e8a92e6ac6cb248260ab2fe6cbd8f32692508521f847ce6990eb3
+
+Signing certificate (APK)
+-------------------------
+Owner      : CN=ALTOMEDIA, OU=Developer, O=ALTOMEDIA, L=Karawang, ST=Jawa Barat, C=ID
+Issuer     : CN=ALTOMEDIA, OU=Developer, O=ALTOMEDIA, L=Karawang, ST=Jawa Barat, C=ID
+Alias      : kdsmedia
+SHA-256    : 09:FC:63:68:51:0F:7D:B4:AC:3C:41:AB:B0:61:AF:CC:5B:CF:CC:C0:30:27:0C:12:D9:12:2F:54:9D:4E:FD:04
+SHA-1      : 07:52:90:A9:6A:47:0B:EA:90:EF:4C:98:40:BC:5D:1F:90:6E:3E:6D
+Valid from : 2026-11-18 14:15:53 UTC
+Valid until: 2054-04-05 14:15:53 UTC
+
+Verification results
+--------------------
+Unit tests        : 7 tests, 0 failures (ExampleUnitTest + RuntimeControlTest)
+AAB validation    : bundletool 1.18.3 validate — exit 0
+AAB signature     : jarsigner -verify — "jar verified"
+APK signature     : apksigner verify — signer #1 certificate matches above
+AAB size check    : 176 MB compressed; below Play base-module 200 MB limit.
+                    Play delivers ABI-split downloads, so device download is smaller.
+
+Permissions in release APK
+--------------------------
+android.permission.RECORD_AUDIO
+com.altomedia.altoefect.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION (AndroidX internal)
+
+NOT present
+-----------
+android.permission.INTERNET
+android.permission.ACCESS_NETWORK_STATE
+
+Notes
+-----
+- The release build is not minified/obfuscated, so there is no mapping.txt to upload.
+- Native debug symbols are not included in this package. Optional for Play;
+  upload them later if you want symbolicated native crash reports.
+- Keep ALTOMEDIA.jks and keystore.properties private. They are intentionally
+  not copied into this package.
