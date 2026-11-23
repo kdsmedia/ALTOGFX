@@ -326,6 +326,30 @@ public final class PedalEngine implements EngineBridge.Listener {
         restartIfRunning();
     }
 
+    public boolean selectConnectedHeadsetIfUnset() {
+        SharedPreferences.Editor editor = prefs.edit();
+        boolean changed = false;
+        if (getInputDevice() == -1) {
+            int input = findHeadsetInput();
+            if (input != -1) {
+                editor.putInt("input_device", input);
+                changed = true;
+            }
+        }
+        if (getOutputDevice() == -1) {
+            int output = findHeadsetOutput();
+            if (output != -1) {
+                editor.putInt("output_device", output);
+                changed = true;
+            }
+        }
+        if (changed) {
+            editor.apply();
+            restartIfRunning();
+        }
+        return changed;
+    }
+
     public void setDevices(int inputId, int outputId) {
         SharedPreferences.Editor editor = prefs.edit();
         if (inputId != Integer.MIN_VALUE) {

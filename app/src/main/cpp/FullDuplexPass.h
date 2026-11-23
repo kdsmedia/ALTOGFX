@@ -34,6 +34,9 @@ public:
     float inputVolume = 1.0f ;
     float outputVolume = 1.0f ;
     float masterGain = 1.8f ;
+    float limiterGain = 1.0f ;
+    float limiterThreshold = 0.90f ;
+    float dcInL = 0.0f, dcOutL = 0.0f, dcInR = 0.0f, dcOutR = 0.0f ;
     bool meterEnabled = true ;
     bool pause = false ;
     bool noiseGateEnabled = true ;
@@ -76,6 +79,8 @@ public:
     void setSampleRate (int rate) {
         if (rate > 0) {
             sampleRate = rate ;
+            limiterGain = 1.0f ;
+            dcInL = dcOutL = dcInR = dcOutR = 0.0f ;
             configureFilters () ;
         }
     }
@@ -126,8 +131,15 @@ public:
 
         float gain = outputVolume * masterGain;
         for (int32_t i = 0; i < numOutputFrames; i++) {
-            float l = softClip(left[i] * gain);
-            float r = softClip(right[i] * gain);
+            left[i] *= gain;
+            right[i] *= gain;
+        }
+        applyOutputLimiter(left, right, numOutputFrames);
+        for (int32_t i = 0; i < numOutputFrames; i++) {
+            float l = dcBlock(left[i], dcInL, dcOutL);
+            float r = dcBlock(right[i], dcInR, dcOutR);
+            l = softClip(l);
+            r = softClip(r);
             for (int32_t c = 0; c < outputChannels; c++) {
                 outputFloats[i * outputChannels + c] = (c == 0) ? l : r;
             }
@@ -214,12 +226,43 @@ public:
         }
     }
 
+    void applyOutputLimiter (float *l, float *r, int32_t frames) {
+        float peak = 0.0f;
+        for (int32_t i = 0; i < frames; i++) {
+            peak = std::max(peak, std::fabs(l[i]));
+            peak = std::max(peak, std::fabs(r[i]));
+        }
+        float desired = peak > limiterThreshold ? limiterThreshold / peak : 1.0f;
+        float blockSeconds = (float) frames / (float) std::max(1, sampleRate);
+        float attack = 1.0f - std::exp(-blockSeconds / 0.001f);
+        float release = 1.0f - std::exp(-blockSeconds / 0.080f);
+        if (desired < limiterGain) {
+            limiterGain += (desired - limiterGain) * attack;
+        } else {
+            limiterGain += (desired - limiterGain) * release;
+        }
+        if (limiterGain < 0.0f) {
+            limiterGain = 0.0f;
+        }
+        for (int32_t i = 0; i < frames; i++) {
+            l[i] *= limiterGain;
+            r[i] *= limiterGain;
+        }
+    }
+
+    static float dcBlock (float x, float &prevIn, float &prevOut) {
+        float y = x - prevIn + 0.9995f * prevOut;
+        prevIn = x;
+        prevOut = y;
+        return y;
+    }
+
     static float softClip (float x) {
         float ax = std::fabs(x);
-        if (ax <= 0.8f) {
+        if (ax <= 0.90f) {
             return x;
         }
-        float y = 0.8f + 0.2f * std::tanh((ax - 0.8f) / 0.2f);
+        float y = 0.90f + 0.09f * std::tanh((ax - 0.90f) / 0.12f);
         return x < 0.0f ? -y : y;
     }
 

@@ -234,7 +234,7 @@ public class PedalboardActivity extends AppCompatActivity
         LinearLayout loading = new LinearLayout(this);
         loading.setOrientation(LinearLayout.VERTICAL);
         loading.setGravity(Gravity.CENTER);
-        loading.setBackgroundColor(BG);
+        loading.setBackgroundColor(0xCC07070B);
 
         ProgressBar bar = new ProgressBar(this);
         bar.setIndeterminate(true);
@@ -278,7 +278,7 @@ public class PedalboardActivity extends AppCompatActivity
         error.setOrientation(LinearLayout.VERTICAL);
         error.setGravity(Gravity.CENTER);
         error.setPadding(dp(28), dp(28), dp(28), dp(28));
-        error.setBackgroundColor(BG);
+        error.setBackgroundColor(0xCC07070B);
 
         TextView title = new TextView(this);
         title.setText("ENGINE COULD NOT START");
@@ -315,6 +315,7 @@ public class PedalboardActivity extends AppCompatActivity
         buildLibraryScreen();
         buildSetupScreen();
         uiReady = true;
+        engine.selectConnectedHeadsetIfUnset();
         showScreen(0);
         refreshDeviceLists();
         updatePower(engine.isStarted());
@@ -1474,6 +1475,15 @@ public class PedalboardActivity extends AppCompatActivity
     @Override
     public void onAudioStateChanged(boolean running) {
         runOnUiThread(() -> updatePower(running));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (uiReady) {
+            engine.selectConnectedHeadsetIfUnset();
+            refreshDeviceLists();
+        }
     }
 
     @Override

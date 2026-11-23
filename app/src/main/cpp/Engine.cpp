@@ -170,6 +170,14 @@ oboe::Result  Engine::openStreams() {
     oboe::AudioStreamBuilder inBuilder, outBuilder;
     setupPlaybackStreamParameters(&outBuilder);
     oboe::Result result = outBuilder.openStream(mPlayStream);
+    if (result != oboe::Result::OK && mPlaybackDeviceId != oboe::kUnspecified) {
+        LOGW("Selected output unavailable (%s), falling back to system default",
+             oboe::convertToText(result));
+        mPlaybackDeviceId = oboe::kUnspecified;
+        oboe::AudioStreamBuilder fallbackBuilder;
+        setupPlaybackStreamParameters(&fallbackBuilder);
+        result = fallbackBuilder.openStream(mPlayStream);
+    }
     if (result != oboe::Result::OK) {
         LOGE("Failed to open output stream. Error %s", oboe::convertToText(result));
         mSampleRate = oboe::kUnspecified;
@@ -188,9 +196,18 @@ oboe::Result  Engine::openStreams() {
 //    inBuilder.setFramesPerCallback(160);
 
     result = inBuilder.openStream(mRecordingStream);
+    if (result != oboe::Result::OK && mRecordingDeviceId != oboe::kUnspecified) {
+        LOGW("Selected input unavailable (%s), falling back to system default",
+             oboe::convertToText(result));
+        mRecordingDeviceId = oboe::kUnspecified;
+        oboe::AudioStreamBuilder fallbackBuilder;
+        setupRecordingStreamParameters(&fallbackBuilder, mSampleRate);
+        result = fallbackBuilder.openStream(mRecordingStream);
+    }
     if (result != oboe::Result::OK) {
         LOGW("Unprocessed input unavailable (%s), retrying with voice recognition",
              oboe::convertToText(result));
+        inBuilder.setDeviceId(mRecordingDeviceId);
         inBuilder.setInputPreset(oboe::InputPreset::VoiceRecognition);
         result = inBuilder.openStream(mRecordingStream);
     }
@@ -251,6 +268,7 @@ oboe::AudioStreamBuilder *Engine::setupRecordingStreamParameters(
     builder->setDeviceId(mRecordingDeviceId)
             ->setDirection(oboe::Direction::Input)
             ->setSampleRate(mSampleRate)
+            ->setInputPreset(oboe::InputPreset::Unprocessed)
 //            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
 //            ->setFormat(oboe::AudioFormat::I16)
             ->setChannelCount(mInputChannelCount);
@@ -271,6 +289,8 @@ oboe::AudioStreamBuilder *Engine::setupPlaybackStreamParameters(
             ->setDirection(oboe::Direction::Output)
             ->setSampleRate(48000)
             ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Medium)
+            ->setUsage(oboe::Usage::Media)
+            ->setContentType(oboe::ContentType::Music)
             /* fixme:
              * we do this because
              * 1. sample rate on Android is *almost always™ 48000
@@ -300,7 +320,6 @@ oboe::AudioStreamBuilder *Engine::setupCommonStreamParameters(
 //            ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Fastest)
             ->setFormatConversionAllowed(true)
             ->setSharingMode(oboe::SharingMode::Exclusive)
-            ->setInputPreset(oboe::InputPreset::Unprocessed)
 //            ->setPerformanceMode(static_cast<oboe::PerformanceMode>(lowLatency));
             ->setPerformanceMode(oboe::PerformanceMode::LowLatency);
     return builder;
