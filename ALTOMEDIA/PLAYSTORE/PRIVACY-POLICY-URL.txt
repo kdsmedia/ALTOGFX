@@ -7,7 +7,7 @@ OPSI A — GitHub (paling mudah, setelah folder ini di-push ke branch main):
 https://github.com/kdsmedia/ALTOGFX/blob/main/ALTOMEDIA/PLAYSTORE/PRIVACY-POLICY.md
 
 OPSI B — GitHub Pages (tampilan HTML lebih rapi):
-1. Salin PRIVACY-POLICY.html ke folder docs/ dengan nama privacy-alto-efect.html.
+1. File docs/privacy-alto-efect.html sudah disertakan di repo.
 2. Aktifkan GitHub Pages untuk branch main / folder docs.
 3. Gunakan URL:
    https://kdsmedia.github.io/ALTOGFX/privacy-alto-efect.html

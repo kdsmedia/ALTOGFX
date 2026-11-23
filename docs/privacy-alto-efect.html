@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kebijakan Privasi — ALTO EFECT</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #07070b; color: #f6efe4;
+         font: 16px/1.65 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 48px 22px 80px; }
+  h1 { font-size: clamp(28px, 6vw, 44px); line-height: 1.1; margin: 0 0 8px; }
+  h2 { color: #6fc8ff; margin-top: 36px; font-size: 22px; }
+  h3 { color: #ffa45b; margin-top: 26px; font-size: 18px; }
+  p, li { color: #d8d4ce; }
+  .meta { color: #9a9aa4; margin-bottom: 30px; }
+  .card { background: #101018; border: 1px solid #262633; border-radius: 14px;
+          padding: 18px 20px; margin: 22px 0; }
+  a { color: #6fc8ff; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; }
+  th, td { text-align: left; vertical-align: top; border-bottom: 1px solid #2a2a38;
+           padding: 10px 8px; }
+  th { color: #ffa45b; }
+  code { background: #1a1a24; padding: 2px 6px; border-radius: 5px; }
+  hr { border: 0; border-top: 1px solid #2a2a38; margin: 38px 0; }
+  .small { color: #9a9aa4; font-size: 14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Kebijakan Privasi — ALTO EFECT</h1>
+  <p class="meta"><strong>Terakhir diperbarui:</strong> 23 November 2026<br>
+  <strong>Pengembang:</strong> ALTOMEDIA<br>
+  <strong>Aplikasi:</strong> ALTO EFECT (<code>com.altomedia.altoefect</code>)</p>
+
+  <div class="card">
+    <strong>Ringkasan:</strong> ALTO EFECT bekerja sepenuhnya offline. Kami tidak
+    mengumpulkan, menjual, atau membagikan data pribadi. Mikrofon hanya dipakai
+    untuk input gitar/audio real-time dan audio tidak direkam atau diunggah.
+  </div>
+
+  <h2>1. Mikrofon dan audio</h2>
+  <p>ALTO EFECT meminta izin <code>RECORD_AUDIO</code> hanya untuk menerima sinyal
+  gitar atau audio dari mikrofon/headset jack dan memprosesnya secara real-time
+  di perangkat. Audio diproses di memori perangkat dan dibuang setelah diproses.
+  ALTO EFECT tidak merekam, menyimpan, atau mengunggah audio dari mikrofon.</p>
+  <p>Jika Anda menghubungkan antarmuka audio USB, Android menangani akses
+  perangkat tersebut. ALTO EFECT hanya membaca aliran audio yang dipilih melalui
+  API audio Android.</p>
+
+  <h2>2. Data yang disimpan di perangkat</h2>
+  <ul>
+    <li>Preset, pengaturan efek, pilihan tema, dan preferensi aplikasi disimpan
+        secara lokal di penyimpanan aplikasi.</li>
+    <li>Data lokal tersebut tidak dapat diakses oleh ALTOMEDIA dan tidak dikirim
+        ke server.</li>
+    <li>Anda dapat menghapus data lokal dengan menghapus preset di aplikasi,
+        memilih <strong>Clear storage</strong> pada pengaturan Android, atau
+        menghapus instalasi aplikasi.</li>
+  </ul>
+
+  <h2>3. Backup Android</h2>
+  <p>Aplikasi mengizinkan backup data aplikasi melalui mekanisme Android. Jika
+  Anda mengaktifkan backup Android, sistem operasi atau penyedia backup Anda
+  dapat menyalin data lokal (misalnya preset dan pengaturan) ke penyimpanan
+  backup. ALTOMEDIA tidak menerima salinan tersebut dan tidak memiliki akses ke
+  sana. Anda dapat menonaktifkan backup di pengaturan Android.</p>
+
+  <h2>4. Izin aplikasi</h2>
+  <table>
+    <thead><tr><th>Izin</th><th>Fungsi</th></tr></thead>
+    <tbody>
+      <tr><td><code>RECORD_AUDIO</code></td><td>Menerima input gitar/audio secara
+      real-time. Tidak untuk merekam atau mengunggah audio.</td></tr>
+      <tr><td><code>DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION</code></td>
+      <td>Izin internal AndroidX untuk receiver aplikasi; bukan akses data
+      pengguna.</td></tr>
+    </tbody>
+  </table>
+  <p>Aplikasi <strong>tidak</strong> meminta izin INTERNET, lokasi, kontak,
+  kamera, penyimpanan eksternal, atau akses ke akun.</p>
+
+  <h2>5. Iklan, analytics, dan pihak ketiga</h2>
+  <ul>
+    <li>Tidak ada iklan.</li>
+    <li>Tidak ada analytics, crash reporting, atau pelacakan.</li>
+    <li>Tidak ada akun, login, atau profil pengguna.</li>
+    <li>Tidak ada pembelian dalam aplikasi.</li>
+    <li>Aplikasi memakai pustaka AndroidX, Oboe/AAudio, dan plugin audio
+        LV2/LADSPA yang berjalan secara lokal. Pustaka tersebut tidak mengirim
+        data ke ALTOMEDIA.</li>
+  </ul>
+
+  <h2>6. Anak-anak</h2>
+  <p>ALTO EFECT bukan aplikasi yang ditujukan untuk anak di bawah 13 tahun. Kami
+  tidak secara sengaja mengumpulkan data dari anak-anak. Karena aplikasi tidak
+  mengumpulkan data pribadi, tidak ada data anak yang kami simpan.</p>
+
+  <h2>7. Keamanan</h2>
+  <p>Karena tidak ada data yang dikirim ke server, tidak ada data pribadi yang
+  disimpan di server ALTOMEDIA. Data lokal berada di perangkat Anda dan tunduk
+  pada keamanan perangkat serta sistem operasi Android.</p>
+
+  <h2>8. Perubahan kebijakan</h2>
+  <p>Jika kebijakan ini berubah, versi terbaru akan dipublikasikan di URL ini
+  dengan tanggal pembaruan baru. Perubahan material akan diumumkan melalui
+  halaman aplikasi atau catatan rilis.</p>
+
+  <h2>9. Kontak</h2>
+  <p>Pertanyaan tentang privasi dapat dikirim melalui
+  <a href="https://github.com/kdsmedia/ALTOGFX/issues">GitHub Issues</a>.
+  Pengembang: ALTOMEDIA.</p>
+
+  <hr>
+  <h2>English summary</h2>
+  <p>ALTO EFECT is a fully offline guitar effects processor. We do not collect,
+  sell, or share personal data. The microphone permission is used only to receive
+  live guitar/audio input; audio is processed on-device in real time and is not
+  recorded, stored, or uploaded. Presets and settings are stored locally and are
+  not sent to ALTOMEDIA. The app has no INTERNET permission, ads, analytics,
+  accounts, or in-app purchases.</p>
+  <p class="small">Contact:
+  <a href="https://github.com/kdsmedia/ALTOGFX/issues">github.com/kdsmedia/ALTOGFX/issues</a></p>
+</main>
+</body>
+</html>
