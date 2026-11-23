@@ -1,4 +1,4 @@
-# ALTO EFECT — Paket Rilis Play Store 1.0
+# ALTO EFECT — Paket Rilis Play Store 1.1
 
 Paket ini berisi bahan rilis **ALTO EFECT** untuk Google Play Store: App Bundle
 yang sudah ditandatangani, APK untuk pengujian, metadata listing, grafik toko,
@@ -15,9 +15,9 @@ Android; gunakan `PLAYSTORE/SCREENSHOTS/capture-screenshots.sh` pada ponsel nyat
 |---|---|
 | Nama aplikasi | ALTO EFECT |
 | Package name | `com.altomedia.altoefect` |
-| Versi | 1.0 (versionCode 1) |
+| Versi | 1.1 (versionCode 2) |
 | Min SDK | 24 (Android 7.0) |
-| Target SDK | 35 (Android 15) |
+| Target SDK | 36 (Android 16) |
 | Kategori | Musik & Audio |
 | Harga | Gratis, tanpa iklan, tanpa pembelian dalam aplikasi |
 | Mode | 100% offline; tidak meminta izin INTERNET |
@@ -30,8 +30,8 @@ ALTOMEDIA/
 ├── BUILD-INFO.txt                ← detail build, hash, dan sertifikat
 ├── CHECKSUMS.sha256              ← checksum SHA-256 artefak
 ├── ARTIFACTS/
-│   ├── ALTO-EFECT-1.0-release.aab   ← unggah ini ke Play Console
-│   ├── ALTO-EFECT-1.0-release.apk   ← untuk sideload/QA
+│   ├── ALTO-EFECT-1.1-release.aab   ← unggah ini ke Play Console
+│   ├── ALTO-EFECT-1.1-release.apk   ← untuk sideload/QA
 │   └── output-metadata.json
 ├── SIGNING/
 │   └── README.md                 ← informasi upload key dan Play App Signing
@@ -75,7 +75,7 @@ ALTOMEDIA/
    Indonesia, tipe **App**, gratis.
 2. Aktifkan **Play App Signing**. Simpan upload key `ALTOMEDIA.jks` (ada di root
    repo, tidak disalin ke paket ini).
-3. Upload `ARTIFACTS/ALTO-EFECT-1.0-release.aab` ke **Internal testing** lebih
+3. Upload `ARTIFACTS/ALTO-EFECT-1.1-release.aab` ke **Internal testing** lebih
    dulu, lalu uji di perangkat nyata.
 4. Salin isi `PLAYSTORE/LISTING-id-ID.md` ke Store listing. Unggah grafik dari
    `PLAYSTORE/GRAPHICS/` dan screenshot yang Anda ambil sendiri.
@@ -102,9 +102,9 @@ ALTOMEDIA/
 ```bash
 sha256sum -c CHECKSUMS.sha256
 /opt/android-sdk/build-tools/35.0.0/apksigner verify --print-certs \
-  ARTIFACTS/ALTO-EFECT-1.0-release.apk
+  ARTIFACTS/ALTO-EFECT-1.1-release.apk
 /usr/lib/jvm/java-21-openjdk-amd64/bin/jarsigner -verify \
-  ARTIFACTS/ALTO-EFECT-1.0-release.aab
+  ARTIFACTS/ALTO-EFECT-1.1-release.aab
 ```
 
 Detail lengkap ada di `BUILD-INFO.txt`.

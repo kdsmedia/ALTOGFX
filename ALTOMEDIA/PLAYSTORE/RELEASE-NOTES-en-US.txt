@@ -1,4 +1,4 @@
-ALTO EFECT 1.0 (versionCode 1)
+ALTO EFECT 1.1 (versionCode 2)
 
 First Google Play release.
 
@@ -11,6 +11,7 @@ First Google Play release.
 • Save and manage local presets.
 • Low-latency native audio engine with LV2/LADSPA processing.
 • Input/output level, noise gate, and hum filter controls.
+• Android 16 (targetSdk 36) support to meet current Google Play requirements.
 • 100% offline; no ads, analytics, account, or in-app purchases.
 
 Note: use headphones to avoid feedback. Latency depends on your device and

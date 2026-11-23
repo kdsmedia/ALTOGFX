@@ -1,4 +1,4 @@
-# Third-party notices — ALTO EFECT 1.0
+# Third-party notices — ALTO EFECT 1.1
 
 ALTO EFECT memakai komponen pihak ketiga. Daftar lengkap plugin yang dibundel
 ada di `PLUGINS.txt` (di-generate dari aplikasi). File ini adalah catatan

@@ -3,14 +3,14 @@ ALTO EFECT — BUILD & ARTIFACT INFORMATION
 
 Application name : ALTO EFECT
 Package name     : com.altomedia.altoefect
-Version name     : 1.0
-Version code     : 1
+Version name     : 1.1
+Version code     : 2
 Min SDK          : 24 (Android 7.0)
-Target SDK       : 35 (Android 15)
-Compile SDK      : 35
+Target SDK       : 36 (Android 16)
+Compile SDK      : 36
 Build type       : release
 Build date       : 2026-11-23 (UTC)
-Build command    : ./gradlew :app:bundleRelease :app:assembleRelease :app:testDebugUnitTest
+Build command    : ./gradlew :app:bundleRelease :app:assembleRelease :app:testReleaseUnitTest
 Gradle / AGP     : Gradle 8.13 / Android Gradle Plugin 8.13.0
 JDK              : OpenJDK 21.0.13
 NDK              : 26.1.10909125
@@ -22,13 +22,13 @@ arm64-v8a, armeabi-v7a, x86, x86_64
 
 Release artifacts
 -----------------
-AAB : ARTIFACTS/ALTO-EFECT-1.0-release.aab
-      184,311,719 bytes (175.8 MiB)
-      SHA-256: 782b0ae6342074825c4030a52f2cc385f6b5f0bf036ea6fa962bee4608802b30
+AAB : ARTIFACTS/ALTO-EFECT-1.1-release.aab
+      184,311,654 bytes (175.8 MiB)
+      SHA-256: 47aea2605130761b133f4f7b4a0828637489b04843ae7c1d1d3064a1dbd2a70e
 
-APK : ARTIFACTS/ALTO-EFECT-1.0-release.apk
+APK : ARTIFACTS/ALTO-EFECT-1.1-release.apk
       252,544,172 bytes (240.8 MiB)
-      SHA-256: 0f22f13d2d4e8a92e6ac6cb248260ab2fe6cbd8f32692508521f847ce6990eb3
+      SHA-256: 4613d2d8d66b9eebdf97f5ca3ee46a2cc5b8e28917f47f1e95b9216d715b2a17
 
 Signing certificate (APK)
 -------------------------
@@ -44,9 +44,10 @@ Verification results
 --------------------
 Unit tests        : 7 tests, 0 failures (ExampleUnitTest + RuntimeControlTest)
 AAB validation    : bundletool 1.18.3 validate — exit 0
+AAB zip alignment : PAGE_ALIGNMENT_16K (bundletool dump config)
 AAB signature     : jarsigner -verify — "jar verified"
 APK signature     : apksigner verify — signer #1 certificate matches above
-AAB size check    : 176 MB compressed; below Play base-module 200 MB limit.
+AAB size check    : 175.8 MiB compressed; below Play base-module 200 MB limit.
                     bundletool split-APK estimate (download size by ABI):
                     arm64-v8a ~57.7 MB, armeabi-v7a ~56.0 MB,
                     x86 ~58.8 MB, x86_64 ~58.8 MB.
@@ -68,3 +69,6 @@ Notes
   upload them later if you want symbolicated native crash reports.
 - Keep ALTOMEDIA.jks and keystore.properties private. They are intentionally
   not copied into this package.
+- AAB memakai PAGE_ALIGNMENT_16K untuk zip, tetapi library ELF native masih
+  4 KB aligned. Play mewajibkan dukungan 16 KB untuk update mulai 1 Feb 2027;
+  rebuild native libs dengan NDK r28+ atau linker 16 KB sebelum tanggal itu.

@@ -1,4 +1,4 @@
-# Data safety — ALTO EFECT 1.0
+# Data safety — ALTO EFECT 1.1
 
 Jawaban di bawah mengikuti formulir **Data safety** di Play Console. Semua
 pernyataan harus konsisten dengan `PRIVACY-POLICY.md` dan perilaku aplikasi.

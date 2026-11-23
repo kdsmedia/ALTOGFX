@@ -1,4 +1,4 @@
-# Content rating — ALTO EFECT 1.0
+# Content rating — ALTO EFECT 1.1
 
 ## Kategori kuesioner
 

@@ -1,4 +1,4 @@
-# Instalasi APK untuk QA — ALTO EFECT 1.0
+# Instalasi APK untuk QA — ALTO EFECT 1.1
 
 APK release sudah ditandatangani dengan upload key yang sama dengan AAB. Gunakan
 APK hanya untuk sideload/QA, bukan untuk unggahan production Play Store.
@@ -16,7 +16,7 @@ cd ALTOMEDIA
 ADB=/opt/android-sdk/platform-tools/adb
 
 $ADB devices
-$ADB install -r ARTIFACTS/ALTO-EFECT-1.0-release.apk
+$ADB install -r ARTIFACTS/ALTO-EFECT-1.1-release.apk
 $ADB shell pm grant com.altomedia.altoefect android.permission.RECORD_AUDIO
 $ADB shell am start -n com.altomedia.altoefect/.PedalboardActivity
 ```
@@ -33,11 +33,11 @@ $ADB uninstall com.altomedia.altoefect
 ```bash
 # Nama paket, versi, dan label
 /opt/android-sdk/build-tools/35.0.0/aapt2 dump badging \
-  ARTIFACTS/ALTO-EFECT-1.0-release.apk | head -5
+  ARTIFACTS/ALTO-EFECT-1.1-release.apk | head -5
 
 # Izin: hanya RECORD_AUDIO + izin internal AndroidX; tidak ada INTERNET
 /opt/android-sdk/build-tools/35.0.0/aapt2 dump permissions \
-  ARTIFACTS/ALTO-EFECT-1.0-release.apk
+  ARTIFACTS/ALTO-EFECT-1.1-release.apk
 ```
 
 ## Catatan

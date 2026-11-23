@@ -1,4 +1,4 @@
-# Smoke test — ALTO EFECT 1.0
+# Smoke test — ALTO EFECT 1.1
 
 Jalankan di perangkat Android nyata. Tandai **PASS/FAIL** dan catat model
 perangkat, versi Android, serta headset/adaptor yang dipakai.

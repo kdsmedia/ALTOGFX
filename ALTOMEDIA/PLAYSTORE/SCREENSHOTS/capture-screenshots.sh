@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-APK="${ROOT}/ARTIFACTS/ALTO-EFECT-1.0-release.apk"
+APK="${ROOT}/ARTIFACTS/ALTO-EFECT-1.1-release.apk"
 ADB="${ADB:-adb}"
 PKG="com.altomedia.altoefect"
 ACTIVITY="${PKG}/.PedalboardActivity"

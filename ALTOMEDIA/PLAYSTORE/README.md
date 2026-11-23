@@ -1,4 +1,4 @@
-# Play Store — Checklist Unggah ALTO EFECT 1.0
+# Play Store — Checklist Unggah ALTO EFECT 1.1
 
 Dokumen ini adalah urutan kerja yang disarankan. Isi yang bertanda
 `[ISI ...]` harus diganti dengan data akun Anda.
@@ -22,7 +22,7 @@ Dokumen ini adalah urutan kerja yang disarankan. Isi yang bertanda
 ## 3. Internal testing lebih dulu
 
 - **Testing → Internal testing → Create new release**
-- Upload `../ARTIFACTS/ALTO-EFECT-1.0-release.aab`.
+- Upload `../ARTIFACTS/ALTO-EFECT-1.1-release.aab`.
 - Tambahkan tester (email Anda sendiri).
 - Review dan roll out.
 - Pasang dari link internal testing di ponsel nyata, lalu jalankan

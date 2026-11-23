@@ -1,4 +1,4 @@
-# Signing — ALTO EFECT 1.0
+# Signing — ALTO EFECT 1.1
 
 ## Upload key
 
@@ -35,11 +35,11 @@ cd ALTOMEDIA
 
 # APK (sideload)
 /opt/android-sdk/build-tools/35.0.0/apksigner verify --print-certs \
-  ARTIFACTS/ALTO-EFECT-1.0-release.apk
+  ARTIFACTS/ALTO-EFECT-1.1-release.apk
 
 # AAB (upload)
 /usr/lib/jvm/java-21-openjdk-amd64/bin/jarsigner -verify \
-  ARTIFACTS/ALTO-EFECT-1.0-release.aab
+  ARTIFACTS/ALTO-EFECT-1.1-release.aab
 
 sha256sum -c CHECKSUMS.sha256
 ```

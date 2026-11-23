@@ -1,4 +1,4 @@
-# Screenshot Play Store — ALTO EFECT 1.0
+# Screenshot Play Store — ALTO EFECT 1.1
 
 ## Status
 

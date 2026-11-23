@@ -1,4 +1,4 @@
-# App access — ALTO EFECT 1.0
+# App access — ALTO EFECT 1.1
 
 ## Apakah semua fungsi tersedia tanpa akses khusus?
 
